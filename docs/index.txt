@@ -1,0 +1,70 @@
+================================================================================
+debshots - a web application to manage screenshots of GUI applications in Debian
+================================================================================
+
+
+About
+=====
+
+*debshots* is a simple web application to host screenshots
+for the screenshots.debian.net web service. It accepts images
+showing different views of GUI applications that are available
+in Debian as software package. So users can get a visual impression
+of what an application does. Following the karma of
+*a picture is worth a thousand words*.
+
+*debshots* is written in Python_ and uses the Pylons_ web framework.
+
+.. _Python: http://www.python.org/
+.. _Pylons: http://www.pylonshq.com/
+
+
+Installation using virtualenv
+=============================
+
+It is generally suggested that *debshots* gets deployed using
+the *virtualenv* software which creates a seperate Python
+environment independent from what Python packages are installed
+elsewhere on the system.
+
+#. Install prerequisites.
+
+   > aptitude install python-dev gcc python-virtualenv python-pylons
+
+#. Get your copy of debshots
+
+   > hg clone http://hg.workaround.org/debshots
+   > cd debshots
+
+#. Create a virtualenv
+
+   > virtualenv .
+
+#. Activate the virtualenv environment (set some variables like
+   $PYTHONPATH so installation of Python packages through
+   setuptools/ez_install is done in this directory instead of
+   system-wide)
+
+   > source bin/activate
+
+   Your shell prompt should have changed by now and start with
+   "(debshots").
+
+#. Install the versions of Python packages that debshots depends on:
+
+   > (debshots) python setup.py develop
+
+   This will get the required packages from the internet and install
+   them inside the virtualenv.
+
+#. Edit the 'development.ini' configuration file to control various
+   aspects of debshots. Make sure that you set
+   "set debug = false" before you deploy the application.
+
+#. Set up the application (e.g. create required directories):
+
+   > (debshots) paster setup-app development.ini
+
+#. Now run the application through a web server:
+
+   > (debshots) paster serve development.ini

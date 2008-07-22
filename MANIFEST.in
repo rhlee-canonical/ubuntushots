@@ -1,0 +1,2 @@
+recursive-include debshots/public *
+recursive-include debshots/templates *
