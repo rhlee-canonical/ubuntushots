@@ -18,7 +18,8 @@ def make_map():
 
     # CUSTOM ROUTES HERE
     map.connect('', controller='start', action='index')
-    map.connect('package/:package', controller='package')
+    map.connect('activate', 'activate/:user/:hash', controller='start', action='activate')
+    map.connect('package', 'package/:package', controller='package')
     map.connect(':controller/:action/:id')
     map.connect('*url', controller='template', action='view')
 

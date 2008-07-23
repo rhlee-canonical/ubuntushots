@@ -55,7 +55,7 @@ class MyOrm(object):
 users_table = sql.Table(
     'users', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
-    sql.Column('name', sql.Unicode(100), nullable=False),
+    sql.Column('name', sql.Unicode(100), nullable=False, unique=True),
     sql.Column('hash', sql.Unicode(32)), # random MD5 hash to verify the user account
     sql.Column('verified', sql.Boolean, default=False)
     )

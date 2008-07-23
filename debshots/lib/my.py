@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import pylons
+import logging
+import formencode
+
+log = logging.getLogger(__name__)
 
 def validate(schema, **state_kwargs):
     """Validate a formencode schema. Similar to @validate.

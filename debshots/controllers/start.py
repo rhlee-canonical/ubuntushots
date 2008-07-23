@@ -18,7 +18,7 @@ class ValidateLogin(formencode.Schema):
 class ValidateRegister(formencode.Schema):
     allow_extra_fields = True
 
-    debianuser = formencode.validators.Regex(r'\w+')
+    debianuser = formencode.validators.Regex(r'^[a-z]+$')
 
 class StartController(BaseController):
 
@@ -73,27 +73,37 @@ class StartController(BaseController):
         except formencode.Invalid, e:
             return my.htmlfill(self.register(), e)
 
-        sender_address = config['debshots.email_sender']
-        recipient_address = fields['debianuser']+'@debian.org'
+        # TODO: check if user account is already verified/activated
 
-        # Create a new user account
-        new_user = model.User()
+        sender_address = config['debshots.email_sender']
+        #recipient_address = fields['debianuser']+'@debian.org'
+        # TODO: testing address currently...
+        recipient_address='email@christoph-haas.de'
+
+        # Create a new user account or get the existing account
+        user = model.User.q().filter_by(name=fields['debianuser']).first()
+        if not user: # create if not yet existing
+            user = model.User()
+            model.Session.save(user)
 
         # Set a randomly generated activation in the user account
-        activation_code = md5.new(str(random.random())).hexdigest()
-        new_user.name = fields['debianuser']
-        new_user.hash = activation_code
-        model.Session.save(new_user)
+        activation_code = md5.new(unicode(random.random())).hexdigest()
+        user.name = fields['debianuser']
+        user.hash = activation_code
         model.Session.commit()
 
+        c.debianuser = fields['debianuser']
+
         # Generate an email
-        c.verification_email = h.url_for(
-            controller='start',
-            action='activate',
-            id=activation_code,
-            qualified=True
-        )
+        c.activation_link = h.url_for(
+            'activate',
+            hash=activation_code,
+            user=fields['debianuser'],
+            qualified=True)
         message = render('/email/verification.mako')
+
+        log.debug('Sending verification email (hash=%s, user=%s)'
+                % (activation_code, fields['debianuser']))
 
         # Send the email
         log.debug('Starting SMTP session to %s' % config['global_conf']['smtp_server'])
@@ -114,3 +124,27 @@ class StartController(BaseController):
             log.debug('Email sent to %s successfully' % (recipient_address,))
 
         return render("/start/registration_pending.mako")
+
+    def activate(self, user, hash):
+        """Activate a user account.
+
+        This action is called from an email that a new user gets
+        sent to verify the email address."""
+        log.debug("Trying to activate user account (user=%s, hash=%s)"
+            % (user, hash))
+        user = model.User.q().filter_by(name=user).first()
+        if user.verified == True:
+            # TODO: proper HTML response
+            return "Your account has already been activated."
+        if not user: # create if not yet existing
+            # TODO: proper HTML response
+            return "We cannot find your registration request. :("
+        if user.hash != hash:
+            # TODO: proper HTML response
+            return "Your registration failed. Did you use the wrong link?"
+
+        user.hash = ''
+        user.verified = True
+        model.Session.commit()
+        # TODO: proper HTML response
+        return "Your account was activated."
