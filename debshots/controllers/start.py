@@ -12,13 +12,14 @@ log = logging.getLogger(__name__)
 class ValidateLogin(formencode.Schema):
     allow_extra_fields = True
 
-    username = formencode.validators.String(max=20, not_empty=True)
+    email = formencode.validators.String(max=100, not_empty=True)
     password = formencode.validators.String(max=50, not_empty=True)
 
 class ValidateRegister(formencode.Schema):
     allow_extra_fields = True
 
-    debianuser = formencode.validators.Regex(r'^[a-z]+$')
+    email = formencode.validators.Email()
+    password = formencode.validators.String(min=6, max=50)
 
 class StartController(BaseController):
 
@@ -38,27 +39,28 @@ class StartController(BaseController):
         except formencode.Invalid, e:
             return my.htmlfill(self.login(), e)
 
-        user = model.User.q().filter_by(
-            name=fields['username'],
-            passwordhash=md5.new(fields['password']).hexdigest()).first()
+        maintainer = model.Maintainer.q().filter_by(
+            email=fields['email'],
+            password=md5.new(fields['password']+config['debshots.md5salt']).hexdigest()).first()
 
-        if not user:
-            log.info("Login failed: %s" % fields['username'])
-            return render("/start/login.mako", error='Login failed')
+        if not maintainer:
+            log.info("Login failed: %s" % fields['email'])
+            c.error="Login failed"
+            return render("/start/login.mako")
 
-        log.info("User logged in: %s" % (fields['username']))
+        log.info("Maintainer logged in: %s" % (fields['email']))
 
-        # Set a cookie session variable to mark the user as logged in
-        session['user']=user.id
+        # Set a cookie session variable to mark the maintainer as logged in
+        session['maintainer']=maintainer.id
         session.save()
-        return render("/start/index.mako")
+        redirect_to('/login')
 
     def logout(self):
-        """Logout user"""
-        if 'user' in session:
-            del session['user']
+        """Logout maintainer"""
+        if 'maintainer' in session:
+            del session['maintainer']
             session.save()
-        return render("/start/index.mako")
+        redirect_to('/login')
 
     def register(self):
         """Show registration form"""
@@ -73,38 +75,38 @@ class StartController(BaseController):
         except formencode.Invalid, e:
             return my.htmlfill(self.register(), e)
 
-        # TODO: check if user account is already verified/activated
+        # TODO: check if maintainer account is already verified/activated
 
         sender_address = config['debshots.email_sender']
         #recipient_address = fields['debianuser']+'@debian.org'
         # TODO: testing address currently...
         recipient_address='email@christoph-haas.de'
 
-        # Create a new user account or get the existing account
-        user = model.User.q().filter_by(name=fields['debianuser']).first()
-        if not user: # create if not yet existing
-            user = model.User()
-            model.Session.save(user)
+        # Create a new maintainer account or get the existing account
+        maintainer = model.Maintainer.q().filter_by(email=fields['email']).first()
+        if not maintainer: # create if not yet existing
+            maintainer = model.Maintainer()
+            model.Session.save(maintainer)
 
-        # Set a randomly generated activation in the user account
+        # Set a randomly generated activation in the maintainer account
         activation_code = md5.new(unicode(random.random())).hexdigest()
-        user.name = fields['debianuser']
-        user.hash = activation_code
-        user.passwordhash = md5.new(fields['password']).hexdigest()
+        maintainer.email = fields['email']
+        maintainer.hash = activation_code
+        maintainer.password = md5.new(fields['password']+config['debshots.md5salt']).hexdigest()
         model.Session.commit()
 
-        c.debianuser = fields['debianuser']
+        c.email = fields['email']
 
         # Generate an email
         c.activation_link = h.url_for(
             'activate',
             hash=activation_code,
-            user=fields['debianuser'],
+            email=fields['email'],
             qualified=True)
         message = render('/email/verification.mako')
 
-        log.debug('Sending verification email (hash=%s, user=%s)'
-                % (activation_code, fields['debianuser']))
+        log.debug('Sending verification email (hash=%s, email=%s)'
+                % (activation_code, fields['email']))
 
         # Send the email
         log.debug('Starting SMTP session to %s' % config['global_conf']['smtp_server'])
@@ -126,26 +128,35 @@ class StartController(BaseController):
 
         return render("/start/registration_pending.mako")
 
-    def activate(self, user, hash):
-        """Activate a user account.
+    def activate(self, email, hash):
+        """Activate a maintainer account.
 
-        This action is called from an email that a new user gets
+        This action is called from an email that a new maintainer gets
         sent to verify the email address."""
-        log.debug("Trying to activate user account (user=%s, hash=%s)"
-            % (user, hash))
-        user = model.User.q().filter_by(name=user).first()
-        if user.verified == True:
-            # TODO: proper HTML response
-            return "Your account has already been activated."
-        if not user: # create if not yet existing
-            # TODO: proper HTML response
-            return "We cannot find your registration request. :("
-        if user.hash != hash:
-            # TODO: proper HTML response
-            return "Your registration failed. Did you use the wrong link?"
+        log.debug("Trying to activate maintainer account (email=%s, hash=%s)"
+            % (email, hash))
+        maintainer = model.Maintainer.q().filter_by(email=email).first()
+        if not maintainer: # create if not yet existing
+            c.title="Registration failed"
+            c.message="We cannot find your registration request. :("
+            return render('/message.mako')
+        if maintainer.verified == True:
+            c.title="Registration not necessary"
+            c.message="Your account has already been activated."
+            return render('/message.mako')
+        if maintainer.hash != hash:
+            c.title="Registration failed"
+            c.message="Your registration failed. Did you use the wrong link?"
+            return render('/message.mako')
 
-        user.hash = ''
-        user.verified = True
+        maintainer.hash = ''
+        maintainer.verified = True
         model.Session.commit()
-        # TODO: proper HTML response
-        return "Your account was activated."
+
+        # Log the user in
+        session['maintainer']=maintainer.id
+        session.save()
+
+        c.title="Account activated"
+        c.message="The registration process is done. Feel free to upload screenshots now."
+        return render('/message.mako')

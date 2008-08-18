@@ -23,6 +23,8 @@ class BaseController(WSGIController):
         # available in environ['pylons.routes_dict']
         try:
             #c.controller = request.environ['pylons.routes_dict']['controller']
+            c.maintainer_id = session.get('maintainer')
+            c.maintainer = model.Session.query(model.Maintainer).filter_by(id=c.maintainer_id).first()
             return WSGIController.__call__(self, environ, start_response)
         finally:
             model.Session.remove()
