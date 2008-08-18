@@ -1,15 +1,30 @@
 # -*- coding: utf-8 -*-
-## Grundlegendes Template für alle Seiten
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-    <head>
-        <title>screenshots.debian.net</title>
-        ##${ h.tags.stylesheet_link('/css/style.css') }
-    </head>
-    <body>
+<html>
 
-        ${ next.body() }
+  <head>
+    <title>screenshots.debian.net</title>
+    ${ h.tags.stylesheet_link('/css/style.css') }
+    <!--<link rel="alternate" href=" c.feed_url " title="RSS Feed" type="application/rss+xml" />-->
+  </head>
 
-    </body>
+  <body>
+    <div id="header">
+      <div id="headertitle">
+        screenshots.debian.net
+      </div>
+      <div id="headernav">
+        <a href="/"><span class="nav">About</span></a>
+        <a href="/screenshots"><span class="nav">Screenshots</span></a>
+        <a href="/login"><span class="nav">Login/Register</span></a>
+        <a href="/my"><span class="nav">My Screenshots</span></a>
+      </div>
+    </div>
+
+    <div id="maincontent">
+${ next.body() }
+    </div>
+
+  </body>
 </html>

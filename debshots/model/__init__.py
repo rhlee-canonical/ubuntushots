@@ -52,21 +52,23 @@ class MyOrm(object):
 
 #----------
 
-users_table = sql.Table(
-    'users', metadata,
+maintainers_table = sql.Table(
+    'maintainers', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
-    sql.Column('name', sql.Unicode(100), nullable=False, unique=True),
+    sql.Column('email', sql.Unicode(100), nullable=False, unique=True),
     sql.Column('hash', sql.Unicode(32)), # random MD5 hash to verify the user account
-    sql.Column('verified', sql.Boolean, default=False)
+    sql.Column('verified', sql.Boolean, default=False),
+    sql.Column('password', sql.Unicode(32)), # MD5 hashed password
     )
 
-class User(MyOrm): pass
+class Maintainer(MyOrm): pass
 
 #----------
 
 packages_table = sql.Table(
     'packages', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
+    sql.Column('maintainer_id', sql.Integer, sql.ForeignKey('maintainers.id')),
     sql.Column('name', sql.Unicode(100)),
 )
 
@@ -86,7 +88,13 @@ class Screenshot(MyOrm): pass
 
 #----------
 
-orm.mapper(User, users_table)
+orm.mapper(Maintainer, maintainers_table,
+    properties={
+        'packages':orm.relation(
+            Package,
+            backref=orm.backref('maintainer', uselist=False),
+            cascade='all, delete-orphan')
+        })
 
 orm.mapper(Package, packages_table, order_by=packages_table.c.name,
     properties={

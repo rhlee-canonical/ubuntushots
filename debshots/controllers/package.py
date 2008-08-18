@@ -8,7 +8,8 @@ log = logging.getLogger(__name__)
 class PackageController(BaseController):
 
     def index(self):
-        # Return a rendered template
-        #   return render('/some/template.mako')
-        # or, Return a response
-        return 'Hello World'
+        """Show a list of packages with screenshots"""
+        packages = model.Package.q()
+        c.packages = h.paginate.Page(packages,
+            page=int(request.params.get('page_nr')))
+        return render('/packages/index.mako')

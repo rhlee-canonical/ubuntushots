@@ -34,13 +34,13 @@ class StartController(BaseController):
         """Process login form"""
         # Validate input fields
         try:
-            fields = my.validate(validators.ValidateLogin)
+            fields = my.validate(ValidateLogin)
         except formencode.Invalid, e:
             return my.htmlfill(self.login(), e)
 
         user = model.User.q().filter_by(
-            username=fields['username'],
-            password=fields['password']).first()
+            name=fields['username'],
+            passwordhash=md5.new(fields['password']).hexdigest()).first()
 
         if not user:
             log.info("Login failed: %s" % fields['username'])
@@ -90,6 +90,7 @@ class StartController(BaseController):
         activation_code = md5.new(unicode(random.random())).hexdigest()
         user.name = fields['debianuser']
         user.hash = activation_code
+        user.passwordhash = md5.new(fields['password']).hexdigest()
         model.Session.commit()
 
         c.debianuser = fields['debianuser']

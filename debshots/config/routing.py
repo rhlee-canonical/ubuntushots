@@ -17,9 +17,11 @@ def make_map():
     map.connect('error/:action/:id', controller='error')
 
     # CUSTOM ROUTES HERE
-    map.connect('', controller='start', action='index')
+    map.connect('start', '', controller='start', action='index')
+    map.connect('login', 'login', controller='start', action='login')
     map.connect('activate', 'activate/:user/:hash', controller='start', action='activate')
     map.connect('package', 'package/:package', controller='package')
+    map.connect('packages', controller='package', action='list')
     map.connect(':controller/:action/:id')
     map.connect('*url', controller='template', action='view')
 

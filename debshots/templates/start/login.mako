@@ -11,7 +11,7 @@ ${ h.tags.form('/start/loginsubmit', method='post') }
 </tr>
 <tr>
     <td>Password:</td>
-    <td>${ h.tags.password('passwort', size=20) }</td>
+    <td>${ h.tags.password('password', size=20) }</td>
 </tr>
 </table>
 ${ h.tags.submit('login','Login') }

@@ -11,7 +11,9 @@ ${ h.tags.form('/start/registersubmit', method='post') }
     Debian email address.
 </p>
 
-${ h.tags.text('debianuser', size=20) }@debian.org
+Debian address: ${ h.tags.text('debianuser', size=20) }@debian.org
+<br />
+Desired password: ${ h.tags.password('password', size=20 )}
 <br />
 ${ h.tags.submit('register','Register') }
 </form>
