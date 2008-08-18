@@ -18,7 +18,7 @@
         <a href="/"><span class="nav">About</span></a>
         <a href="/screenshots"><span class="nav">Screenshots</span></a>
         <a href="/login"><span class="nav">Login/Register</span></a>
-        <a href="/my"><span class="nav">My Screenshots</span></a>
+        <a href="/my"><span class="nav">My Screenshots/Upload</span></a>
       </div>
     </div>
 

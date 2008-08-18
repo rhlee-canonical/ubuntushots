@@ -78,12 +78,11 @@ class StartController(BaseController):
         # TODO: check if maintainer account is already verified/activated
 
         sender_address = config['debshots.email_sender']
-        #recipient_address = fields['debianuser']+'@debian.org'
-        # TODO: testing address currently...
-        recipient_address='email@christoph-haas.de'
+        recipient_address=fields['email']
 
         # Create a new maintainer account or get the existing account
-        maintainer = model.Maintainer.q().filter_by(email=fields['email']).first()
+        maintainer = model.Maintainer.q().filter_by(
+            email=fields['email'], verified=True).first()
         if not maintainer: # create if not yet existing
             maintainer = model.Maintainer()
             model.Session.save(maintainer)
