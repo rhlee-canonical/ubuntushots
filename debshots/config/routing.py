@@ -19,6 +19,7 @@ def make_map():
     # CUSTOM ROUTES HERE
     map.connect('start', '', controller='start', action='index')
     map.connect('login', 'login', controller='start', action='login')
+    map.connect('logout', 'logout', controller='start', action='logout')
     map.connect('activate', 'activate/:email/:hash', controller='start', action='activate')
     map.connect('package', 'package/:package', controller='package')
     map.connect('packages', controller='package', action='list')
