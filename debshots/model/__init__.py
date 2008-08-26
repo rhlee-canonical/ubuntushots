@@ -51,6 +51,42 @@ class MyOrm(object):
         return self.__class__.__name__ + '(' + ', '.join(x[0] + '=' + repr(x[1]) for x in atts) + ')'
 
 #----------
+# Cache created from Sources.gz files to map maintainer email addresses to packages
+cache_maintainers_table = sql.Table(
+    'cache_maintainers', metadata,
+    sql.Column('id', sql.Integer, primary_key=True),
+    sql.Column('name', sql.Unicode(100)),
+    sql.Column('email', sql.Unicode(100)),
+)
+
+class CacheMaintainer(MyOrm):
+    @property
+    def binary_packages(self):
+        """Get a list of all binary packages of this maintainer"""
+        binpkg = CacheBinaryPackage.q()
+        binpkg = binpkg.join('source_package')
+        binpkg = binpkg.filter(CacheSourcePackage.maintainer==self)
+        return binpkg
+
+cache_source_packages_table = sql.Table(
+    'cache_source_packages', metadata,
+    sql.Column('id', sql.Integer, primary_key=True),
+    sql.Column('maintainer_id', sql.Integer, sql.ForeignKey('cache_maintainers.id')),
+    sql.Column('name', sql.Unicode(100)),
+)
+
+class CacheSourcePackage(MyOrm): pass
+
+cache_binary_packages_table = sql.Table(
+    'cache_binary_packages', metadata,
+    sql.Column('id', sql.Integer, primary_key=True),
+    sql.Column('source_package_id', sql.Integer, sql.ForeignKey('cache_source_packages.id')),
+    sql.Column('name', sql.Unicode(100)),
+)
+
+class CacheBinaryPackage(MyOrm): pass
+
+#----------
 
 maintainers_table = sql.Table(
     'maintainers', metadata,
@@ -93,7 +129,7 @@ orm.mapper(Maintainer, maintainers_table,
         'packages':orm.relation(
             Package,
             backref=orm.backref('maintainer', uselist=False),
-            cascade='all, delete-orphan')
+            cascade='all, delete-orphan',)
         })
 
 orm.mapper(Package, packages_table, order_by=packages_table.c.name,
@@ -105,3 +141,23 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
         })
 
 orm.mapper(Screenshot, screenshots_table)
+
+orm.mapper(CacheMaintainer, cache_maintainers_table,
+    properties={
+        'source_packages':orm.relation(
+            CacheSourcePackage,
+            backref=orm.backref('maintainer', uselist=False),
+            cascade='all, delete-orphan',
+        )
+    })
+
+orm.mapper(CacheSourcePackage, cache_source_packages_table,
+    properties={
+        'binary_packages':orm.relation(
+            CacheBinaryPackage,
+            backref=orm.backref('source_package', uselist=False),
+            cascade='all, delete-orphan',
+        )
+    })
+
+orm.mapper(CacheBinaryPackage, cache_binary_packages_table)

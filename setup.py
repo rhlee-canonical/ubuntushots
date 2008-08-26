@@ -14,7 +14,8 @@ setup(
     #url='',
     install_requires=[
         "Pylons==0.9.6.2",
-        "PIL>=1.1.6"
+        "PIL>=1.1.6",
+        "SQLAlchemy>=0.4.6",
         ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
