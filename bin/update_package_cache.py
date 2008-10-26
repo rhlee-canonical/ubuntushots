@@ -14,10 +14,15 @@ import subprocess
 from debshots.config.environment import load_environment
 
 tempfile = '/tmp/sources'
-log = logging.getLogger(__name__)
+
+logging.basicConfig(
+    #level=logging.DEBUG,
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(message)s'
+    )
 
 def main():
-    log.info("Initalising Pylons environment...")
+    logging.info("Initalising Pylons environment...")
 
     conf = appconfig('config:' + sys.argv[1])
     load_environment(conf.global_conf, conf.local_conf)
@@ -26,62 +31,58 @@ def main():
     from debshots import model
 
     # ... empty database (we are in a transaction - no harm done)
+    logging.info("Purging package cache database")
+    delete = model.cache_binary_packages_table.delete()
+    model.Session.execute(delete)
+    logging.info("Purging done")
 
     # Remove old tempfile
     if os.path.isfile(tempfile):
         os.unlink(tempfile)
 
-    # Get Sources.gz
-    #for component in ('main', 'non-free', 'contrib'):
-    for component in ('contrib','non-free'): # TODO: only testing
-        url = "%s/dists/unstable/%s/source/Sources" % \
-            (config['debshots.debian_mirror'], component)
-        log.info("Fetching URL: %s" % url)
-        debian_support.downloadFile(url, tempfile)
+    # Get Packages.gz (lists of binary packages)
+    for arch in ('alpha', 'amd64', 'arm', 'armel', 'hppa', 'hurd-i386', 'i386',
+        'ia64', 'm68k', 'mips', 'mipsel', 'powerpc', 's390', 'sparc'): # TODO: only testing
+    #for arch in ('i386','ia64'): # TODO: only testing
+        for component in ('main', 'non-free', 'contrib'):
+        #for component in ('contrib',): # TODO: only testing
+            url = "%s/dists/unstable/%s/binary-%s/Packages" % \
+                (config['debshots.debian_mirror'], component, arch)
+            logging.info("Fetching URL: %s" % url)
+            debian_support.downloadFile(url, tempfile)
 
-        log.info("Purging package cache database")
-        delete = model.cache_maintainers_table.delete()
-        model.Session.execute(delete)
-        model.Session.commit()
+            logging.info("Parsing Packages.gz file into database cache")
+            for pkg in deb822.Dsc.iter_paragraphs(file(tempfile)):
+                logging.debug("---------")
+                logging.info("Package:       %s " % pkg['package'])
 
-        log.info("Parsing Sources file into database cache")
-        for pkg in deb822.Dsc.iter_paragraphs(file(tempfile)):
-            if 'Maintainer' in pkg:
-                log.debug("---------")
-                log.debug("Source package:", pkg['package'])
-                match = re.match(r'(.+?)\<(.+?)\>', pkg['maintainer'])
+                match = re.match(r'(.+?) *\<(.+?)\>', pkg['maintainer'])
                 assert match, "Couldn't parse email address from maintainer entry (%s)" % pkg['maintainer']
                 maint_name, maint_email = match.groups()
-                log.debug("Maintainer:    %s" % maint_name)
-                log.debug("Email:         %s" % maint_email)
-                log.debug("Binary packages:")
-                for binpkg in pkg['binary'].split(', '):
-                    log.debug("- %s" % binpkg)
 
-                # Is there a database entry for this maintainer already?
-                db_maintainer = model.CacheMaintainer.q().filter_by(email=maint_email.decode('utf8')).first()
-                if not db_maintainer:
-                    # new maintainer - create the database entry
-                    db_maintainer = model.CacheMaintainer(
-                        name = maint_name.decode('utf8'),
-                        email = maint_email.decode('utf8'),
+                logging.debug("Maintainer:    %s" % maint_name)
+                logging.debug("Email:         %s" % maint_email)
+
+                # Get first line of the description
+                description = pkg['description'].split('\n')[0]
+                logging.debug("Description:   %s" % description)
+
+                # Skip adding it to the database if it's already recorded
+                if model.CacheBinaryPackage.q().filter_by(name=pkg['package'].decode('utf8')).first():
+                    logging.debug('(exists in the database already - skipping)')
+                    continue
+
+                db_binpkg = model.CacheBinaryPackage(
+                    name = pkg['Package'].decode('utf8'),
+                    description = description.decode('utf8'),
+                    section = pkg['Section'].decode('utf8'),
+                    maintainer = maint_name.decode('utf8'),
+                    homepage = pkg.get('Homepage', '').decode('utf8'),
                     )
-                    model.Session.save(db_maintainer)
+                model.Session.save(db_binpkg)
 
-                # Create source package
-                db_srcpkg = model.CacheSourcePackage(
-                    name = pkg['package'].decode('utf8'))
-                model.Session.save(db_srcpkg)
-                db_maintainer.source_packages.append(db_srcpkg)
-
-                # Create binary packages
-                for binpkg in pkg['binary'].split(', '):
-                    db_binpkg = model.CacheBinaryPackage(
-                        name = binpkg.decode('utf8'))
-                    model.Session.save(db_binpkg)
-                    db_srcpkg.binary_packages.append(db_binpkg)
-
-        model.Session.commit()
+    logging.info("Committing to database")
+    model.Session.commit()
 
 if __name__ == '__main__':
     main()
