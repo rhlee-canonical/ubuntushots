@@ -9,7 +9,7 @@
   a screenshot while you are playing and not of the start screen.
 - The application you shoot should be a GUI application. Taking a screenshot
   from a console command is not very thrilling.
-- A nice simple KDE tool for taking screenshots is ksnapshot.
+- Nice tools for taking screenshots are ksnaphot (KDE) or Gimp.
 - You should not artificially switch off your window decorations.
 - Please set your language to english so that everybody understands it.
 

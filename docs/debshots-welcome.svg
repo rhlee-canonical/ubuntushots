@@ -20,11 +20,17 @@
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 372.04724 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1052.3622 : 372.04724 : 1"
+       inkscape:persp3d-origin="526.18109 : 248.03149 : 1"
+       id="perspective60" />
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient3371">
       <stop
-         style="stop-color:#d70751;stop-opacity:1;"
+         style="stop-color:#c70036;stop-opacity:1;"
          offset="0"
          id="stop3373" />
       <stop
@@ -41,6 +47,16 @@
        x2="425"
        y2="59.094482"
        gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3371"
+       id="linearGradient3542"
+       gradientUnits="userSpaceOnUse"
+       x1="425"
+       y1="53.726578"
+       x2="425"
+       y2="59.094482"
+       gradientTransform="matrix(4.3633559e-2,0,0,1,24.084036,19.999999)" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -50,8 +66,8 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.0213757"
-     inkscape:cx="441.0593"
-     inkscape:cy="491.20627"
+     inkscape:cx="525.9552"
+     inkscape:cy="489.55811"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -59,8 +75,8 @@
      gridtolerance="3"
      inkscape:guide-bbox="true"
      inkscape:showpageshadow="false"
-     inkscape:window-width="1016"
-     inkscape:window-height="703"
+     inkscape:window-width="1272"
+     inkscape:window-height="959"
      inkscape:window-x="0"
      inkscape:window-y="0">
     <inkscape:grid
@@ -196,7 +212,7 @@
        ry="9.7907171" />
     <text
        xml:space="preserve"
-       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:100%;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#d70751;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:FreeSans;-inkscape-font-specification:FreeSans"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:100%;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#c70036;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:FreeSans;-inkscape-font-specification:FreeSans"
        x="110"
        y="144.09448"
        id="text3249"
@@ -215,7 +231,7 @@
            height="62.581314"
            x="199.73062"
            y="186.51317" /></flowRegion><flowPara
-         id="flowPara3401"></flowPara></flowRoot>    <flowRoot
+         id="flowPara3401" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3409"
        style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:129.99999523%;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:FreeSans;-inkscape-font-specification:FreeSans"
@@ -239,7 +255,7 @@
        ry="9.7907171" />
     <text
        xml:space="preserve"
-       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:100%;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#d70751;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:FreeSans;-inkscape-font-specification:FreeSans"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:100%;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#c70036;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:FreeSans;-inkscape-font-specification:FreeSans"
        x="479.06097"
        y="143.74368"
        id="text3421"
@@ -277,7 +293,7 @@
        ry="9.7907171" />
     <text
        xml:space="preserve"
-       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:100%;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#d70751;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:FreeSans;-inkscape-font-specification:FreeSans"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:100%;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#c70036;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:FreeSans;-inkscape-font-specification:FreeSans"
        x="110"
        y="344.09448"
        id="text3465"
@@ -300,5 +316,26 @@
            style="font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;font-family:FreeSans;-inkscape-font-specification:FreeSans" /></flowRegion><flowPara
          id="flowPara3477">Whether you are a developer or a user - we appreciate if you upload screenshots. Please take a look at the guideline for taking screenshots. Then see our list of <flowSpan
    style="font-weight:bold;-inkscape-font-specification:FreeSans Bold"
-   id="flowSpan3481">packages without screenshots</flowSpan> and consider uploading a screenshot.</flowPara></flowRoot>  </g>
+   id="flowSpan3481">packages without screenshots</flowSpan> and consider uploading a screenshot.</flowPara></flowRoot>    <rect
+       style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       id="rect2433"
+       width="1050"
+       height="20"
+       x="0"
+       y="484.09448"
+       rx="0"
+       ry="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:FreeSans;-inkscape-font-specification:FreeSans"
+       x="10"
+       y="497.36844"
+       id="text2435"
+       sodipodi:linespacing="130%"><tspan
+         sodipodi:role="line"
+         id="tspan2437"
+         x="10"
+         y="497.36844"
+         style="font-size:12">This screenshot repository is powered by the 'debshots' software by Christoph Haas</tspan></text>
+  </g>
 </svg>

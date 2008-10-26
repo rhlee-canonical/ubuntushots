@@ -41,9 +41,9 @@ def main():
         os.unlink(tempfile)
 
     # Get Packages.gz (lists of binary packages)
-    for arch in ('alpha', 'amd64', 'arm', 'armel', 'hppa', 'hurd-i386', 'i386',
-        'ia64', 'm68k', 'mips', 'mipsel', 'powerpc', 's390', 'sparc'): # TODO: only testing
-    #for arch in ('i386','ia64'): # TODO: only testing
+    #for arch in ('alpha', 'amd64', 'arm', 'armel', 'hppa', 'hurd-i386', 'i386',
+        #'ia64', 'm68k', 'mips', 'mipsel', 'powerpc', 's390', 'sparc'): # TODO: only testing
+    for arch in ('i386',): # TODO: only testing
         for component in ('main', 'non-free', 'contrib'):
         #for component in ('contrib',): # TODO: only testing
             url = "%s/dists/unstable/%s/binary-%s/Packages" % \
@@ -73,11 +73,11 @@ def main():
                     continue
 
                 db_binpkg = model.CacheBinaryPackage(
-                    name = pkg['Package'].decode('utf8'),
-                    description = description.decode('utf8'),
+                    name = pkg['Package'][:100].decode('utf8'),
+                    description = description[:80].decode('utf8'),
                     section = pkg['Section'].decode('utf8'),
-                    maintainer = maint_name.decode('utf8'),
-                    homepage = pkg.get('Homepage', '').decode('utf8'),
+                    maintainer = maint_name[:100].decode('utf8'),
+                    homepage = pkg.get('Homepage', '')[:200].decode('utf8'),
                     )
                 model.Session.save(db_binpkg)
 
