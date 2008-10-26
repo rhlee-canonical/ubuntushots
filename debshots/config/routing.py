@@ -20,6 +20,7 @@ def make_map():
     map.connect('start', '', controller='start', action='index')
     map.connect('browse', '/browse', controller='package', action='browse')
     map.connect('upload', '/upload', controller='package', action='upload')
+    map.connect('uploadfile', '/uploadfile', controller='package', action='uploadfile')
     map.connect('guidelines', '/guidelines', controller='start', action='guidelines')
     map.connect('login', 'login', controller='start', action='login')
     map.connect('logout', 'logout', controller='start', action='logout')
