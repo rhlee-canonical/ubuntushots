@@ -22,9 +22,19 @@
       <!--  <a href="/my"><span class="nav">My Screenshots/Upload</span></a>-->
       <!--</div>-->
 
-    <!--<div id="maincontent">-->
+    <div id="nav">
+        <a href="/">Home</a>
+        |
+        <a href="/browse">Browse screenshots</a>
+        |
+        <a href="/upload">Upload screenshots</a>
+        |
+        <a href="/guidelines">Screenshot guidelines</a>
+    </div>
+
+    <div id="maincontent">
 ${ next.body() }
-    <!--</div>-->
+    </div>
 
   </body>
 </html>
