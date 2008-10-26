@@ -27,6 +27,10 @@ class StartController(BaseController):
         """Welcome page"""
         return render('/start/index.mako')
 
+    def guidelines(self):
+        """Show the screenshot guidelines"""
+        return render('/start/guidelines.mako')
+
     def login(self):
         """Show login form"""
         return render('/start/login.mako')
