@@ -69,8 +69,7 @@ class CacheBinaryPackage(MyOrm): pass
 packages_table = sql.Table(
     'packages', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
-    #sql.Column('maintainer_id', sql.Integer, sql.ForeignKey('maintainers.id')),
-    sql.Column('name', sql.Unicode(100)),
+    sql.Column('name', sql.Unicode(100), unique=True),
 )
 
 class Package(MyOrm): pass
@@ -81,11 +80,11 @@ screenshots_table = sql.Table(
     'screenshots', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('package_id', sql.Integer, sql.ForeignKey('packages.id')),
-    sql.Column('filename', sql.Unicode(80)),
-    sql.Column('comment', sql.Unicode(80)),
     sql.Column('uploaddatetime', sql.DateTime(), default=sql.func.now()),
     sql.Column('uploaderhash', sql.Unicode(50)),
     sql.Column('uploaderip', sql.Unicode(15)),
+    sql.Column('large', sql.Boolean()), # whether a picture is large or a thumbnail
+    sql.Column('approved', sql.Boolean(), default=False), # whether a picture has been approved by an admin
     sql.Column('xsize', sql.Integer()),
     sql.Column('ysize', sql.Integer()),
 )
