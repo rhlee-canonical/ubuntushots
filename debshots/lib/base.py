@@ -13,6 +13,7 @@ from pylons.templating import render
 import debshots.lib.helpers as h
 import debshots.model as model
 from debshots.lib import my
+db = model.Session
 
 class BaseController(WSGIController):
 

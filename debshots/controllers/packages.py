@@ -5,7 +5,7 @@ from debshots.lib.base import *
 
 log = logging.getLogger(__name__)
 
-class PackageController(BaseController):
+class PackagesController(BaseController):
 
     #def index(self):
     #    """Show a list of packages with screenshots"""
@@ -20,3 +20,9 @@ class PackageController(BaseController):
 
     #def uploadfile(self):
         #"""
+
+    def ajax_autocomplete_packages(self):
+        """Get a list of packages for the autocompleter"""
+        query = request.params.get('q')
+        packages = model.CacheBinaryPackage.q().filter(model.CacheBinaryPackage.name.startswith(query))[:30]
+        return '\n'.join(["%s|%s" % (package.name, package.description) for package in packages])

@@ -5,7 +5,10 @@
   <head>
     <title>screenshots.debian.net</title>
     ${ h.tags.stylesheet_link('/css/style.css') }
-    ${ h.tags.javascript_link('/javascript/jquery.js') }
+    ${ h.tags.javascript_link(
+        '/javascript/jquery.js',
+        '/javascript/jquery.autocomplete.js'
+        ) }
     <!--<link rel="alternate" href=" c.feed_url " title="RSS Feed" type="application/rss+xml" />-->
   </head>
 
