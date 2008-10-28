@@ -1,4 +1,5 @@
 syntax: glob
+*.db-journal
 *.pyc
 *.pyo
 lib/
