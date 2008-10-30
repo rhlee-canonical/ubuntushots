@@ -1,16 +1,45 @@
 # -*- coding: utf-8 -*-
 <%inherit file="/base.mako"/>
 
-<h1>Packages</h1>
+<div class="graybox">
+<h1>Browsing screenshots</h1>
+<p>
+    By name
+    |
+    By category
+    |
+    Without screenshots
+    |
+    Moderation queue
+</p>
+</div>
 
 % if c.packages:
-<ul>
+<table>
+    <tr>
+        <th>Package</th>
+        <th>Description</th>
+        <th>Section</th>
+        <th>Homepage</th>
+    </tr>
 % for package in c.packages:
-    <li>
-    ${ package.name }
-    </li>
+    <tr>
+        <td>
+            ${ h.tags.link_to(package.name, h.url_for('package', package=package.name)) }
+        </td>
+        <td>
+            ${ package.cachebinarypackage.description }
+        </td>
+        <td>
+            ${ package.cachebinarypackage.section }
+        </td>
+        <td>
+            ${ h.tags.link_to(package.cachebinarypackage.homepage, package.cachebinarypackage.homepage) }
+        </td>
+
+    </tr>
 % endfor
-</ul>
+</table>
 % else:
-<p>No packages are in the database yet.</p>
+<p>There are no screenshots yet.</p>
 % endif

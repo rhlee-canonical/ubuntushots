@@ -19,17 +19,10 @@
       <!--</div>-->
     </div>
 
-      <!--<div id="headernav">-->
-      <!--  <a href="/"><span class="nav">About</span></a>-->
-      <!--  <a href="/screenshots"><span class="nav">Screenshots</span></a>-->
-      <!--  <a href="/login"><span class="nav">Login/Register</span></a>-->
-      <!--  <a href="/my"><span class="nav">My Screenshots/Upload</span></a>-->
-      <!--</div>-->
-
     <div id="nav">
         <a href="/">Home</a>
         |
-        <a href="/browse">Browse screenshots</a>
+        <a href="/packages">Browse screenshots</a>
         |
         <a href="/upload">Upload screenshots</a>
         |

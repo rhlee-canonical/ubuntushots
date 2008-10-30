@@ -98,7 +98,15 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
         'screenshots':orm.relation(
             Screenshot,
             backref=orm.backref('package', uselist=False),
-            cascade='all, delete-orphan')
+            cascade='all, delete-orphan'
+            ),
+        # Create a reference to the package cache by looking for package of the same name
+        'cachebinarypackage':orm.relation(
+            CacheBinaryPackage,
+            primaryjoin=(packages_table.c.name==cache_binary_packages_table.c.name),
+            foreign_keys=[cache_binary_packages_table.c.name],
+            uselist=False
+            ),
         })
 
 orm.mapper(Screenshot, screenshots_table)
