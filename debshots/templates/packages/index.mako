@@ -40,6 +40,7 @@
     </tr>
 % endfor
 </table>
+## TODO: pager
 % else:
 <p>There are no screenshots yet.</p>
 % endif

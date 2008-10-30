@@ -29,10 +29,10 @@ class PackagesController(BaseController):
             return "No screenshot received."
         error = _process_screenshot(filename.file, package)
         if error:
-            return "Crap: %s" % error
-            # TODO...
+            c.message=error
         else:
             log.info("Screenshot uploaded for package '%s'" % package)
+            c.message="Screenshot for package '%s' uploaded successfully." % package
 
         return render('/packages/upload.mako')
 
@@ -86,13 +86,14 @@ def _process_screenshot(filehandle, package):
     if not os.path.isdir(dest_dir):
         log.debug("Create destination directory: %s" % dest_dir)
         os.makedirs(dest_dir)
-    dest_file_large = os.path.join(config['debshots.images_directory'], package[0], package, str(db_image_large.id))
-    dest_file_small = os.path.join(config['debshots.images_directory'], package[0], package, str(db_image_small.id))
     log.debug("Saving large image to %s" % dest_file_large)
-    log.debug("Saving small image to %s" % dest_file_small)
-    # Save large and small version to disk
+    dest_file_large = os.path.join(config['debshots.images_directory'], package[0], package, str(db_image_large.id))
     image_800_600.save(dest_file_large, format='PNG')
+
+    log.debug("Saving small image to %s" % dest_file_small)
+    dest_file_small = os.path.join(config['debshots.images_directory'], package[0], package, str(db_image_small.id))
     image_160_120.save(dest_file_small, format='PNG')
+
     return None # Success
 
 def _resize(image, xmax, ymax):
@@ -106,7 +107,7 @@ def _resize(image, xmax, ymax):
     xnew = None
     ynew = None
 
-    # Image has the right size or is smaller than 800x600
+    # Image has the right size or is smaller than x/y?
     if xold<=xmax and yold<=ymax:
         log.debug("Image is already smaller than %ix%i - no conversion necessary" % (xmax,ymax))
     # Image too large

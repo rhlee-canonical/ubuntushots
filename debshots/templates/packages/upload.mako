@@ -14,3 +14,7 @@ Screenshot: <input type="file" name="file" size="40"/>
 <br />
 <input type="submit" value="Upload screenshot" />
 </form>
+
+% if c.message:
+<p><i>${ c.message }</i></p>
+% endif

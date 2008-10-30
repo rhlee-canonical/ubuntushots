@@ -9,14 +9,12 @@
         '/javascript/jquery.js',
         '/javascript/jquery.autocomplete.js'
         ) }
-    <!--<link rel="alternate" href=" c.feed_url " title="RSS Feed" type="application/rss+xml" />-->
+    <!--<link rel="alternate" href="some feed url" title="RSS Feed" type="application/rss+xml" />-->
   </head>
 
   <body>
     <div id="header">
-      <!--<div id="headertitle">-->
         <img src="/images/logo.png" alt="screenshots.debian.net" />
-      <!--</div>-->
     </div>
 
     <div id="nav">
