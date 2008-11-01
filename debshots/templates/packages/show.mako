@@ -17,8 +17,10 @@
 <div>
 % if c.package.screenshots:
 % for screenshot in c.package.screenshots:
-    <!-- ${ h.tags.link_to }      rel='lightbox-screenshots' -->
-    ${ h.tags.image(h.url_for('image', id=screenshot.small_image.id), alt='Screenshot') }
+    <a rel="lightbox-images" href="${h.url_for('image', id=screenshot.large_image.id)}"
+        title="Screenshot of package '${screenshot.package.name}'">
+        <img src="${h.url_for('image', id=screenshot.small_image.id)}" alt="Screenshot" />
+    </a>
 % endfor
 ## TODO: pager
 % else:

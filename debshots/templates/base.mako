@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
     <title>screenshots.debian.net</title>
     ${ h.tags.stylesheet_link(
         '/css/style.css',
-        '/css/jquery.lightbox.css'
         ) }
     ${ h.tags.javascript_link(
         '/javascript/jquery.js',
         '/javascript/jquery.autocomplete.js',
-        '/javascript/jquery.lightbox.js',
+        '/javascript/jquery-lightbox/js/jquery.lightbox.packed.js',
         ) }
     <!--<link rel="alternate" href="some feed url" title="RSS Feed" type="application/rss+xml" />-->
   </head>
