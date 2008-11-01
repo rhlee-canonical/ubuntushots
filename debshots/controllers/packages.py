@@ -59,18 +59,18 @@ class PackagesController(BaseController):
         """Return the binary PNG image for <img src...> tags
 
         id: id number of the image in the database"""
-        screenshot = model.Screenshot.q().get(id)
+        image = model.Image.q().get(id)
         # Make sure the screenshot database row is available
-        if not screenshot:
+        if not image:
             abort(404)
         # Make sure the file on disk exists
-        if not os.path.isfile(screenshot.path):
+        if not os.path.isfile(image.path):
             # The file is in the database but not on disk? Remove it from the database then.
-            log.error("Screenshot file #%s missing on disk. Removing from database." % screenshot.id)
-            db.delete(screenshot)
+            log.error("Image file #%s missing on disk. Removing screenshot from database." % image.id)
+            db.delete(image.screenshot)
             db.commit()
             abort(404)
-        fapp = paste.fileapp.FileApp(screenshot.path,
+        fapp = paste.fileapp.FileApp(image.path,
             headers=[('Content-Type', 'image/png')])
         return fapp(request.environ, self.start_response)
 
@@ -108,35 +108,40 @@ def _process_screenshot(filehandle, package):
 
     # Resize to 800x600
     image_800_600, xsize, ysize = _resize(pil, 800, 600)
+
     # Create screenshot entry
-    db_image_large = model.Screenshot(
+    db_screenshot = model.Screenshot(
+        uploaderip=my.client_ip(),
+        uploaderhash=my.client_cookie_hash()
+    )
+    db_pkg.screenshots.append(db_screenshot)
+
+    # Create large image entry
+    db_image_large = model.Image(
         xsize=xsize,
         ysize=ysize,
         large=True,
-        uploaderip=my.client_ip(),
-        uploaderhash=my.client_cookie_hash()
         )
 
     # Resize to 160x120
     image_160_120, xsize, ysize = _resize(pil, 160, 120)
-    # Create screenshot entry
-    db_image_small = model.Screenshot(
+
+    # Create small image entry
+    db_image_small = model.Image(
         xsize=xsize,
         ysize=ysize,
         large=False,
-        uploaderip=my.client_ip(),
-        uploaderhash=my.client_cookie_hash()
         )
 
-    db_pkg.screenshots.append(db_image_large)
-    db_pkg.screenshots.append(db_image_small)
+    db_screenshot.images.append(db_image_large)
+    db_screenshot.images.append(db_image_small)
     db.commit()
 
     # Create the package's screenshots path if it does not exist yet
     # (As small images are saved into the same directory we just use db_image_large here)
-    if not os.path.isdir(db_image_large.directory):
-        log.debug("Create destination directory: %s" % db_image_large.directory)
-        os.makedirs(db_image_large.directory)
+    if not os.path.isdir(db_screenshot.directory):
+        log.debug("Create destination directory: %s" % db_screenshot.directory)
+        os.makedirs(db_screenshot.directory)
     log.debug("Saving large image to %s" % db_image_large.path)
     image_800_600.save(db_image_large.path, format='PNG')
 

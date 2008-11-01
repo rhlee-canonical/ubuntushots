@@ -8,16 +8,17 @@
     <li>Description: ${ c.package.cachebinarypackage.description }</li>
     <li>Section: ${ c.package.cachebinarypackage.section }</li>
     % if c.package.cachebinarypackage.homepage:
-        <li>Section: ${ c.package.cachebinarypackage.homepage }</li>
+        <li>Homepage: ${ c.package.cachebinarypackage.homepage }</li>
     % endif
     <li>Package maintainer: ${ c.package.cachebinarypackage.maintainer }</li>
 </ul>
 </div>
 
 <div>
-% if c.package.small_screenshots:
-% for screenshot in c.package.small_screenshots:
-    ${ h.tags.image(h.url_for('image', id=screenshot.id), alt='Screenshot') }
+% if c.package.screenshots:
+% for screenshot in c.package.screenshots:
+    <!-- ${ h.tags.link_to }      rel='lightbox-screenshots' -->
+    ${ h.tags.image(h.url_for('image', id=screenshot.small_image.id), alt='Screenshot') }
 % endfor
 ## TODO: pager
 % else:

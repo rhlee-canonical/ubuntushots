@@ -75,18 +75,22 @@ packages_table = sql.Table(
 )
 
 class Package(MyOrm):
-    @property
-    def large_screenshots(self):
-        """Return only the full-sized (up to 800x600) screenshots"""
-        return self.screenshots.filter_by(large=True)
-
-    @property
-    def small_screenshots(self):
-        """Return only the thumbnails (up to 160x120) of the screenshots"""
-        return self.screenshots.filter_by(large=False)
+    pass
+    #@property
+    #def large_screenshots(self):
+    #    """Return only the full-sized (up to 800x600) screenshots"""
+    #    return self.screenshots.filter_by(large=True)
+    #
+    #@property
+    #def small_screenshots(self):
+    #    """Return only the thumbnails (up to 160x120) of the screenshots"""
+    #    return self.screenshots.filter_by(large=False)
 
 #----------
 
+# A screenshot here is an entry for each uploaded image. It does not contain the
+# image itself. Rather it has a dependent images_table that stores this screenshot
+# in different sizes (thumbnail and full-sized).
 screenshots_table = sql.Table(
     'screenshots', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
@@ -94,17 +98,14 @@ screenshots_table = sql.Table(
     sql.Column('uploaddatetime', sql.DateTime(), default=sql.func.now()),
     sql.Column('uploaderhash', sql.Unicode(72)),
     sql.Column('uploaderip', sql.Unicode(15)),
-    sql.Column('large', sql.Boolean()), # whether a picture is large or a thumbnail
+    # constant as defined in lib/constants.py:
     sql.Column('status', sql.Integer(), default=constants.SCREENSHOT_STATUS['uploaded']),
-        # constant as defined in lib/constants.py
-    sql.Column('xsize', sql.Integer()),
-    sql.Column('ysize', sql.Integer()),
 )
 
 class Screenshot(MyOrm):
     @property
     def directory(self):
-        """Return the directory in the filesystem where the screenshot image is saved"""
+        """Return the directory in the filesystem where the screenshot images are saved"""
         return os.path.join(
             pylons.config['debshots.images_directory'],
             self.package.name[0],
@@ -112,10 +113,34 @@ class Screenshot(MyOrm):
             )
 
     @property
+    def small_image(self):
+        """Return the image object for the thumbnail"""
+        return Image.q().filter_by(screenshot=self).filter_by(large=False).first()
+        #return self.images.filter_by(large=False)
+
+    @property
+    def large_image(self):
+        """Return the image object for the full-sized image"""
+        return Image.q().filter_by(screenshot=self).filter_by(large=True).first()
+        #return self.images.filter_by(large=True)
+
+#----------
+
+images_table = sql.Table(
+    'images', metadata,
+    sql.Column('id', sql.Integer, primary_key=True),
+    sql.Column('screenshot_id', sql.Integer, sql.ForeignKey('screenshots.id')),
+    sql.Column('large', sql.Boolean()), # whether a picture is full-sized (True) or a thumbnail (False)
+    sql.Column('xsize', sql.Integer()), # width of the image
+    sql.Column('ysize', sql.Integer()), # height of the image
+)
+
+class Image(MyOrm):
+    @property
     def path(self):
         """Return the path in the filesystem to the image file"""
         return os.path.join(
-            self.directory,
+            self.screenshot.directory,
             str(self.id)
             )
 
@@ -138,6 +163,16 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
             ),
         })
 
-orm.mapper(Screenshot, screenshots_table)
+orm.mapper(Image, images_table)
+
+orm.mapper(Screenshot, screenshots_table,
+    properties={
+        'images':orm.relation(
+            Image,
+            backref=orm.backref('screenshot', uselist=False),
+            cascade='all, delete-orphan',
+            #lazy='dynamic'
+        )
+    })
 
 orm.mapper(CacheBinaryPackage, cache_binary_packages_table)

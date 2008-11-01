@@ -4,10 +4,14 @@
 <html>
   <head>
     <title>screenshots.debian.net</title>
-    ${ h.tags.stylesheet_link('/css/style.css') }
+    ${ h.tags.stylesheet_link(
+        '/css/style.css',
+        '/css/jquery.lightbox.css'
+        ) }
     ${ h.tags.javascript_link(
         '/javascript/jquery.js',
-        '/javascript/jquery.autocomplete.js'
+        '/javascript/jquery.autocomplete.js',
+        '/javascript/jquery.lightbox.js',
         ) }
     <!--<link rel="alternate" href="some feed url" title="RSS Feed" type="application/rss+xml" />-->
   </head>
