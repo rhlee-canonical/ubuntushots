@@ -6,9 +6,13 @@
             minChars: 2,
             mustMatch: true,
             formatItem: formatPackage,
-            max: 30
+            max: 30,
+            delay: 200
             }
-        )
+        );
+
+        ## Focus on first input field
+        $('#packagename').focus();
     });
 
     ## Formatting function for autocomplete results (shows description)

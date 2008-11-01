@@ -6,8 +6,15 @@ import PIL.Image
 import StringIO
 import paste
 from debshots.lib import my
+import formencode
 
 log = logging.getLogger(__name__)
+
+class ValidateExistingDebianPackage(formencode.Schema):
+    """formencode validation schema for uploading new screenshots"""
+    packagename = my.ValidatorDebianPackage(not_empty=True)
+    file = formencode.validators.FieldStorageUploadConverter(not_empty=True)
+    allow_extra_fields = True
 
 class PackagesController(BaseController):
 
@@ -24,17 +31,19 @@ class PackagesController(BaseController):
 
     def uploadfile(self):
         """Deal with uploaded screenshot"""
-        package = request.params.get('packagename')
-        filename = request.params.get('file')
-        if filename=='' or filename is None:
-            # TODO: nicer error message
-            return "No screenshot received."
-        error = _process_screenshot(filename.file, package)
+        # Validate the upload form
+        try:
+            fields = my.validate(ValidateExistingDebianPackage)
+        except formencode.Invalid, e:
+            return my.htmlfill(self.upload(), e)
+        cachepackage = fields['packagename']
+        filename = fields['file']
+        error = _process_screenshot(filehandle=filename.file, package=cachepackage.name)
         if error:
             c.message=error
         else:
-            log.info("Screenshot uploaded for package '%s'" % package)
-            c.message="Screenshot for package '%s' uploaded successfully." % package
+            log.info("Screenshot uploaded for package '%s'" % cachepackage.name)
+            c.message="Screenshot for package '%s' uploaded successfully." % cachepackage.name
 
         return render('/packages/upload.mako')
 
@@ -103,7 +112,7 @@ def _process_screenshot(filehandle, package):
     db_image_large = model.Screenshot(
         xsize=xsize,
         ysize=ysize,
-        large=False,
+        large=True,
         uploaderip=my.client_ip(),
         uploaderhash=my.client_cookie_hash()
         )
