@@ -4,6 +4,7 @@ import sqlalchemy as sql
 import sqlalchemy.orm as orm
 import pylons
 import os
+from debshots.lib import constants
 
 import logging
 log = logging.getLogger(__name__)
@@ -91,22 +92,30 @@ screenshots_table = sql.Table(
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('package_id', sql.Integer, sql.ForeignKey('packages.id')),
     sql.Column('uploaddatetime', sql.DateTime(), default=sql.func.now()),
-    sql.Column('uploaderhash', sql.Unicode(50)),
+    sql.Column('uploaderhash', sql.Unicode(72)),
     sql.Column('uploaderip', sql.Unicode(15)),
     sql.Column('large', sql.Boolean()), # whether a picture is large or a thumbnail
-    sql.Column('approved', sql.Boolean(), default=False), # whether a picture has been approved by an admin
+    sql.Column('status', sql.Integer(), default=constants.SCREENSHOT_STATUS['uploaded']),
+        # constant as defined in lib/constants.py
     sql.Column('xsize', sql.Integer()),
     sql.Column('ysize', sql.Integer()),
 )
 
 class Screenshot(MyOrm):
     @property
-    def path(self):
-        """Return the path in the filesystem to the image file"""
+    def directory(self):
+        """Return the directory in the filesystem where the screenshot image is saved"""
         return os.path.join(
             pylons.config['debshots.images_directory'],
             self.package.name[0],
-            self.package.name,
+            self.package.name
+            )
+
+    @property
+    def path(self):
+        """Return the path in the filesystem to the image file"""
+        return os.path.join(
+            self.directory,
             str(self.id)
             )
 

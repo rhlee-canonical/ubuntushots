@@ -32,3 +32,11 @@ def htmlfill(html, exception_error=None):
         errors=(exception_error and exception_error.unpack_errors()),
         encoding=pylons.response.determine_charset()
     )
+
+def client_ip():
+    """Return the IP address of the client."""
+    return pylons.request.environ['REMOTE_ADDR']
+
+def client_cookie_hash():
+    """Return the cookie hash used for the cookie-based session"""
+    return pylons.request.cookies[pylons.config['beaker.session.key']]
