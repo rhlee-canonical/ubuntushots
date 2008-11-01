@@ -4,6 +4,7 @@ from debshots.lib.base import *
 import os
 import PIL.Image
 import StringIO
+import paste
 
 log = logging.getLogger(__name__)
 
@@ -35,6 +36,33 @@ class PackagesController(BaseController):
             c.message="Screenshot for package '%s' uploaded successfully." % package
 
         return render('/packages/upload.mako')
+
+    def show(self, package):
+        """Show a page with details and screenshots of a package"""
+        c.package = model.Package.q().filter_by(name=package).first()
+        if not c.package:
+            abort(404)
+            # TODO: display a page that proposed to upload screenshots as none yet exist
+        return render('/packages/show.mako')
+
+    def image(self, id):
+        """Return the binary PNG image for <img src...> tags
+
+        id: id number of the image in the database"""
+        screenshot = model.Screenshot.q().get(id)
+        # Make sure the screenshot database row is available
+        if not screenshot:
+            abort(404)
+        # Make sure the file on disk exists
+        if not os.path.isfile(screenshot.path):
+            # The file is in the database but not on disk? Remove it from the database then.
+            log.error("Screenshot file #%s missing on disk. Removing from database." % screenshot.id)
+            db.delete(screenshot)
+            db.commit()
+            abort(404)
+        fapp = paste.fileapp.FileApp(screenshot.path,
+            headers=[('Content-Type', 'image/png')])
+        return fapp(request.environ, self.start_response)
 
     def ajax_autocomplete_packages(self):
         """Get a list of packages for the autocompleter"""
@@ -87,12 +115,12 @@ def _process_screenshot(filehandle, package):
         log.debug("Create destination directory: %s" % dest_dir)
         os.makedirs(dest_dir)
     log.debug("Saving large image to %s" % dest_file_large)
-    dest_file_large = os.path.join(config['debshots.images_directory'], package[0], package, str(db_image_large.id))
-    image_800_600.save(dest_file_large, format='PNG')
+    #dest_file_large = os.path.join(config['debshots.images_directory'], package[0], package, str(db_image_large.id))
+    image_800_600.save(db_image_large.path, format='PNG')
 
     log.debug("Saving small image to %s" % dest_file_small)
-    dest_file_small = os.path.join(config['debshots.images_directory'], package[0], package, str(db_image_small.id))
-    image_160_120.save(dest_file_small, format='PNG')
+    #dest_file_small = os.path.join(config['debshots.images_directory'], package[0], package, str(db_image_small.id))
+    image_160_120.save(db_image_small.path, format='PNG')
 
     return None # Success
 

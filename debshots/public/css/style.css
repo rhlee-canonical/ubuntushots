@@ -78,9 +78,8 @@ textarea {
     border: 1px solid #a0a0a0;
 }
 
-img
-{
-    border: 0;
+em {
+    font-style: italic;
 }
 
 ul {

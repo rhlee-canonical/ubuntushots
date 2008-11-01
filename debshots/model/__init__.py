@@ -3,6 +3,7 @@
 import sqlalchemy as sql
 import sqlalchemy.orm as orm
 import pylons
+import os
 
 import logging
 log = logging.getLogger(__name__)
@@ -72,7 +73,16 @@ packages_table = sql.Table(
     sql.Column('name', sql.Unicode(100), unique=True),
 )
 
-class Package(MyOrm): pass
+class Package(MyOrm):
+    @property
+    def large_screenshots(self):
+        """Return only the full-sized (up to 800x600) screenshots"""
+        return self.screenshots.filter_by(large=True)
+
+    @property
+    def small_screenshots(self):
+        """Return only the thumbnails (up to 160x120) of the screenshots"""
+        return self.screenshots.filter_by(large=False)
 
 #----------
 
@@ -89,7 +99,16 @@ screenshots_table = sql.Table(
     sql.Column('ysize', sql.Integer()),
 )
 
-class Screenshot(MyOrm): pass
+class Screenshot(MyOrm):
+    @property
+    def path(self):
+        """Return the path in the filesystem to the image file"""
+        return os.path.join(
+            pylons.config['debshots.images_directory'],
+            self.package.name[0],
+            self.package.name,
+            str(self.id)
+            )
 
 #----------
 
@@ -98,7 +117,8 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
         'screenshots':orm.relation(
             Screenshot,
             backref=orm.backref('package', uselist=False),
-            cascade='all, delete-orphan'
+            cascade='all, delete-orphan',
+            lazy='dynamic'
             ),
         # Create a reference to the package cache by looking for package of the same name
         'cachebinarypackage':orm.relation(
