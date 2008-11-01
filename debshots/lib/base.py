@@ -12,13 +12,22 @@ from pylons.templating import render
 
 import debshots.lib.helpers as h
 import debshots.model as model
-from debshots.lib import my
+from debshots.lib import my, constants
+
+import logging
+log = logging.getLogger(__name__)
+
 db = model.Session
 
 class BaseController(WSGIController):
 
     def __call__(self, environ, start_response):
         """Invoke the Controller"""
+        # Create a dummy session so we have hash to identify the client
+        #log.debug("Session: %r" % session)
+        session.save()
+        #log.debug("Cookies: %r" % request.cookies)
+
         # WSGIController.__call__ dispatches to the Controller method
         # the request is routed to. This routing information is
         # available in environ['pylons.routes_dict']
