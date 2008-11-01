@@ -2,6 +2,8 @@ syntax: glob
 *.db-journal
 *.pyc
 *.pyo
+*.kpf
+*.db
 lib/
 bin/
 data/
