@@ -27,6 +27,8 @@ def make_map():
     map.connect('logout', 'logout', controller='start', action='logout')
     map.connect('activate', 'activate/:email/:hash', controller='start', action='activate')
     map.connect('package', 'package/:package', controller='packages', action='show')
+    map.connect('delete_screenshot', '/delete_screenshot/:screenshot',
+        controller='packages', action='delete_screenshot')
     #map.connect('packages', controller='package', action='list')
     map.connect(':controller/:action/:id')
     map.connect('*url', controller='template', action='view')

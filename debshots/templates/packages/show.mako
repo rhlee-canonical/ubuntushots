@@ -5,7 +5,7 @@
 <script type="application/x-javascript">
     $(document).ready(function() {
         ## Flyout shows the large screenshots when clicking on the thumbnails
-        $('.screenshots a').flyout({
+        $('.screenshots a.image').flyout({
             loadingSrc:'/images/spinner.gif',
             outSpeed: 300,
             inSpeed: 300
@@ -41,6 +41,12 @@
         title="Screenshot of package '${screenshot.package.name}'">
         <img src="${h.url_for('image', id=screenshot.small_image.id)}" alt="Screenshot" />
     </a>
+    <br />
+    ## TODO: Fancy icons :)
+    ${ h.tags.link_to(
+        'Have this screenshot removed',
+        h.url_for(action='delete_screenshot', id=screenshot.id),
+        onclick='return confirm("Really delete this screenshot?")') }
     </div>
 % endfor
 % else:
@@ -59,6 +65,13 @@
         title="Screenshot of package '${screenshot.package.name}'">
         <img src="${h.url_for('image', id=screenshot.small_image.id)}" alt="Screenshot" />
     </a>
+    ## Allow the user to delete their own screenshots
+    <br />
+    ## TODO: Fancy icons :)
+    ${ h.tags.link_to(
+        'Delete your screenshot',
+        h.url_for('delete_screenshot', screenshot=screenshot.id),
+        onclick='return confirm("Really delete this screenshot?")') }
     </div>
 % endfor
 % endif

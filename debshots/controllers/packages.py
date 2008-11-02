@@ -74,6 +74,23 @@ class PackagesController(BaseController):
             headers=[('Content-Type', 'image/png')])
         return fapp(request.environ, self.start_response)
 
+    def delete_screenshot(self, screenshot):
+        this_screenshot = model.Screenshot.q().get(screenshot)
+        if not this_screenshot:
+            abort(404)
+
+        package = this_screenshot.package
+
+        # Make sure the user is allowed to delete the screenshot!
+        # TODO: Is the user an admin?
+        # Has this screenshot been uploaded by the current user?
+        if my.client_cookie_hash()==this_screenshot.uploaderhash:
+            db.delete(this_screenshot)
+            db.commit()
+            redirect_to(h.url_for('package', package=package.name))
+
+        abort(403, "I'm afraid I can't do that, Dave.")
+
     def ajax_autocomplete_packages(self):
         """Get a list of packages for the autocompleter"""
         query = request.params.get('q')
