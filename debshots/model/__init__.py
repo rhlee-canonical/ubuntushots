@@ -4,6 +4,7 @@ import sqlalchemy as sql
 import sqlalchemy.orm as orm
 import pylons
 import os
+import md5
 from debshots.lib import constants, my
 
 import logging
@@ -138,6 +139,8 @@ class Screenshot(MyOrm):
 
 #----------
 
+# Each screenshot points to two 'images'. There is a small and a large image entry.
+# The actual PNG files are stored on disk.
 images_table = sql.Table(
     'images', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
@@ -155,6 +158,22 @@ class Image(MyOrm):
             self.screenshot.directory,
             str(self.id)
             )
+
+#----------
+
+# Table of admin users
+# (images can be uploaded by anyone - but they have to be approved by an admin)
+users_table = sql.Table(
+    'users', metadata,
+    sql.Column('id', sql.Integer, primary_key=True),
+    sql.Column('username', sql.Unicode(20), unique=True),
+    sql.Column('passwordhash', sql.Unicode(32)), # MD5 hash of the user's password
+)
+
+class User(MyOrm):
+    def setpassword(self, newpassword):
+        """Set a user's password to a new value"""
+        self.passwordhash = md5.md5(newpassword).hexdigest()
 
 #----------
 
@@ -188,3 +207,5 @@ orm.mapper(Screenshot, screenshots_table,
     })
 
 orm.mapper(CacheBinaryPackage, cache_binary_packages_table)
+
+orm.mapper(User, users_table)

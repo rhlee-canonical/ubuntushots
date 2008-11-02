@@ -87,6 +87,14 @@ class PackagesController(BaseController):
         if my.client_cookie_hash()==this_screenshot.uploaderhash:
             db.delete(this_screenshot)
             db.commit()
+
+            # If this was the last screenshot for this package then remove the package, too
+            if package.screenshots.count()==0:
+                db.delete(package)
+                db.commit()
+                # Redirect to the packages overview
+                redirect_to(h.url_for('packages'))
+
             redirect_to(h.url_for('package', package=package.name))
 
         abort(403, "I'm afraid I can't do that, Dave.")
