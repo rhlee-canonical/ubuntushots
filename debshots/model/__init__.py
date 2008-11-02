@@ -4,7 +4,7 @@ import sqlalchemy as sql
 import sqlalchemy.orm as orm
 import pylons
 import os
-from debshots.lib import constants
+from debshots.lib import constants, my
 
 import logging
 log = logging.getLogger(__name__)
@@ -75,16 +75,30 @@ packages_table = sql.Table(
 )
 
 class Package(MyOrm):
-    pass
-    #@property
-    #def large_screenshots(self):
-    #    """Return only the full-sized (up to 800x600) screenshots"""
-    #    return self.screenshots.filter_by(large=True)
-    #
-    #@property
-    #def small_screenshots(self):
-    #    """Return only the thumbnails (up to 160x120) of the screenshots"""
-    #    return self.screenshots.filter_by(large=False)
+    @property
+    def uploaded_screenshots(self):
+        """Return a list of freshly uploade (not yet approved) screenshots"""
+        return self.screenshots.filter_by(status=constants.SCREENSHOT_STATUS['uploaded'])
+
+    @property
+    def approved_screenshots(self):
+        """Return a list of approved (by a moderator) screenshots"""
+        return self.screenshots.filter_by(status=constants.SCREENSHOT_STATUS['approved'])
+
+    @property
+    def markedfordelete_screenshots(self):
+        """Return a list of markedfordelete (not yet approved for deletion) screenshots"""
+        return self.screenshots.filter_by(status=constants.SCREENSHOT_STATUS['markedfordelete'])
+
+    @property
+    def my_screenshots(self):
+        """Return a list of screenshots uploaded by the current user.
+
+        As users do not need to login before they can upload screenshots
+        they are only identified by their client cookie. So this method
+        returns all screenshots that have the same cookie hash value
+        stored as the current cookie sent by the browser."""
+        return self.screenshots.filter_by(uploaderhash=my.client_cookie_hash())
 
 #----------
 
@@ -116,13 +130,11 @@ class Screenshot(MyOrm):
     def small_image(self):
         """Return the image object for the thumbnail"""
         return Image.q().filter_by(screenshot=self).filter_by(large=False).first()
-        #return self.images.filter_by(large=False)
 
     @property
     def large_image(self):
         """Return the image object for the full-sized image"""
         return Image.q().filter_by(screenshot=self).filter_by(large=True).first()
-        #return self.images.filter_by(large=True)
 
 #----------
 

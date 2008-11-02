@@ -5,19 +5,18 @@ import os
 import PIL.Image
 import StringIO
 import paste
-from debshots.lib import my
+from debshots.lib import my, constants, validators
 import formencode
 
 log = logging.getLogger(__name__)
 
 class ValidateExistingDebianPackage(formencode.Schema):
     """formencode validation schema for uploading new screenshots"""
-    packagename = my.ValidatorDebianPackage(not_empty=True)
+    packagename = validators.ValidatorDebianPackage(not_empty=True)
     file = formencode.validators.FieldStorageUploadConverter(not_empty=True)
     allow_extra_fields = True
 
 class PackagesController(BaseController):
-
     def index(self):
         """Show a list of packages with screenshots"""
         packages = model.Package.q()
@@ -59,6 +58,7 @@ class PackagesController(BaseController):
         """Return the binary PNG image for <img src...> tags
 
         id: id number of the image in the database"""
+        # TODO: only show images that are approved (or for admins or owners)
         image = model.Image.q().get(id)
         # Make sure the screenshot database row is available
         if not image:
@@ -83,7 +83,12 @@ class PackagesController(BaseController):
 #--------------------------
 
 def _process_screenshot(filehandle, package):
-    """Analyse JPEG file through the Python Imaging Libary"""
+    """Process the uploaded PNG file
+
+    - resize to no larger than 800x600
+    - resize (thumbnail) to no larger than 160x120
+    - insert into database as Screenshot and two Image objects
+    """
     image = filehandle.read()
     stringio_image = StringIO.StringIO(image)
     # Load file into PIL (Python Imaging Libary) Image object
@@ -112,7 +117,8 @@ def _process_screenshot(filehandle, package):
     # Create screenshot entry
     db_screenshot = model.Screenshot(
         uploaderip=my.client_ip(),
-        uploaderhash=my.client_cookie_hash()
+        uploaderhash=my.client_cookie_hash(),
+        status=constants.SCREENSHOT_STATUS['uploaded'],
     )
     db_pkg.screenshots.append(db_screenshot)
 

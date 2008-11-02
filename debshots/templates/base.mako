@@ -10,7 +10,7 @@
     ${ h.tags.javascript_link(
         '/javascript/jquery.js',
         '/javascript/jquery.autocomplete.js',
-        '/javascript/jquery-lightbox/js/jquery.lightbox.packed.js',
+        '/javascript/jquery.flyout.js',
         ) }
     <!--<link rel="alternate" href="some feed url" title="RSS Feed" type="application/rss+xml" />-->
   </head>
