@@ -88,20 +88,20 @@ class PackagesController(BaseController):
 
         # Make sure the user is allowed to delete the screenshot!
         # Has this screenshot been uploaded by the current user?
-        if my.authorized_for_screenshot(this_screenshot):
-            db.delete(this_screenshot)
+        if not my.authorized_for_screenshot(this_screenshot):
+            abort(403, "I'm afraid I can't do that, Dave.")
+        db.delete(this_screenshot)
+        db.commit()
+
+        # If this was the last screenshot for this package then remove the package, too
+        if package.screenshots.count()==0:
+            db.delete(package)
             db.commit()
-
-            # If this was the last screenshot for this package then remove the package, too
-            if package.screenshots.count()==0:
-                db.delete(package)
-                db.commit()
-                # Redirect to the packages overview
-                redirect_to(h.url_for('packages'))
-
+            # Redirect to the packagess overview
+            redirect_to(h.url_for('packages'))
+        else:
+            # Redirect to the package page
             redirect_to(h.url_for('package', package=package.name))
-
-        abort(403, "I'm afraid I can't do that, Dave.")
 
     def ajax_autocomplete_packages(self):
         """Get a list of packages for the autocompleter"""
