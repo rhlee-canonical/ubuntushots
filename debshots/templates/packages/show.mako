@@ -16,16 +16,18 @@
 <div class="graybox">
 <h1>Package <em>'${ c.package.name }'</em></h1>
 <ul>
-    <li>Description: ${ c.package.cachebinarypackage.description }</li>
-    <li>Section: ${ c.package.cachebinarypackage.section }</li>
+    <li><b>Description</b>: ${ c.package.cachebinarypackage.description }</li>
+    <li><b>Section</b>: ${ c.package.cachebinarypackage.section }</li>
     % if c.package.cachebinarypackage.homepage:
-        <li>Homepage: ${ c.package.cachebinarypackage.homepage }</li>
+        <li><b>Homepage</b>: ${ c.package.cachebinarypackage.homepage }</li>
     % endif
-    <li>Package maintainer: ${ c.package.cachebinarypackage.maintainer }</li>
+    <li><b>Package maintainer</b>: ${ c.package.cachebinarypackage.maintainer }</li>
     % if c.package.uploaded_screenshots.count()>0:
         <li>
+            <em>
             ${ c.package.uploaded_screenshots.count() } new screenshots are
             waiting for approval by the admin team.
+            </em>
         </li>
     % endif
 </ul>
