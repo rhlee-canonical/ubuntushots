@@ -9,8 +9,11 @@
     By category
     |
     Without screenshots
+    ## Admin options:
+    % if 'username' in session:
     |
-    Moderation queue
+    <a href="/packages/moderate">Moderation queue</a>
+    % endif
 </p>
 </div>
 

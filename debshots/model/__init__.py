@@ -173,7 +173,7 @@ users_table = sql.Table(
 class User(MyOrm):
     def setpassword(self, newpassword):
         """Set a user's password to a new value"""
-        self.passwordhash = md5.md5(newpassword).hexdigest()
+        self.passwordhash = md5.md5(newpassword+pylons.config['debshots.md5salt']).hexdigest()
 
 #----------
 

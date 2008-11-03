@@ -28,10 +28,22 @@
         <a href="/upload">Upload screenshots</a>
         |
         <a href="/guidelines">Screenshot guidelines</a>
+        ## Admin options:
+        % if 'username' in session:
+        |
+        <a href="/logout">Logout</a>
+        % endif
     </div>
 
     <div id="maincontent">
 ${ next.body() }
+    </div>
+
+    <div id="footer">
+        Powered by Christoph Haas' <em>debshots</em> software.
+        % if 'username' in session:
+        Logged in as <em>${session['username']}</em>.
+        % endif
     </div>
 
   </body>
