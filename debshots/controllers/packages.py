@@ -149,6 +149,10 @@ def _process_screenshot(filehandle, package):
         uploaderhash=my.client_cookie_hash(),
         status=constants.SCREENSHOT_STATUS['uploaded'],
     )
+    # Screenshots uploaded by admins are automatically approved
+    if 'username' in session:
+        db_screenshot.status=constants.SCREENSHOT_STATUS['approved']
+        
     db_pkg.screenshots.append(db_screenshot)
 
     # Create large image entry

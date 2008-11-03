@@ -56,10 +56,13 @@
 % endif
 </div>
 
+## TODO: Is there a way to clear via CSS?
+<br clear="all" />
+
 ## Show screenshots that are not yet approved but uploaded by the
 ## current user (identified by their client cookie hash value)
-<div class="screenshots">
 % if c.package.my_screenshots.count():
+<div class="screenshots">
 <h1>Your uploaded screenshots</h1>
 % for screenshot in c.package.my_screenshots:
     <div class="screenshot">
@@ -76,5 +79,5 @@
         onclick='return confirm("Really delete this screenshot?")') }
     </div>
 % endfor
-% endif
 </div>
+% endif
