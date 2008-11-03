@@ -42,3 +42,18 @@ def client_cookie_hash():
     cookie_hash = unicode(pylons.request.cookies[pylons.config['beaker.session.key']])
     log.debug("Client cookie hash is: %s" % cookie_hash)
     return cookie_hash
+
+def authorized_for_screenshot(screenshot):
+    """Check if a user is authorized to view a certain screenshot
+
+    Either the screenshot was uploaded by the same client (checks cookie hash)
+    or the user is an admin."""
+    if client_cookie_hash() == screenshot.uploaderhash:
+        log.debug("User is authorized to view screenshot '%s' (same cookie)" % screenshot)
+        return True
+
+    if 'username' in pylons.session:
+        log.debug("User is authorized to view screenshot '%s' (admin logged in)" % screenshot)
+        return True
+
+    return False

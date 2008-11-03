@@ -58,11 +58,16 @@ class PackagesController(BaseController):
         """Return the binary PNG image for <img src...> tags
 
         id: id number of the image in the database"""
-        # TODO: only show images that are approved (or for admins or owners)
         image = model.Image.q().get(id)
+
         # Make sure the screenshot database row is available
         if not image:
             abort(404)
+
+        # only show images that are approved (or for admins or owners)
+        if not my.authorized_for_screenshot(image.screenshot):
+            abort(403)
+
         # Make sure the file on disk exists
         if not os.path.isfile(image.path):
             # The file is in the database but not on disk? Remove it from the database then.
@@ -82,9 +87,8 @@ class PackagesController(BaseController):
         package = this_screenshot.package
 
         # Make sure the user is allowed to delete the screenshot!
-        # TODO: Is the user an admin?
         # Has this screenshot been uploaded by the current user?
-        if my.client_cookie_hash()==this_screenshot.uploaderhash:
+        if my.authorized_for_screenshot(this_screenshot):
             db.delete(this_screenshot)
             db.commit()
 
