@@ -3,6 +3,7 @@
 import pylons
 import logging
 import formencode
+from debshots.lib import constants
 
 log = logging.getLogger(__name__)
 
@@ -47,13 +48,18 @@ def authorized_for_screenshot(screenshot):
     """Check if a user is authorized to view a certain screenshot
 
     Either the screenshot was uploaded by the same client (checks cookie hash)
-    or the user is an admin."""
+    or the user is an admin or the screenshots has been approved to be
+    viewed publicly."""
     if client_cookie_hash() == screenshot.uploaderhash:
         log.debug("User is authorized to view screenshot '%s' (same cookie)" % screenshot)
         return True
 
     if 'username' in pylons.session:
         log.debug("User is authorized to view screenshot '%s' (admin logged in)" % screenshot)
+        return True
+
+    if screenshot.status==constants.SCREENSHOT_STATUS['approved']:
+        log.debug("Screenshot is 'approved': '%s'" % screenshot)
         return True
 
     return False
