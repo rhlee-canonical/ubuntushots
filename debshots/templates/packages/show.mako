@@ -47,8 +47,8 @@
     ## TODO: Fancy icons :)
     ${ h.tags.link_to(
         'Have this screenshot removed',
-        h.url_for(action='delete_screenshot', id=screenshot.id),
-        onclick='return confirm("Really delete this screenshot?")') }
+        h.url_for('delete_screenshot', screenshot=screenshot.id),
+        onclick=h.tags.literal('return confirm("Really delete this screenshot?")')) }
     </div>
 % endfor
 % else:
@@ -76,7 +76,7 @@
     ${ h.tags.link_to(
         'Delete your screenshot',
         h.url_for('delete_screenshot', screenshot=screenshot.id),
-        onclick='return confirm("Really delete this screenshot?")') }
+        onclick=h.tags.literal('return confirm("Really delete this screenshot?")')) }
     </div>
 % endfor
 </div>
