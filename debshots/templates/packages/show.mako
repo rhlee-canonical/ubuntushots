@@ -2,16 +2,7 @@
 ## Details and screenshots of a package
 <%inherit file="/base.mako"/>
 
-<script type="application/x-javascript">
-    $(document).ready(function() {
-        ## Flyout shows the large screenshots when clicking on the thumbnails
-        $('.screenshots a.image').flyout({
-            loadingSrc:'/images/spinner.gif',
-            outSpeed: 300,
-            inSpeed: 300
-        });
-    });
-</script>
+<%include file="/packages/include-index-header.mako"/>
 
 <div class="graybox">
 <h1>Package <em>'${ c.package.name }'</em></h1>

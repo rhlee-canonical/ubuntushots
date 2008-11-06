@@ -1,21 +1,7 @@
 # -*- coding: utf-8 -*-
 <%inherit file="/base.mako"/>
 
-<div class="graybox">
-<h1>Browsing screenshots</h1>
-<p>
-    By name
-    |
-    By category
-    |
-    Without screenshots
-    ## Admin options:
-    % if 'username' in session:
-    |
-    <a href="/packages/moderate">Moderation queue</a>
-    % endif
-</p>
-</div>
+<%include file="/packages/include-index-header.mako"/>
 
 % if c.packages:
 <table>
@@ -23,6 +9,7 @@
         <th>Package</th>
         <th>Description</th>
         <th>Section</th>
+        <th>Screenshots</th>
         <th>Homepage</th>
     </tr>
 % for package in c.packages:
@@ -35,6 +22,10 @@
         </td>
         <td>
             ${ package.cachebinarypackage.section }
+        </td>
+        <td>
+            ${ package.approved_screenshots.count() }
+            (${ package.uploaded_screenshots.count() } waiting for approval)
         </td>
         <td>
             ${ h.tags.link_to(package.cachebinarypackage.homepage, package.cachebinarypackage.homepage) }

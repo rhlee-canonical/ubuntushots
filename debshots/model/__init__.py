@@ -78,17 +78,17 @@ packages_table = sql.Table(
 class Package(MyOrm):
     @property
     def uploaded_screenshots(self):
-        """Return a list of freshly uploade (not yet approved) screenshots"""
+        """Return a list of freshly uploaded (not yet approved) screenshots for this package"""
         return self.screenshots.filter_by(status=constants.SCREENSHOT_STATUS['uploaded'])
 
     @property
     def approved_screenshots(self):
-        """Return a list of approved (by a moderator) screenshots"""
+        """Return a list of approved (by a moderator) screenshots for this package"""
         return self.screenshots.filter_by(status=constants.SCREENSHOT_STATUS['approved'])
 
     @property
     def markedfordelete_screenshots(self):
-        """Return a list of markedfordelete (not yet approved for deletion) screenshots"""
+        """Return a list of markedfordelete (not yet approved for deletion) screenshots for this package"""
         return self.screenshots.filter_by(status=constants.SCREENSHOT_STATUS['markedfordelete'])
 
     @property
@@ -100,6 +100,11 @@ class Package(MyOrm):
         returns all screenshots that have the same cookie hash value
         stored as the current cookie sent by the browser."""
         return self.screenshots.filter_by(uploaderhash=my.client_cookie_hash())
+
+def packages_with_uploaded_screenshots():
+    """Return a list of packages with freshly uploaded (not yet approved) screenshots"""
+    return Package.q().filter(Package.screenshots.any(Screenshot.c.status==constants.SCREENSHOT_STATUS['uploaded']))
+    #return Package.q().filter(Screenshot.c.status==constants.SCREENSHOT_STATUS['uploaded'])
 
 #----------
 
@@ -136,6 +141,10 @@ class Screenshot(MyOrm):
     def large_image(self):
         """Return the image object for the full-sized image"""
         return Image.q().filter_by(screenshot=self).filter_by(large=True).first()
+
+def uploaded_screenshots():
+    """Return a list of freshly uploaded (not yet approved) screenshots"""
+    return Screenshot.q().filter_by(status=constants.SCREENSHOT_STATUS['uploaded'])
 
 #----------
 

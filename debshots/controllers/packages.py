@@ -21,8 +21,23 @@ class PackagesController(BaseController):
         """Show a list of packages with screenshots"""
         packages = model.Package.q()
         c.packages = h.paginate.Page(packages,
-            page=int(request.params.get('page_nr', 0)))
+            page=int(request.params.get('page', 0)))
         return render('/packages/index.mako')
+
+    def moderate(self):
+        """Show a list of not-yet-approved screenshots for the admin"""
+        # Admins only
+        if 'username' not in session:
+            abort(403)
+        packages = model.packages_with_uploaded_screenshots()
+        print packages.all()
+        c.packages = h.paginate.Page(
+            packages,
+            page=int(request.params.get('page', 0)),
+            items_per_page=1,
+            )
+        print c.packages
+        return render('/packages/moderate-index.mako')
 
     def upload(self):
         """Show package upload dialog"""
@@ -152,7 +167,7 @@ def _process_screenshot(filehandle, package):
     # Screenshots uploaded by admins are automatically approved
     if 'username' in session:
         db_screenshot.status=constants.SCREENSHOT_STATUS['approved']
-        
+
     db_pkg.screenshots.append(db_screenshot)
 
     # Create large image entry
