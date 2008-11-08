@@ -12,7 +12,7 @@
 
 <h1>Uploading new screenshots</h1>
 <p>
-    Whether you are a developer or a user - we appreciate if you upload screenshots. Please take
+    Whether you are a developer or not - we appreciate if you upload screenshots. Please take
     a look at the guideline for taking screenshots. Then see our list of packages without
     screenshots and consider uploading a screenshot.
 </p>

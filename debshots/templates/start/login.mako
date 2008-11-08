@@ -16,7 +16,7 @@
 ${ h.tags.form('/start/loginsubmit', method='post') }
 <table>
 <tr>
-    <td>Username:</td>
+    <td>Admin name:</td>
     <td>${ h.tags.text('username', size=20, id='username') }</td>
 </tr>
 <tr>

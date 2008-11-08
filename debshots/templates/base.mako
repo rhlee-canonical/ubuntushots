@@ -9,10 +9,20 @@
         ) }
     ${ h.tags.javascript_link(
         '/javascript/jquery.js',
-        '/javascript/jquery.autocomplete.js',
-        '/javascript/jquery.flyout.js',
+        '/javascript/jquery.autocomplete.js', ## for data entry
+        '/javascript/jquery.flyout.js', ## for image zooming
+        '/javascript/jquery.jgrowl.js', ## message popups
         ) }
     <!--<link rel="alternate" href="some feed url" title="RSS Feed" type="application/rss+xml" />-->
+
+    ## display popup messages stored in the session via jGrowl (jQuery plugin)
+    % for message in session['messages'].pop():
+    <script type="application/x-javascript">
+        $(document).ready(function() {
+            $.jGrowl('${ message }');
+        });
+    </script>
+    % endfor
   </head>
 
   <body>
@@ -35,7 +45,8 @@ ${ next.body() }
     </div>
 
     <div id="footer">
-        Powered by Christoph Haas' <em>debshots</em> software.
+        Powered by Christoph Haas'
+        <a href="http://hg.workaround.org/repositories/debshots/">debshots</a> software.
         % if 'username' in session:
         Logged in as <em>${session['username']}</em>.
         <a href="/logout">(Logout)</a>

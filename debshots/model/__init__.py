@@ -5,7 +5,7 @@ import sqlalchemy.orm as orm
 import pylons
 import os
 import md5
-from debshots.lib import constants, my
+from debshots.lib import my
 
 import logging
 log = logging.getLogger(__name__)
@@ -77,19 +77,19 @@ packages_table = sql.Table(
 
 class Package(MyOrm):
     @property
-    def uploaded_screenshots(self):
+    def unapproved_screenshots(self):
         """Return a list of freshly uploaded (not yet approved) screenshots for this package"""
-        return self.screenshots.filter_by(status=constants.SCREENSHOT_STATUS['uploaded'])
+        return self.screenshots.filter_by(approved=False)
 
     @property
     def approved_screenshots(self):
         """Return a list of approved (by a moderator) screenshots for this package"""
-        return self.screenshots.filter_by(status=constants.SCREENSHOT_STATUS['approved'])
+        return self.screenshots.filter_by(approved=True)
 
     @property
     def markedfordelete_screenshots(self):
         """Return a list of markedfordelete (not yet approved for deletion) screenshots for this package"""
-        return self.screenshots.filter_by(status=constants.SCREENSHOT_STATUS['markedfordelete'])
+        return self.screenshots.filter_by(markedfordelete=True)
 
     @property
     def my_screenshots(self):
@@ -99,12 +99,13 @@ class Package(MyOrm):
         they are only identified by their client cookie. So this method
         returns all screenshots that have the same cookie hash value
         stored as the current cookie sent by the browser."""
-        return self.screenshots.filter_by(uploaderhash=my.client_cookie_hash())
+        return self.screenshots.filter_by(
+            uploaderhash=my.client_cookie_hash(),
+            approved=False)
 
-def packages_with_uploaded_screenshots():
+def packages_with_unapproved_screenshots():
     """Return a list of packages with freshly uploaded (not yet approved) screenshots"""
-    return Package.q().filter(Package.screenshots.any(Screenshot.c.status==constants.SCREENSHOT_STATUS['uploaded']))
-    #return Package.q().filter(Screenshot.c.status==constants.SCREENSHOT_STATUS['uploaded'])
+    return Package.q().filter(Package.screenshots.any(Screenshot.c.approved==False))
 
 #----------
 
@@ -118,8 +119,8 @@ screenshots_table = sql.Table(
     sql.Column('uploaddatetime', sql.DateTime(), default=sql.func.now()),
     sql.Column('uploaderhash', sql.Unicode(72)),
     sql.Column('uploaderip', sql.Unicode(15)),
-    # constant as defined in lib/constants.py:
-    sql.Column('status', sql.Integer(), default=constants.SCREENSHOT_STATUS['uploaded']),
+    sql.Column('approved', sql.Boolean(), default=False),
+    sql.Column('markedfordelete', sql.Boolean(), default=False),
 )
 
 class Screenshot(MyOrm):
@@ -142,9 +143,9 @@ class Screenshot(MyOrm):
         """Return the image object for the full-sized image"""
         return Image.q().filter_by(screenshot=self).filter_by(large=True).first()
 
-def uploaded_screenshots():
+def unapproved_screenshots():
     """Return a list of freshly uploaded (not yet approved) screenshots"""
-    return Screenshot.q().filter_by(status=constants.SCREENSHOT_STATUS['uploaded'])
+    return Screenshot.q().filter_by(approved=False)
 
 #----------
 
@@ -172,16 +173,16 @@ class Image(MyOrm):
 
 # Table of admin users
 # (images can be uploaded by anyone - but they have to be approved by an admin)
-users_table = sql.Table(
-    'users', metadata,
+admins_table = sql.Table(
+    'admins', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('username', sql.Unicode(20), unique=True),
-    sql.Column('passwordhash', sql.Unicode(32)), # MD5 hash of the user's password
+    sql.Column('passwordhash', sql.Unicode(32)), # MD5 hash of the admin's password
 )
 
-class User(MyOrm):
+class Admin(MyOrm):
     def setpassword(self, newpassword):
-        """Set a user's password to a new value"""
+        """Set an admin's password to a new value"""
         self.passwordhash = md5.md5(newpassword+pylons.config['debshots.md5salt']).hexdigest()
 
 #----------
@@ -217,4 +218,4 @@ orm.mapper(Screenshot, screenshots_table,
 
 orm.mapper(CacheBinaryPackage, cache_binary_packages_table)
 
-orm.mapper(User, users_table)
+orm.mapper(Admin, admins_table)

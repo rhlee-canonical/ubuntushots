@@ -5,7 +5,7 @@ import os
 import PIL.Image
 import StringIO
 import paste
-from debshots.lib import my, constants, validators
+from debshots.lib import my, validators
 import formencode
 
 log = logging.getLogger(__name__)
@@ -22,6 +22,7 @@ class PackagesController(BaseController):
         packages = model.Package.q()
         c.packages = h.paginate.Page(packages,
             page=int(request.params.get('page', 0)))
+        my.message('test')
         return render('/packages/index.mako')
 
     def moderate(self):
@@ -29,7 +30,7 @@ class PackagesController(BaseController):
         # Admins only
         if 'username' not in session:
             abort(403)
-        packages = model.packages_with_uploaded_screenshots()
+        packages = model.packages_with_unapproved_screenshots()
         print packages.all()
         c.packages = h.paginate.Page(
             packages,
@@ -105,6 +106,12 @@ class PackagesController(BaseController):
         # Has this screenshot been uploaded by the current user?
         if not my.authorized_for_screenshot(this_screenshot):
             abort(403, "I'm afraid I can't do that, Dave.")
+
+        # If the screenshot is 'approved' and the current user is not an admin
+        # then it's only possible to mark the screenshot for deletion by an admin.
+        if this_screenshot.approved and 'username' not in session:
+            this_screenshot.markedfordelete=True
+
         db.delete(this_screenshot)
         db.commit()
 
@@ -117,6 +124,23 @@ class PackagesController(BaseController):
         else:
             # Redirect to the package page
             redirect_to(h.url_for('package', package=package.name))
+
+    def approve_screenshot(self, screenshot):
+        """Approve a screenshot. Sets it to status 'approved'."""
+        this_screenshot = model.Screenshot.q().get(screenshot)
+        if not this_screenshot:
+            abort(404)
+
+        package = this_screenshot.package
+
+        # Make sure the user is allowed to delete the screenshot!
+        # Has this screenshot been uploaded by the current user?
+        if not my.authorized_for_screenshot(this_screenshot):
+            abort(403, "I'm afraid I can't do that, Dave.")
+        this_screenshot.approved=True
+        db.commit()
+
+        redirect_to(h.url_for('package', package=package.name))
 
     def ajax_autocomplete_packages(self):
         """Get a list of packages for the autocompleter"""
@@ -162,11 +186,10 @@ def _process_screenshot(filehandle, package):
     db_screenshot = model.Screenshot(
         uploaderip=my.client_ip(),
         uploaderhash=my.client_cookie_hash(),
-        status=constants.SCREENSHOT_STATUS['uploaded'],
     )
     # Screenshots uploaded by admins are automatically approved
     if 'username' in session:
-        db_screenshot.status=constants.SCREENSHOT_STATUS['approved']
+        db_screenshot.approved=True
 
     db_pkg.screenshots.append(db_screenshot)
 

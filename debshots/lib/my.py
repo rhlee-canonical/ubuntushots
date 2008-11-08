@@ -3,7 +3,6 @@
 import pylons
 import logging
 import formencode
-from debshots.lib import constants
 
 log = logging.getLogger(__name__)
 
@@ -40,26 +39,32 @@ def client_ip():
 
 def client_cookie_hash():
     """Return the cookie hash used for the cookie-based session"""
-    cookie_hash = unicode(pylons.request.cookies[pylons.config['beaker.session.key']])
+    cookie_hash = unicode(pylons.request.cookies.get(pylons.config['beaker.session.key']))
     log.debug("Client cookie hash is: %s" % cookie_hash)
     return cookie_hash
 
 def authorized_for_screenshot(screenshot):
-    """Check if a user is authorized to view a certain screenshot
+    """Check if the current visitor is authorized to view a certain screenshot
 
     Either the screenshot was uploaded by the same client (checks cookie hash)
-    or the user is an admin or the screenshots has been approved to be
+    or the visitor is an admin or the screenshots has been approved to be
     viewed publicly."""
     if client_cookie_hash() == screenshot.uploaderhash:
-        log.debug("User is authorized to view screenshot '%s' (same cookie)" % screenshot)
+        log.debug("Visitor is authorized to view screenshot '%s' (same cookie)" % screenshot)
         return True
 
     if 'username' in pylons.session:
-        log.debug("User is authorized to view screenshot '%s' (admin logged in)" % screenshot)
+        log.debug("Visitor is authorized to view screenshot '%s' (admin logged in)" % screenshot)
         return True
 
-    if screenshot.status==constants.SCREENSHOT_STATUS['approved']:
+    if screenshot.approved:
         log.debug("Screenshot is 'approved': '%s'" % screenshot)
         return True
 
     return False
+
+def message(text):
+    """Add a message to the queue of messages to be displayed via jGrowl
+
+    The message will be displayed in the base.mako template."""
+    pylons.session['messages'].append([text])

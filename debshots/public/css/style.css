@@ -73,7 +73,7 @@ legend {
     background-color: #f0f0f0;
 }
 
-textarea {
+input, textarea {
     border: 1px solid #a0a0a0;
 }
 
@@ -132,7 +132,7 @@ h3
     background-color: #e6e6e6;
     border-bottom: 1px solid #000;
     padding: 0.3em 4em;
-    font-size: 120%;
+    /*font-size: 120%;*/
     /*font-weight: bolder;*/
 }
 
@@ -188,19 +188,18 @@ a, a:visited
     color: #000000;
     border-bottom: 1px dashed #808080;
     text-decoration: none;
-    font-weight: bolder;
 }
 
 /* Do not display a border if the link contains an image */
 a.image, a.image:hover {
     border: none;
-    background-color: #ffffff;
+    /*background-color: #ffffff;*/
 }
 
-a:hover
-{
-    background-color: #f0f0f0;
-}
+/*a:hover*/
+/*{*/
+/*    background-color: #f0f0f0;*/
+/*}*/
 
 .warning
 {
@@ -288,8 +287,103 @@ a:hover
     float: left;
     padding: 0.5em;
     margin-right: 1em;
+    margin-bottom: 1em;
     display: inline-block;
     -moz-border-radius: .5em;
     -webkit-border-radius: .5em;
     border-radius: .5em;
+}
+
+.screenshots {
+    clear: both;
+}
+
+
+/* jQuery jGrowl plugin */
+
+div.jGrowl {
+	padding: 			10px;
+	z-index: 			9999;
+}
+
+/** Normal Style Positions **/
+body > div.jGrowl {
+	position:			fixed;
+}
+
+body > div.jGrowl.top-left {
+	left: 				0px;
+	top: 				0px;
+}
+
+body > div.jGrowl.top-right {
+	right: 				0px;
+	top: 				0px;
+}
+
+body > div.jGrowl.bottom-left {
+	left: 				0px;
+	bottom:				0px;
+}
+
+body > div.jGrowl.bottom-right {
+	right: 				0px;
+	bottom: 			0px;
+}
+
+body > div.jGrowl.center {
+	top: 				0px;
+	width: 				50%;
+	left: 				25%;
+}
+
+/** Cross Browser Styling **/
+div.center div.jGrowl-notification, div.center div.jGrowl-closer {
+	margin-left: 		auto;
+	margin-right: 		auto;
+}
+
+div.jGrowl div.jGrowl-notification, div.jGrowl div.jGrowl-closer {
+	background-color: 		#d0d0d0;
+        border: 2px solid #c70036;
+	/*color: 					#000;*/
+	opacity: 				.85;
+	filter: 				alpha(opacity = 85);
+	zoom: 					1;
+	width: 					235px;
+	padding: 				10px;
+	margin-top: 			5px;
+	margin-bottom: 			5px;
+	font-family: 			Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 				12px;
+	text-align: 			left;
+	display: 				none;
+	-moz-border-radius: 	5px;
+	-webkit-border-radius:	5px;
+}
+
+div.jGrowl div.jGrowl-notification {
+	min-height: 			40px;
+}
+
+div.jGrowl div.jGrowl-notification div.header {
+	font-weight: 			bold;
+	font-size:				10px;
+}
+
+div.jGrowl div.jGrowl-notification div.close {
+	float: 					right;
+	font-weight: 			bold;
+	font-size: 				12px;
+	cursor:					pointer;
+}
+
+div.jGrowl div.jGrowl-closer {
+	height: 				15px;
+	padding-top: 			4px;
+	padding-bottom: 		4px;
+	cursor: 				pointer;
+	font-size:				11px;
+	font-weight: 			bold;
+	text-align: 			center;
 }

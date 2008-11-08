@@ -19,6 +19,7 @@ def make_map():
     # CUSTOM ROUTES HERE
     map.connect('start', '', controller='start', action='index')
     map.connect('packages', '/packages', controller='packages', action='index')
+    map.connect('moderate', '/packages/moderate', controller='packages', action='moderate')
     map.connect('image', '/image/:id', controller='packages', action='image')
     map.connect('upload', '/upload', controller='packages', action='upload')
     map.connect('uploadfile', '/uploadfile', controller='packages', action='uploadfile')
@@ -29,6 +30,8 @@ def make_map():
     map.connect('package', 'package/:package', controller='packages', action='show')
     map.connect('delete_screenshot', '/delete_screenshot/:screenshot',
         controller='packages', action='delete_screenshot')
+    map.connect('approve_screenshot', '/approve_screenshot/:screenshot',
+        controller='packages', action='approve_screenshot')
     map.connect('login', '/login', controller='start', action='login')
     map.connect('logout', '/logout', controller='start', action='logout')
     map.connect(':controller/:action/:id')

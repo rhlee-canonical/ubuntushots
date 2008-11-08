@@ -43,11 +43,12 @@ class StartController(BaseController):
         except formencode.Invalid, e:
             return my.htmlfill(self.login(), e)
 
-        user = model.User.q().filter_by(
+        admin = model.Admin.q().filter_by(
             username=fields['username'],
-            passwordhash=md5.new(fields['password']+config['debshots.md5salt']).hexdigest()).first()
+            passwordhash=md5.new(
+                fields['password']+config['debshots.md5salt']).hexdigest()).first()
 
-        if not user:
+        if not admin:
             log.info("Login failed: %s" % fields['username'])
             c.error="Login failed"
             return render('/start/login.mako')
@@ -55,9 +56,9 @@ class StartController(BaseController):
         log.info("Admin logged in: %s" % (fields['username']))
 
         # Set a cookie session variable to mark the maintainer as logged in
-        session['username'] = user.username
+        session['username'] = admin.username
         session.save()
-        redirect_to('/')
+        redirect_to('moderate')
 
     def logout(self):
         """Logout an admin"""

@@ -25,10 +25,13 @@
         </td>
         <td>
             ${ package.approved_screenshots.count() }
-            (${ package.uploaded_screenshots.count() } waiting for approval)
+            (${ package.unapproved_screenshots.count() } waiting for approval)
         </td>
         <td>
-            ${ h.tags.link_to(package.cachebinarypackage.homepage, package.cachebinarypackage.homepage) }
+            ${ h.tags.link_to(
+                package.cachebinarypackage.homepage,
+                package.cachebinarypackage.homepage,
+                target='_blank') }
         </td>
 
     </tr>

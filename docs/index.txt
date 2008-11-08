@@ -68,3 +68,22 @@ elsewhere on the system.
 #. Now run the application through a web server:
 
    > (debshots) paster serve development.ini
+
+How does it work?
+=================
+
+Anybody can upload new screenshots. For security reasons (we don't want
+porn on the server) screenshots have to be approved by an administrator
+
+Adding administrators
+=====================
+
+There is not yet an automatic way to add administrators. You will have
+to enter the Pylons shell by running "paster shell" in the project
+(TODO: I think this won't work when deploying the application from an egg)
+and create a new user:
+
+  newadmin = model.Admin(name="dilbert")
+  newadmin.setpassword('secret')
+  db.save(newadmin)
+  db.commit()
