@@ -67,4 +67,7 @@ def message(text):
     """Add a message to the queue of messages to be displayed via jGrowl
 
     The message will be displayed in the base.mako template."""
+    # Escape hyphens
+    text = text.replace("'", r"\'")
+    # Add the message to the queue
     pylons.session['messages'].append([text])

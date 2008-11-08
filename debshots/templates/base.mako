@@ -16,13 +16,15 @@
     <!--<link rel="alternate" href="some feed url" title="RSS Feed" type="application/rss+xml" />-->
 
     ## display popup messages stored in the session via jGrowl (jQuery plugin)
-    % for message in session['messages'].pop():
-    <script type="application/x-javascript">
-        $(document).ready(function() {
-            $.jGrowl('${ message }');
-        });
-    </script>
-    % endfor
+    % if session['messages']:
+        % for message in session['messages'].pop():
+        <script type="application/x-javascript">
+            $(document).ready(function() {
+                $.jGrowl('${ message }');
+            });
+        </script>
+        % endfor
+    % endif
   </head>
 
   <body>

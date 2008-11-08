@@ -22,7 +22,6 @@ class PackagesController(BaseController):
         packages = model.Package.q()
         c.packages = h.paginate.Page(packages,
             page=int(request.params.get('page', 0)))
-        my.message('test')
         return render('/packages/index.mako')
 
     def moderate(self):
@@ -58,7 +57,8 @@ class PackagesController(BaseController):
             c.message=error
         else:
             log.info("Screenshot uploaded for package '%s'" % cachepackage.name)
-            c.message="Screenshot for package '%s' uploaded successfully." % cachepackage.name
+            my.message("Screenshot for package '%s' uploaded successfully."
+                % cachepackage.name)
 
         return render('/packages/upload.mako')
 
