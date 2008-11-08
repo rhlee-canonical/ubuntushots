@@ -241,6 +241,8 @@ def _resize(image, xmax, ymax):
     # Image has the right size or is smaller than x/y?
     if xold<=xmax and yold<=ymax:
         log.debug("Image is already smaller than %ix%i - no conversion necessary" % (xmax,ymax))
+        xnew = xold
+        ynew = yold
     # Image too large
     else:
         # Image too wide for a x/y ratio?
