@@ -54,8 +54,11 @@
 </div>
 
 ## Show screenshots that are not yet approved but uploaded by the
-## current visitor (identified by their client cookie hash value)
-% if c.package.my_screenshots.count():
+## current visitor (identified by their client cookie hash value).
+## This view is not shown if the user is an administrator or otherwise
+## the screenshots would also show up in the "not yet approved screenshots"
+## section below.
+% if ('username' not in session) and (c.package.my_screenshots.count()):
 <div class="screenshots">
 <h1>Your uploaded screenshots</h1>
 % for screenshot in c.package.my_screenshots:

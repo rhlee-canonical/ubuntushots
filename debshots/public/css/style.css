@@ -225,6 +225,9 @@ a.image, a.image:hover {
     margin-top: 2em;
 }
 
+
+/* jQuery autocomplete plugin */
+
 .ac_results {
 	padding: 0px;
 	border: 1px solid black;

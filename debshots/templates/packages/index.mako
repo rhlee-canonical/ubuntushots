@@ -25,7 +25,9 @@
         </td>
         <td>
             ${ package.approved_screenshots.count() }
-            (${ package.unapproved_screenshots.count() } waiting for approval)
+            % if package.unapproved_screenshots.count()>0:
+                (${ package.unapproved_screenshots.count() } waiting for approval)
+            % endif
         </td>
         <td>
             ${ h.tags.link_to(

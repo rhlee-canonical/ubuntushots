@@ -69,16 +69,47 @@ elsewhere on the system.
 
    > (debshots) paster serve development.ini
 
+#. Before you first run the server you need to get a list of available
+   Debian packages. This is done by calling the importer script:
+
+   > (debshots) bin/update_package_cache.py `pwd`/development.ini
+
+   The table should be updated frequently (for example once per day)
+   via a cron job.
+
 How does it work?
 =================
 
-Anybody can upload new screenshots. For security reasons (we don't want
-porn on the server) screenshots have to be approved by an administrator
+Anybody can upload new screenshots. For security reasons though (we don't want
+porn on the server) screenshots have to be approved by an administrator. The
+permission system goes like this:
+
+Visitor (anybody who visits the site):
+
+- can upload screenshots (the new screenshots have status "unapproved"
+  and can not be viewed publicly)
+- can mark any approved (publicly visible) screenshots as "markedfordelete"
+  which means screenshots are still visible but admins will see the tag
+  and check if packages can be removed. ('markedfordelete' is a tribute
+  to the incredibly trashy movie "The Tower" where the computer system
+  "removed" a dove sitting on an air vent after deciding to have it
+  "marked for delete").
+- can remove their own uploaded screenshots (Screenshots in the database
+  also save the session cookie value. So as long as the browser keeps the
+  cookie the screenshots can be associated with the uploader.)
+
+Admins (logged in users - accounts are saved in the 'admins' table):
+
+- can upload screenshots that are automatically approved and visible
+- can delete any screenshots
+- can approve other people's screenshots that are still unapproved
+- can see the moderation view of packages that have screenshots that
+  are not approved or markedfordelete
 
 Adding administrators
 =====================
 
-There is not yet an automatic way to add administrators. You will have
+There is not yet a comfortable way to add administrators. You will have
 to enter the Pylons shell by running "paster shell" in the project
 (TODO: I think this won't work when deploying the application from an egg)
 and create a new user:
@@ -87,3 +118,19 @@ and create a new user:
   newadmin.setpassword('secret')
   db.save(newadmin)
   db.commit()
+
+You must set the password using the setpassword() method or otherwise the
+salted MD5 hash wouldn't get computed correctly.
+
+Database structure
+==================
+
+There are two tables of packages. The 'cachedbinarypackages' table contains
+a list
+
+To Do list
+==========
+
+- backlinks to previous pages after removing/approving/uploading
+- moderate view shows markedfordelete packages
+- list of packages (cachebinarypackages) that do not have screenshots uploaded
