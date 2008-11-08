@@ -200,7 +200,8 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
             CacheBinaryPackage,
             primaryjoin=(packages_table.c.name==cache_binary_packages_table.c.name),
             foreign_keys=[cache_binary_packages_table.c.name],
-            uselist=False
+            uselist=False,
+            viewonly=True, # prevent changes to the cachebinarypackage
             ),
         })
 
