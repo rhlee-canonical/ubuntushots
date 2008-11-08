@@ -226,6 +226,16 @@ a.image, a.image:hover {
 }
 
 
+/* Paginate pager */
+
+.pager_curpage {
+    background-color: #000000;
+    color: #ffffff;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+
+
 /* jQuery autocomplete plugin */
 
 .ac_results {

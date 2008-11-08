@@ -21,6 +21,7 @@ class PackagesController(BaseController):
         """Show a list of packages with screenshots"""
         packages = model.Package.q()
         c.packages = h.paginate.Page(packages,
+            items_per_page=10,
             page=int(request.params.get('page', 0)))
         return render('/packages/index.mako')
 
@@ -141,6 +142,8 @@ class PackagesController(BaseController):
             abort(403, "I'm afraid I can't do that, Dave.")
         this_screenshot.approved=True
         db.commit()
+
+        my.message("Screenshot for package <em>%s</em> approved." % package.name)
 
         redirect_to(h.url_for('package', package=package.name))
 

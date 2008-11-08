@@ -4,6 +4,7 @@
 <%include file="/packages/include-index-header.mako"/>
 
 % if c.packages:
+<p>${ c.packages.pager('Page: $link_previous ~2~ $link_next') }</p>
 <table>
     <tr>
         <th>Package</th>
@@ -39,7 +40,6 @@
     </tr>
 % endfor
 </table>
-## TODO: pager
 % else:
 <p>There are no screenshots yet.</p>
 % endif
