@@ -20,6 +20,14 @@ class PackagesController(BaseController):
     def index(self):
         """Show a list of packages with screenshots"""
         packages = model.Package.q()
+        search = request.params.get('search')
+        if search:
+            packages = packages.filter(
+                (model.Package.name.like('%'+search+'%'))
+                |
+                (model.Package.cachebinarypackage.has(
+                    model.CacheBinaryPackage.description.like('%'+search+'%')))
+            )
         c.packages = h.paginate.Page(packages,
             items_per_page=10,
             page=int(request.params.get('page', 0)))
