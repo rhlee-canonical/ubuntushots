@@ -134,3 +134,4 @@ To Do list
 - backlinks to previous pages after removing/approving/uploading
 - moderate view shows markedfordelete packages
 - list of packages (cachebinarypackages) that do not have screenshots uploaded
+- messages everywhere (jGrowl)

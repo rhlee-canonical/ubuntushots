@@ -24,6 +24,7 @@
             });
         </script>
         % endfor
+        <% session.save() %>
     % endif
   </head>
 

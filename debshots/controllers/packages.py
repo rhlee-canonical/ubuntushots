@@ -115,6 +115,8 @@ class PackagesController(BaseController):
         db.delete(this_screenshot)
         db.commit()
 
+        my.message('Screenshot for package <em>%s</em> deleted.' % package.name)
+
         # If this was the last screenshot for this package then remove the package, too
         if package.screenshots.count()==0:
             db.delete(package)

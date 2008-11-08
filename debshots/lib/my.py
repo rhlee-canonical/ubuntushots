@@ -71,3 +71,4 @@ def message(text):
     text = text.replace("'", r"\'")
     # Add the message to the queue
     pylons.session['messages'].append([text])
+    pylons.session.save()
