@@ -27,8 +27,6 @@ class BaseController(WSGIController):
         if 'messages' not in session: session['messages']=[]
         session.save()
 
-        log.debug("Messages: %r" % session['messages'])
-
         # WSGIController.__call__ dispatches to the Controller method
         # the request is routed to. This routing information is
         # available in environ['pylons.routes_dict']
