@@ -38,7 +38,7 @@ class PackagesController(BaseController):
         # Admins only
         if 'username' not in session:
             abort(403)
-        packages = model.packages_with_unapproved_screenshots()
+        packages = model.packages_with_moderated_screenshots()
         c.packages = h.paginate.Page(
             packages,
             page=int(request.params.get('page', 0)),
@@ -161,6 +161,28 @@ class PackagesController(BaseController):
 
         my.redirect_back()
         redirect_to(h.url_for('package', package=package.name))
+
+    def keep_screenshot(self, screenshot):
+        """Remove a screenshot's "markedfordelete" tag.
+
+        This action is called if an admin decides to keep a certain screenshot although
+        a visitor requested that this screenshot gets deleted."""
+        this_screenshot = model.Screenshot.q().get(screenshot)
+        if not this_screenshot:
+            abort(404)
+
+        package = this_screenshot.package
+
+        # Admins only
+        if not 'username' in session:
+            abort(403, "I'm afraid I can't do that, Dave.")
+        this_screenshot.markedfordelete=False
+        db.commit()
+
+        my.message("Screenshot for package <em>%s</em> kept." % package.name)
+
+        my.redirect_back()
+        redirect_to(h.url_for('moderate', package=package.name))
 
     def ajax_autocomplete_packages(self):
         """Get a list of packages for the autocompleter"""

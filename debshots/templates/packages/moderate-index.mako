@@ -10,23 +10,35 @@ ${ c.packages.pager('Package $page of $page_count - $link_previous ~3~ $link_nex
     <h1>${ package.name }</h1>
 
     <div class="screenshots">
-    % for screenshot in package.unapproved_screenshots:
+    % for screenshot in package.moderated_screenshots:
     <div class="screenshot">
     <a class="image" href="${h.url_for('image', id=screenshot.large_image.id)}"
         title="Screenshot of package '${screenshot.package.name}'">
         <img src="${h.url_for('image', id=screenshot.small_image.id)}" alt="Screenshot" />
     </a>
     <br />
-    ## TODO: Fancy icons :)
-    ${ h.tags.link_to(
-        'Approve screenshot',
-        h.url_for('approve_screenshot', screenshot=screenshot.id, goto=h.url_for())) }
-    <br />
-    ${ h.tags.link_to(
-        'Delete screenshot',
-        h.url_for('delete_screenshot', screenshot=screenshot.id, goto=h.url_for()),
-        onclick=h.tags.literal('return confirm(\'Really delete this screenshot?\')')) }
-
+    ## Unapproved screenshot? (approve or delete)
+    % if not screenshot.approved:
+        ## TODO: Fancy icons :)
+        ${ h.tags.link_to(
+            'Approve screenshot',
+            h.url_for('approve_screenshot', screenshot=screenshot.id, goto=h.url_for())) }
+        <br />
+        ${ h.tags.link_to(
+            'Delete screenshot',
+            h.url_for('delete_screenshot', screenshot=screenshot.id, goto=h.url_for())) }
+    ## Marked for delete? (keep or delete)
+    % elif screenshot.markedfordelete:
+        Removal requested (<em>${screenshot.delete_reason}</em>)
+        <br />
+        ${ h.tags.link_to(
+            'Keep the screenshot',
+            h.url_for('keep_screenshot', screenshot=screenshot.id, goto=h.url_for())) }
+        <br />
+        ${ h.tags.link_to(
+            'Delete screenshot',
+            h.url_for('delete_screenshot', screenshot=screenshot.id, goto=h.url_for())) }
+    % endif
     </div>
     % endfor
     </div>

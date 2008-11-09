@@ -103,9 +103,24 @@ class Package(MyOrm):
             uploaderhash=my.client_cookie_hash(),
             approved=False)
 
-def packages_with_unapproved_screenshots():
-    """Return a list of packages with freshly uploaded (not yet approved) screenshots"""
-    return Package.q().filter(Package.screenshots.any(Screenshot.c.approved==False))
+    @property
+    def moderated_screenshots(self):
+        """Return a list of freshly uploaded or marked for delete screenshots of this package"""
+        return self.screenshots.filter(
+            (Screenshot.c.approved==False)
+            |
+            (Screenshot.c.markedfordelete==True)
+        )
+
+def packages_with_moderated_screenshots():
+    """Return a list of packages with screenshots that need moderation"""
+    return Package.q().filter(
+        Package.screenshots.any(
+            (Screenshot.c.approved==False)
+            |
+            (Screenshot.c.markedfordelete==True)
+            )
+    )
 
 #----------
 
@@ -144,9 +159,13 @@ class Screenshot(MyOrm):
         """Return the image object for the full-sized image"""
         return Image.q().filter_by(screenshot=self).filter_by(large=True).first()
 
-def unapproved_screenshots():
-    """Return a list of freshly uploaded (not yet approved) screenshots"""
-    return Screenshot.q().filter_by(approved=False)
+def moderated_screenshots():
+    """Return a list of freshly uploaded or marked for delete screenshots"""
+    return Screenshot.q().filter(
+        (Screenshot.approved==False)
+        |
+        (Screenshot.markedfordelete==True)
+    )
 
 #----------
 

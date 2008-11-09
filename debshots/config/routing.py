@@ -32,6 +32,8 @@ def make_map():
         controller='packages', action='delete_screenshot')
     map.connect('approve_screenshot', '/approve_screenshot/:screenshot',
         controller='packages', action='approve_screenshot')
+    map.connect('keep_screenshot', '/keep_screenshot/:screenshot',
+        controller='packages', action='keep_screenshot')
     map.connect('login', '/login', controller='start', action='login')
     map.connect('logout', '/logout', controller='start', action='logout')
     map.connect(':controller/:action/:id')
