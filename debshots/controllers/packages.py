@@ -26,7 +26,7 @@ class PackagesController(BaseController):
                 (model.Package.name.like('%'+search+'%'))
                 |
                 (model.Package.cachebinarypackage.has(
-                    model.CacheBinaryPackage.description.like('%'+search+'%')))
+                    model.CacheBinaryPackage.description.ilike('%'+search+'%')))
             )
         c.packages = h.paginate.Page(packages,
             items_per_page=10,
@@ -121,7 +121,7 @@ class PackagesController(BaseController):
         # then it's only possible to mark the screenshot for deletion by an admin.
         else:
             this_screenshot.markedfordelete=True
-            this_screenshot.delete_reason=request.params.get('reason','')
+            this_screenshot.delete_reason=request.params.get('reason','?')
             my.message('Admins will be asked to delete this screenshot.')
 
         db.commit()
