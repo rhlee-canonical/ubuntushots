@@ -39,13 +39,11 @@ class PackagesController(BaseController):
         if 'username' not in session:
             abort(403)
         packages = model.packages_with_unapproved_screenshots()
-        print packages.all()
         c.packages = h.paginate.Page(
             packages,
             page=int(request.params.get('page', 0)),
             items_per_page=1,
             )
-        print c.packages
         return render('/packages/moderate-index.mako')
 
     def upload(self):
@@ -112,19 +110,19 @@ class PackagesController(BaseController):
         package = this_screenshot.package
 
         # Make sure the user is allowed to delete the screenshot!
-        # Has this screenshot been uploaded by the current user?
         if not my.authorized_for_screenshot(this_screenshot):
             abort(403, "I'm afraid I can't do that, Dave.")
 
-        # If the screenshot is 'approved' and the current user is not an admin
-        # then it's only possible to mark the screenshot for deletion by an admin.
-        elif this_screenshot.approved and 'username' not in session:
-            this_screenshot.markedfordelete=True
-            my.message('Admins will be asked to delete this screenshot.')
-        else:
-            # Casual visitors can only mark screenshots for deletions
+        # Admins or the one who uploaded the screenshot is allowed to delete
+        elif ('username' in session) or (my.client_cookie_hash() == this_screenshot.uploaderhash):
             db.delete(this_screenshot)
             my.message('Screenshot for package <em>%s</em> deleted.' % package.name)
+        # If the screenshot is 'approved' and the current user is not an admin
+        # then it's only possible to mark the screenshot for deletion by an admin.
+        else:
+            this_screenshot.markedfordelete=True
+            this_screenshot.delete_reason=request.params.get('reason','')
+            my.message('Admins will be asked to delete this screenshot.')
 
         db.commit()
 
