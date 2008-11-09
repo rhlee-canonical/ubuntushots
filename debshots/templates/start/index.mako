@@ -23,6 +23,7 @@
     program name, a category or just what has been added recently.
 </p>
 
+## TODO: fix links
 <ul>
     <li>
         http://screenshots.debian.net/packages

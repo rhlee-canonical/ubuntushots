@@ -2,8 +2,18 @@
 ## Details and screenshots of a package
 <%inherit file="/base.mako"/>
 
-<!--<%include file="/packages/include-index-header.mako"/>-->
 <%include file="/packages/include-js-lightbox.mako"/>
+
+<script type="application/x-javascript">
+    $(document).ready(function() {
+        $('#markfordelete').click(
+            function () {
+                $('#markfordelete-form').show('slow');
+            }
+        )
+    });
+</script>
+
 
 <div class="graybox">
 <h1>Package <em>'${ c.package.name }'</em></h1>
@@ -42,10 +52,35 @@
     </a>
     <br />
     ## TODO: Fancy icons :)
-    ${ h.tags.link_to(
-        'Remove this screenshot',
-        h.url_for('delete_screenshot', screenshot=screenshot.id),
-        onclick=h.tags.literal('return confirm(\'Really delete this screenshot?\')')) }
+    ## Display a message if the screenshot is markedfordelete
+    % if screenshot.markedfordelete:
+        (Removal was requested.)
+    % else:
+        ## Admins can remove the screenshots directly:
+        % if ('username' in session) or (h.my.client_cookie_hash() == screenshot.uploaderhash):
+            ${ h.tags.link_to(
+                'Remove this screenshot',
+                h.url_for('delete_screenshot', screenshot=screenshot.id),
+                onclick=h.tags.literal('return confirm(\'Really delete this screenshot?\')')) }
+        ## Visitors can mark this package for deletion:
+        % else:
+            ${ h.tags.link_to(
+                'Request removal',
+                '#',
+                id='markfordelete',
+                ) }
+            ## Hidden field to enter the reason for markedfordelete
+            <div id="markfordelete-form" style="display: none">
+                ${ h.tags.form(h.url_for('delete_screenshot', screenshot=screenshot.id))}
+                Why should it get removed?
+                <br />
+                ${ h.tags.text('reason') }
+                <br />
+                ${ h.tags.submit('submit', 'Okay') }
+                </form>
+            </div>
+        % endif
+    % endif
     </div>
 % endfor
 % else:

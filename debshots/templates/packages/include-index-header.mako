@@ -11,7 +11,7 @@
 <h1>Browsing screenshots</h1>
 ${ h.tags.form(h.url_for())}
 <p>
-    <a href="/packages">Package list</a>
+    <a href="/packages">All packages</a>
     ## Admin options:
     % if 'username' in session:
     |
