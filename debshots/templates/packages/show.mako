@@ -9,6 +9,7 @@
         $('#markfordelete').click(
             function () {
                 $('#markfordelete-form').show('slow');
+                $('#markfordelete-reason').focus();
             }
         )
     });
@@ -78,7 +79,7 @@
                 ${ h.tags.form(h.url_for('delete_screenshot', screenshot=screenshot.id))}
                 Why should it get removed?
                 <br />
-                ${ h.tags.text('reason') }
+                ${ h.tags.text('reason', id='markfordelete-reason') }
                 <br />
                 ${ h.tags.submit('submit', 'Okay') }
                 </form>
