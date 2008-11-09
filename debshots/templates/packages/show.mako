@@ -43,6 +43,10 @@
 ## Show approved screenshots
 <div class="screenshots">
 <h1>Available screenshots</h1>
+<p><i>
+    (These screenshots are licensed under the same terms as
+    '${ c.package.name }' itself.)
+</i></p>
 % if c.package.approved_screenshots.count():
 % for screenshot in c.package.approved_screenshots:
     <div class="screenshot">
