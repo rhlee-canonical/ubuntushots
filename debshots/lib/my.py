@@ -3,6 +3,7 @@
 import pylons
 import logging
 import formencode
+from pylons.controllers.util import redirect_to
 
 log = logging.getLogger(__name__)
 
@@ -72,3 +73,12 @@ def message(text):
     # Add the message to the queue
     pylons.session['messages'].append([text])
     pylons.session.save()
+
+def redirect_back():
+    """If there is 'goto' parameter in the URL then redirect there.
+
+    This is useful for linking back to a certain page after a certain action was done.
+    For example after deleting a screenshot the user can be redirected to the proper
+    package or index page. This function does nothing if 'goto' is not present."""
+    if 'goto' in pylons.request.params:
+        redirect_to(str(pylons.request.params['goto']))

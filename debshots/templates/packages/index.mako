@@ -41,5 +41,5 @@
 % endfor
 </table>
 % else:
-<p>There are no screenshots yet.</p>
+<p>No screenshots found.</p>
 % endif

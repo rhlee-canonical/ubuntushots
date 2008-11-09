@@ -77,6 +77,10 @@ input, textarea {
     border: 1px solid #a0a0a0;
 }
 
+input:focus, textarea:focus {
+    border: 1px solid #c70036;
+}
+
 em {
     font-style: italic;
 }

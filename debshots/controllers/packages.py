@@ -118,21 +118,29 @@ class PackagesController(BaseController):
 
         # If the screenshot is 'approved' and the current user is not an admin
         # then it's only possible to mark the screenshot for deletion by an admin.
-        if this_screenshot.approved and 'username' not in session:
+        elif this_screenshot.approved and 'username' not in session:
             this_screenshot.markedfordelete=True
+            my.message('Admins will be asked to delete this screenshot.')
+        else:
+            # Casual visitors can only mark screenshots for deletions
+            db.delete(this_screenshot)
+            my.message('Screenshot for package <em>%s</em> deleted.' % package.name)
 
-        db.delete(this_screenshot)
         db.commit()
 
-        my.message('Screenshot for package <em>%s</em> deleted.' % package.name)
 
         # If this was the last screenshot for this package then remove the package, too
         if package.screenshots.count()==0:
             db.delete(package)
             db.commit()
-            # Redirect to the packagess overview
+
+            my.redirect_back()
+
+            # Redirect to the packages overview
             redirect_to(h.url_for('packages'))
         else:
+            my.redirect_back()
+
             # Redirect to the package page
             redirect_to(h.url_for('package', package=package.name))
 
@@ -153,6 +161,7 @@ class PackagesController(BaseController):
 
         my.message("Screenshot for package <em>%s</em> approved." % package.name)
 
+        my.redirect_back()
         redirect_to(h.url_for('package', package=package.name))
 
     def ajax_autocomplete_packages(self):

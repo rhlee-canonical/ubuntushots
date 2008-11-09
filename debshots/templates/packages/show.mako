@@ -32,7 +32,7 @@
 
 ## Show approved screenshots
 <div class="screenshots">
-<h1>Screenshots</h1>
+<h1>Available screenshots</h1>
 % if c.package.approved_screenshots.count():
 % for screenshot in c.package.approved_screenshots:
     <div class="screenshot">
@@ -60,7 +60,7 @@
 ## section below.
 % if ('username' not in session) and (c.package.my_screenshots.count()):
 <div class="screenshots">
-<h1>Your uploaded screenshots</h1>
+<h1>Your uploaded (not yet approved) screenshots</h1>
 % for screenshot in c.package.my_screenshots:
     <div class="screenshot">
     <a class="image" href="${h.url_for('image', id=screenshot.large_image.id)}"
@@ -79,7 +79,7 @@
 </div>
 % endif
 
-## Show screenshots that are not yet approved
+## Show screenshots that are not yet approved (for admins only)
 % if 'username' in session and c.package.unapproved_screenshots.count():
 <div class="screenshots">
 <h1>Not yet approved screenshots</h1>
@@ -94,11 +94,11 @@
     ## TODO: Fancy icons :)
     ${ h.tags.link_to(
         'Approve screenshot',
-        h.url_for('approve_screenshot', screenshot=screenshot.id)) }
+        h.url_for('approve_screenshot', screenshot=screenshot.id, goto=h.url_for())) }
     <br />
     ${ h.tags.link_to(
         'Delete screenshot',
-        h.url_for('delete_screenshot', screenshot=screenshot.id),
+        h.url_for('delete_screenshot', screenshot=screenshot.id, goto=h.url_for()),
         onclick=h.tags.literal('return confirm(\'Really delete this screenshot?\')')) }
     </div>
 % endfor

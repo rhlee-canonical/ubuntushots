@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 
+<script type="application/x-javascript">
+    $(document).ready(function() {
+        $('input[name=search]').focus();
+    });
+</script>
+
+
 <div class="graybox">
 <h1>Browsing screenshots</h1>
 ${ h.tags.form(h.url_for())}
 <p>
-    By name
-    |
-    By category
-    |
-    Without screenshots
+    <a href="/packages">Package list</a>
     ## Admin options:
     % if 'username' in session:
     |
