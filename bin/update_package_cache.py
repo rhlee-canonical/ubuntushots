@@ -41,11 +41,10 @@ def main():
         os.unlink(tempfile)
 
     # Get Packages.gz (lists of binary packages)
-    #for arch in ('alpha', 'amd64', 'arm', 'armel', 'hppa', 'hurd-i386', 'i386',
-        #'ia64', 'm68k', 'mips', 'mipsel', 'powerpc', 's390', 'sparc'): # TODO: only testing
-    for arch in ('i386',): # TODO: only testing
+    for arch in ('alpha', 'amd64', 'arm', 'armel', 'hppa', 'hurd-i386', 'i386',
+        'ia64', 'm68k', 'mips', 'mipsel', 'powerpc', 's390', 'sparc'): # TODO: only testing
+    #for arch in ('i386',): # only for testing
         for component in ('main', 'non-free', 'contrib'):
-        #for component in ('contrib',): # TODO: only testing
             url = "%s/dists/unstable/%s/binary-%s/Packages" % \
                 (config['debshots.debian_mirror'], component, arch)
             logging.info("Fetching URL: %s" % url)
