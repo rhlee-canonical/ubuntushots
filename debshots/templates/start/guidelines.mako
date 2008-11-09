@@ -18,5 +18,9 @@
         from a console command is not very thrilling.</li>
     <li>Nice tools for taking screenshots are ksnaphot (KDE) or Gimp.</li>
     <li>You should not artificially switch off your window decorations.</li>
-    <li>Please set your language to english so that everybody understands it.</li>
+    <li>
+        Please set your language to english so that everybody understands it.
+        If you don't use english by default please start your application
+        from a shell using after seting "export LANG=C".
+    </li>
 </ul>
