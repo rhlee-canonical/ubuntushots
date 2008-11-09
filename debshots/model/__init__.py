@@ -121,6 +121,7 @@ screenshots_table = sql.Table(
     sql.Column('uploaderip', sql.Unicode(15)),
     sql.Column('approved', sql.Boolean(), default=False),
     sql.Column('markedfordelete', sql.Boolean(), default=False),
+    sql.Column('delete_reason', sql.Unicode(100)),
 )
 
 class Screenshot(MyOrm):
