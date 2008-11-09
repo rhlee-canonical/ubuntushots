@@ -61,7 +61,7 @@ elsewhere on the system.
    aspects of debshots. Make sure that you set
    "set debug = false" before you deploy the application.
 
-#. Set up the application (e.g. create required directories):
+#. Set up the application (e.g. create required directories and database):
 
    > (debshots) paster setup-app development.ini
 
@@ -106,21 +106,21 @@ Admins (logged in users - accounts are saved in the 'admins' table):
 - can see the moderation view of packages that have screenshots that
   are not approved or markedfordelete
 
-Adding administrators
-=====================
+Managing administrators
+=======================
 
-There is not yet a comfortable way to add administrators. You will have
-to enter the Pylons shell by running "paster shell" in the project
-(TODO: I think this won't work when deploying the application from an egg)
-and create a new user:
+New admins can be created using the 'create_admin_user.py' script located
+in the 'bin' directory:
 
-  newadmin = model.Admin(name="dilbert")
-  newadmin.setpassword('secret')
-  db.save(newadmin)
-  db.commit()
+  > bin/create_admin_user.py `pwd`/development.ini newusername newpassword
 
+Admin users can be deleted using the 'delete_admin_user.py':
+
+  > bin/delete_admin_user.py `pwd`/development.ini newusername newpassword
+
+Hint: just adding rows to the 'admins' database table will not work.
 You must set the password using the setpassword() method or otherwise the
-salted MD5 hash wouldn't get computed correctly.
+salted MD5 hash used for passwords wouldn't get computed correctly.
 
 Database structure
 ==================
