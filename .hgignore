@@ -10,3 +10,4 @@ data/
 docs/_build
 docs/*.png
 include/
+dist/

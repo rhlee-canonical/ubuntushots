@@ -1,4 +1,4 @@
 Pylons==0.9.6.2
 PIL>=1.1.6
-SQLAlchemy>=0.4.6
-decorator>=2.3.1
+SQLAlchemy==0.4.6
+Webhelpers==0.6.3
