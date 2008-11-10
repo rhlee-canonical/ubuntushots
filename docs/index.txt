@@ -171,7 +171,6 @@ To Do list
 
 - list of packages (cachebinarypackages) that do not have screenshots uploaded
   (seems not to be easily possible with SQLAlchemy)
-- properly styled error pages
 - RSS feed for new uploads
 - screenshot index view: allow sorting by upload date
 - URLs to access a screenshot for a certain package

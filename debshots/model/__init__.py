@@ -73,6 +73,7 @@ packages_table = sql.Table(
     'packages', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('name', sql.Unicode(100), unique=True),
+    sql.Column('version', sql.Unicode(100)),
 )
 
 class Package(MyOrm):

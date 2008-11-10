@@ -81,18 +81,40 @@ class PackagesController(BaseController):
         """Return the binary PNG image for <img src...> tags
 
         id: id number of the image in the database"""
-        if not id:
+        # Try to retrieve a WSGI fileapp for this image
+        image_fapp = self._image(id)
+
+        if not image_fapp:
             abort(404)
-            
+
+        return image_fapp
+
+    def thumbnail(self, package):
+        """Return a thumbnail image or a dummy image for a certain package."""
+        if not package:
+            return self._dummy_thumbnail()
+
+        this_package = model.Package.q().filter_by(name=package).first()
+        if not this_package:
+            return self._dummy_thumbnail()
+
+        first_screenshot = this_package.screenshots[0]
+        return self.image(first_screenshot.small_image.id)
+
+    def _image(self, id):
+        """Return an image or None if there is no such image."""
+        if not id:
+            return None
+
         image = model.Image.q().get(id)
 
         # Make sure the screenshot database row is available
         if not image:
-            abort(404)
+            return None
 
         # only show images that are approved (or for admins or owners)
         if not my.authorized_for_screenshot(image.screenshot):
-            abort(403)
+            return None
 
         # Make sure the file on disk exists
         if not os.path.isfile(image.path):
@@ -100,8 +122,18 @@ class PackagesController(BaseController):
             log.error("Image file #%s missing on disk. Removing screenshot from database." % image.id)
             db.delete(image.screenshot)
             db.commit()
-            abort(404)
+            return None
         fapp = paste.fileapp.FileApp(image.path,
+            headers=[('Content-Type', 'image/png')])
+        return fapp(request.environ, self.start_response)
+
+    def _dummy_thumbnail(self):
+        """Return 160x120 dummy thumbnail"""
+        image_path = os.path.join(
+            config['pylons.paths']['static_files'],
+            'images/dummy-thumbnail.png'
+            )
+        fapp = paste.fileapp.FileApp(image_path,
             headers=[('Content-Type', 'image/png')])
         return fapp(request.environ, self.start_response)
 
@@ -195,6 +227,7 @@ class PackagesController(BaseController):
         return '\n'.join(["%s|%s" % (package.name, package.description) for package in packages])
 
 #--------------------------
+
 
 def _process_screenshot(filehandle, package):
     """Process the uploaded PNG file
