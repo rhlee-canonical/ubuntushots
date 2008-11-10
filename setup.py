@@ -18,6 +18,9 @@ setup(
         "SQLAlchemy==0.4.6",
         "Webhelpers==0.6.3"
         ],
+    scripts=['bin/debshots-update-package-cache',
+        'bin/debshots-create-admin',
+        'bin/debshots-delete-admin'],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
     test_suite='nose.collector',

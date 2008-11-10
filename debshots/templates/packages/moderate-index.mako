@@ -7,7 +7,8 @@
 % if c.packages:
 ${ c.packages.pager('Package $page of $page_count - $link_previous ~3~ $link_next') }
 % for package in c.packages:
-    <h1>${ package.name }</h1>
+    <h1>Package: ${ package.name }</h1>
+    <p>${ package.cachebinarypackage.description }</p>
 
     <div class="screenshots">
     % for screenshot in package.moderated_screenshots:

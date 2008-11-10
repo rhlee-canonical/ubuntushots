@@ -168,3 +168,24 @@ To Do list
 - list of packages (cachebinarypackages) that do not have screenshots uploaded
   (seems not to be easily possible with SQLAlchemy)
 - properly styled error pages
+- RSS feed for new uploads
+- screenshot index view: allow sorting by upload date
+- URLs to access a screenshot for a certain package
+  (e.g. to be linked from packages.d.o)
+  [if a screenshot does not exist display a 160x120 dummy picture]
+- info for debian weekly news announcement (as soon as ready)
+- link to packages.debian.org
+- try PIL's image.thumbnail to create thumbnails (if useful)
+- only allow packages with NOT role::app-data (debtags)
+  (svn co svn://svn.debian.org/debtags/tagdb/tags)
+  or rather use http://www.enricozini.org/2008/tips/hmpffh.html
+- list of packages without screenshots
+- remove non-free from the package list (legal problems)
+- optional text for each screenshot
+- store the version of the package (suggest the newest version
+  of the package but let the user change that when uploading) screenshot
+- make "request removal" less tempting to click on
+- move to zepolen's server
+- sync screenshots in database and on disk
+- what happens to screenshots of packages where the cachedbinarypackage
+  got removed?

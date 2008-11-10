@@ -131,6 +131,7 @@ class PackagesController(BaseController):
         if package.screenshots.count()==0:
             db.delete(package)
             db.commit()
+            # TODO: delete screenshot on disk!
 
             my.redirect_back()
 

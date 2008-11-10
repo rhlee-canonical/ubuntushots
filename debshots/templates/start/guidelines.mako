@@ -14,13 +14,17 @@
         When snapshotting a browser load the debian.org home page. A screenshot
         of a graphics program should have a drawing loaded. Of a game please make
         a screenshot while you are playing and not of the start screen.</li>
-    <li>The application you shoot should be a GUI application. Taking a screenshot
-        from a console command is not very thrilling.</li>
-    <li>Nice tools for taking screenshots are ksnaphot (KDE) or Gimp.</li>
+    <li>
+        Nice tools for taking screenshots are ksnaphot (KDE), Gimp, xwd or scrot.
+    </li>
     <li>You should not artificially switch off your window decorations.</li>
     <li>
         Please set your language to english so that everybody understands it.
         If you don't use english by default please start your application
         from a shell using after seting "export LANG=C".
+    </li>
+    <li>
+        Please only take a screenshot of the respective appliation and not
+        of your whole desktop.
     </li>
 </ul>

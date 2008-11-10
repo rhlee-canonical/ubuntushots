@@ -24,19 +24,21 @@
 </p>
 
 ## TODO: fix links
-<ul>
-    <li>
-        http://screenshots.debian.net/packages
-        <br/>
-        (List of all packages with screenshots)
-    </li>
-    <li>
-        http://screenshots.debian.net/screenshots/foobar
-        <br/>
-        (List of screenshots for package 'foobar')
-    </li>
-    <li>
-        http://screenshots.debian.net/screenshot/foobar
-        <br/>
-        (First screenshot for package 'foobar' to be used in img/src tags)
-    </li>
+##<ul>
+##    <li>
+##        http://screenshots.debian.net/packages
+##        <br/>
+##        (List of all packages with screenshots)
+##    </li>
+##    <li>
+##        http://screenshots.debian.net/screenshots/foobar
+##        <br/>
+##        (List of screenshots for package 'foobar')
+##    </li>
+##    <li>
+##        http://screenshots.debian.net/screenshot/foobar
+##        <br/>
+##        (First screenshot for package 'foobar' to be used in img/src tags)
+##    </li>
+##</ul>
+
