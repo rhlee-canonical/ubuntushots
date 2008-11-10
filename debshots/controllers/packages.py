@@ -151,6 +151,9 @@ class PackagesController(BaseController):
         # Admins or the one who uploaded the screenshot is allowed to delete
         elif ('username' in session) or (my.client_cookie_hash() == this_screenshot.uploaderhash):
             db.delete(this_screenshot)
+            for image in this_screenshot.images:
+                if os.path.isfile(image.path):
+                    os.unlink(image.path)
             my.message('Screenshot for package <em>%s</em> deleted.' % package.name)
         # If the screenshot is 'approved' and the current user is not an admin
         # then it's only possible to mark the screenshot for deletion by an admin.
@@ -166,7 +169,6 @@ class PackagesController(BaseController):
         if package.screenshots.count()==0:
             db.delete(package)
             db.commit()
-            # TODO: delete screenshot on disk!
 
             my.redirect_back()
 
