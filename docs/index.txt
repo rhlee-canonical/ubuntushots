@@ -173,11 +173,7 @@ To Do list
   (seems not to be easily possible with SQLAlchemy)
 - RSS feed for new uploads
 - screenshot index view: allow sorting by upload date
-- URLs to access a screenshot for a certain package
-  (e.g. to be linked from packages.d.o)
-  [if a screenshot does not exist display a 160x120 dummy picture]
 - info for debian weekly news announcement (as soon as ready)
-- link to packages.debian.org
 - try PIL's image.thumbnail to create thumbnails (if useful)
 - only allow packages with NOT role::app-data (debtags)
   (svn co svn://svn.debian.org/debtags/tagdb/tags)

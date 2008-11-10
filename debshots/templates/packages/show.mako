@@ -38,6 +38,8 @@
             </em>
         </li>
     % endif
+    <li><a href="http://packages.debian.org/${ c.package.name }" target="_blank">Package
+        page on packages.debian.org</a></li>
 </ul>
 </div>
 
