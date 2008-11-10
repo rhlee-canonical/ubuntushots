@@ -81,6 +81,9 @@ class PackagesController(BaseController):
         """Return the binary PNG image for <img src...> tags
 
         id: id number of the image in the database"""
+        if not id:
+            abort(404)
+            
         image = model.Image.q().get(id)
 
         # Make sure the screenshot database row is available
