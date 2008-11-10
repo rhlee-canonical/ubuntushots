@@ -14,15 +14,15 @@ class ErrorController(BaseController):
 
     This behaviour can be altered by changing the parameters to the
     ErrorDocuments middleware in your config/middleware.py file.
-    
+
     """
     def document(self):
-        """Render the error document"""
-        page = error_document_template % \
-            dict(prefix=request.environ.get('SCRIPT_NAME', ''),
-                 code=cgi.escape(request.params.get('code', '')),
-                 message=cgi.escape(request.params.get('message', '')))
-        return page
+        """
+        Renders the error document.
+        """
+        c.message = request.params.get('message', '-')
+        c.code = int(request.params.get('code', '-'))
+        return render('/error.mako')
 
     def img(self, id):
         """Serve Pylons' stock images"""
