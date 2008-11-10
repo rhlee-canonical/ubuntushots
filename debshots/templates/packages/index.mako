@@ -4,7 +4,7 @@
 <%include file="/packages/include-index-header.mako"/>
 
 % if c.packages:
-<p>${ c.packages.pager('Page: $link_previous ~2~ $link_next') }</p>
+<p>${ c.packages.pager('Page: $link_first $link_previous ~2~ $link_next $link_last') }</p>
 <table>
     <tr>
         <th>Package</th>
