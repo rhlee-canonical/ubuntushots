@@ -21,6 +21,7 @@ class PackagesController(BaseController):
         """Show a list of packages with screenshots"""
         packages = model.Package.q()
         search = request.params.get('search')
+        # TODO: only print packages with 0 unapproved screenshots
         if search:
             packages = packages.filter(
                 (model.Package.name.like('%'+search+'%'))

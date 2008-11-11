@@ -186,3 +186,6 @@ To Do list
 - what happens to screenshots of packages where the cachedbinarypackage
   got removed?
 - statistics page (packages, screenshots, per section)
+- don't list packages with 0 approved screenshots
+- another list of packages that directly displays the thumbnails
+- wade through the TODOs in the source

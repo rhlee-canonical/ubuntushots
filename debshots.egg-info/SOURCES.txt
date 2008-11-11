@@ -21,7 +21,6 @@ debshots/config/middleware.py
 debshots/config/routing.py
 debshots/controllers/__init__.py
 debshots/controllers/error.py
-debshots/controllers/my.py
 debshots/controllers/packages.py
 debshots/controllers/start.py
 debshots/controllers/template.py
@@ -33,6 +32,7 @@ debshots/lib/my.py
 debshots/lib/validators.py
 debshots/model/__init__.py
 debshots/public/css/style.css
+debshots/public/images/dummy-thumbnail.png
 debshots/public/images/logo.png
 debshots/public/images/spinner.gif
 debshots/public/javascript/jquery.autocomplete.js
@@ -40,6 +40,7 @@ debshots/public/javascript/jquery.flyout.js
 debshots/public/javascript/jquery.jgrowl.js
 debshots/public/javascript/jquery.js
 debshots/templates/base.mako
+debshots/templates/error.mako
 debshots/templates/message.mako
 debshots/templates/email/verification.mako
 debshots/templates/my/index.mako
