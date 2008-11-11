@@ -16,7 +16,10 @@ setup(
         "Pylons==0.9.6.2",
         "PIL>=1.1.6",
         "SQLAlchemy==0.4.6",
-        "Webhelpers==0.6.3"
+        "Webhelpers==0.6.3",
+        "pastescript>=1.7",
+        "paste>=1.7",
+        "psycopg2",
         ],
     scripts=['bin/debshots-update-package-cache',
         'bin/debshots-create-admin',

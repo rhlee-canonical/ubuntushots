@@ -17,8 +17,8 @@ tempfile = '/tmp/sources'
 
 logging.basicConfig(
     #level=logging.DEBUG,
-    #level=logging.INFO,
-    level=logging.WARNING,
+    level=logging.INFO,
+    #level=logging.WARNING,
     format='%(asctime)s %(levelname)s %(message)s'
     )
 
@@ -54,7 +54,7 @@ def main():
             logging.info("Parsing Packages.gz file into database cache")
             for pkg in deb822.Dsc.iter_paragraphs(file(tempfile)):
                 logging.debug("---------")
-                logging.info("Package:       %s " % pkg['package'])
+                logging.debug("Package:       %s " % pkg['package'])
 
                 match = re.match(r'(.+?) *\<(.+?)\>', pkg['maintainer'])
                 assert match, "Couldn't parse email address from maintainer entry (%s)" % pkg['maintainer']

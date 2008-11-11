@@ -48,28 +48,40 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
 
-Installation using virtualenv
+Deployment/Installation
 =============================
 
-It is generally suggested that *debshots* gets deployed using
-the *virtualenv* software which creates a seperate Python
-environment independent from what Python packages are installed
-elsewhere on the system.
+There are different ways to deploy *debshots* on a server. However the
+following way worked so you may want to follow it. It is generally suggested
+that *debshots* gets deployed using the *virtualenv* software which allow the
+installation of Python modules (of any version) into a seperate Python
+environment independent from what Python packages are installed elsewhere on
+the system.
 
-#. Install prerequisites.
+#. Install prerequisites (some modules compile C modules to work)
 
    > aptitude install python-dev gcc python-virtualenv python-pylons
 
-#. Get your copy of debshots
+#. Get your copy of debshots and create a source dist tarball
 
    > hg clone http://hg.workaround.org/debshots
-   > cd debshots
+   > python setup.py sdist
+ 
+   Then copy dist/debshots-x.y.tar.gz onto the server where you want to
+   deploy it.
 
 #. Create a virtualenv
 
    > virtualenv .
 
-#. Activate the virtualenv environment (set some variables like
+   (Some people suggest you run virtualenv with "--no-site-packages" thus
+   hiding the Python modules installed through Debian packages. But we
+   need the python-apt and python-debian Debian packages visible to I don't
+   use this option. I managed to install python-debian well but python-apt
+   refused to install through the default Python "python setup.py install"
+   way.)
+
+#. Activate the virtualenv environment (sets some variables like
    $PYTHONPATH so installation of Python packages through
    setuptools/ez_install is done in this directory instead of
    system-wide)
@@ -77,20 +89,22 @@ elsewhere on the system.
    > source bin/activate
 
    Your shell prompt should have changed by now and start with
-   "(debshots").
+   "(debshots)".
 
-#. Install the versions of Python packages that debshots depends on:
+#. Install the needed software for paste:
 
-   > (debshots) python setup.py develop
+   > (debshots) easy_install paste
+   > (debshots) easy_install pastescript
 
-   This will get the required packages from the internet and install
-   them inside the virtualenv.
+#. Install the debshots package:
+
+   > (debshots) easy_install debshots-x.y.tar.gz
 
 #. Create a new INI file that contains the global configuration:
 
-  > (debshots) paster make-config debshots my.ini
+   > (debshots) paster make-config debshots my.ini
 
-#. Edit the 'development.ini' configuration file to control various
+#. Edit the 'my.ini' configuration file to control various
    aspects of debshots. Make sure that you set
    "set debug = false" before you deploy the application.
 
@@ -109,6 +123,31 @@ elsewhere on the system.
 
    The table should be updated frequently (for example once per day)
    via a cron job.
+
+#. To have someone keep an eye on the paster process I recommend you install
+   the *daemontools* package. It would restart the process if it died
+   and would help run the process in the background so you can safely
+   log out without killing the process.
+
+   > aptitude install daemontools
+   > mkdir /etc/service/debshots
+
+   Create a file /etc/service/debshots/run that starts the paster process.
+   Example::
+
+    #!/bin/sh
+    export PYTHON_EGG_CACHE=/home/debshots/.python-eggs
+    exec setuidgid debshots /home/debshots/bin/paster serve /home/debshots/my.ini
+
+   Make this file executable.
+
+   > chmod +x /etc/service/debshots
+
+   Try /etc/service/debshots/run to see if the process would be starting.
+   If all works well then start it through daemontools:
+
+   > svc -u /etc/service/debshots
+
 
 How does it work?
 =================
@@ -188,4 +227,22 @@ To Do list
 - statistics page (packages, screenshots, per section)
 - don't list packages with 0 approved screenshots
 - another list of packages that directly displays the thumbnails
+  (or checkbox to enable seeing the thumbnails)
 - wade through the TODOs in the source
+- omit the sections and rather use debtags directly
+- Roberto Sanchez asks for a way to accept screenshots via email signed
+  by DDs
+- search packages in index by first letter (a, b, c, d, ...)
+- search packages by maintainer (and which packages of a certain maintainer
+  lack screenshots)
+  [http://debtags.alioth.debian.org/todo.html?maint=pabs@debian.org]
+- redisplay search term after search is done
+  (paging within search results currently loses the search term, too)
+- raise IOError("cannot read interlaced PNG files")
+- Minor issue I know, but I personally would insert the ‘(just type the first
+  letters)’ on the upload page using Javascript, since the autocomplete
+  functionality won’t be available to users with Javascript disabled.
+- How about adding links to the licensing boilerplate? These screenshots are
+  licensed under the same terms[1] as ‘$package[2]‘ itself. Where [1] points to
+  http://packages.debian.org/changelogs/pool/main/b/package/current/copyright
+  and [2] points to (say) http://packages.debian.org/src:package ?
