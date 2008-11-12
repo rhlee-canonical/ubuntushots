@@ -60,20 +60,20 @@ def main():
                 logging.debug("Email:         %s" % maint_email)
 
                 # Get first line of the description
-                description = pkg['description'].split('\n')
+                description = pkg['description'].split('\n')[0]
                 logging.debug("Description:   %s" % description)
 
                 # Get the package entry from the database (if it exists yet)
                 db_binpkg = model.Package.q().filter_by(name=pkg['package'].decode('utf8')).first()
 
-                # Skip this entry if the package's database entry has the same version
-                if db_binpkg.version==pkg['version']:
-                    continue
-
                 # If the package is not yet found in the database then create a new entry
                 if not db_binpkg:
                     db_binpkg = model.Package(name=pkg['package'].decode('utf8'))
                     model.Session.save(db_binpkg)
+
+                # Skip this entry if the package's database entry has the same version
+                if db_binpkg.version==pkg['version']:
+                    continue
 
                 db_binpkg.description = description[:80].decode('utf8')
                 db_binpkg.section = pkg['Section'].decode('utf8')

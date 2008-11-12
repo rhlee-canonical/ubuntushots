@@ -4,7 +4,8 @@ setup.cfg
 setup.py
 bin/debshots-create-admin
 bin/debshots-delete-admin
-bin/debshots-update-package-cache
+bin/debshots-set-version-for-unversioned-screenshots
+bin/debshots-update-packages
 debshots/__init__.py
 debshots/websetup.py
 debshots.egg-info/PKG-INFO
@@ -43,7 +44,6 @@ debshots/templates/base.mako
 debshots/templates/error.mako
 debshots/templates/message.mako
 debshots/templates/email/verification.mako
-debshots/templates/my/index.mako
 debshots/templates/packages/include-index-header.mako
 debshots/templates/packages/include-js-autocomplete-package.mako
 debshots/templates/packages/include-js-lightbox.mako
