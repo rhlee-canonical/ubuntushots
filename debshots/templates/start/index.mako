@@ -33,7 +33,7 @@
     <li>
         http://screenshots.debian.net/packages
         <br />
-        (List of all packages with screenshot)
+        (List of all packages with screenshots)
     </li>
     <li>
         http://screenshots.debian.net/package/PACKAGENAME

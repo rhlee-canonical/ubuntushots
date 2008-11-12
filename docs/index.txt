@@ -214,23 +214,27 @@ To Do list
 - only allow packages with NOT role::app-data (debtags)
   (svn co svn://svn.debian.org/debtags/tagdb/tags)
   or rather use http://www.enricozini.org/2008/tips/hmpffh.html
-- optional text for each screenshot
 - move to zepolen's server
 - sync screenshots in database and on disk
 - statistics page (packages, screenshots, per section)
 - wade through the TODOs in the source
-- omit the sections and rather use debtags directly
-  (sections are not deprecated yet!)
 - Roberto Sanchez asks for a way to accept screenshots via email signed
   by DDs
-- search packages in index by first letter (a, b, c, d, ...)
 - search packages by maintainer (and which packages of a certain maintainer
   lack screenshots)
   [http://debtags.alioth.debian.org/todo.html?maint=pabs@debian.org]
-- raise IOError("cannot read interlaced PNG files")
+
+Wishlist
+========
+
 - How about adding links to the licensing boilerplate? These screenshots are
   licensed under the same terms[1] as ‘$package[2]‘ itself. Where [1] points to
   http://packages.debian.org/changelogs/pool/main/b/package/current/copyright
   and [2] points to (say) http://packages.debian.org/src:package ?
 - i18n (german translation offer by Florian Maier <droneauth@gmail.com>)
   [better send to debian-i18n]
+- search packages in index by first letter (a, b, c, d, ...)
+- omit the sections and rather use debtags directly
+  (sections are not deprecated yet!)
+- optional text for each screenshot
+- backup script
