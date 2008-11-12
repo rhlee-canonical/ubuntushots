@@ -13,6 +13,7 @@
         <th>Section</th>
         ##<th>Screenshots</th>
         <th>Homepage</th>
+        <th>Contribute</th>
     </tr>
 % for package in c.packages:
     <tr>
@@ -37,6 +38,11 @@
                 package.homepage,
                 target='_blank') }
         </td>
+        ## Show link to upload screenshots
+        <td>
+            ${ h.tags.link_to('Upload a screenshot', h.url_for('upload', package=package.name)) }
+        </td>
+
     </tr>
     ## Second line shows screenshots
     % if package.approved_screenshots.count():

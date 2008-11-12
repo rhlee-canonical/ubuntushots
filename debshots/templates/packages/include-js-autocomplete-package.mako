@@ -7,7 +7,8 @@
             mustMatch: true,
             formatItem: formatPackage,
             max: 30,
-            delay: 200
+            delay: 200,
+            autoFill: true
             }
         );
 

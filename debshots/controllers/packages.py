@@ -36,6 +36,17 @@ class PackagesController(BaseController):
             page=int(request.params.get('page', 0)))
         return render('/packages/index.mako')
 
+    def without_screenshots(self):
+        """Show a lit of packages without screenshots"""
+        packages = model.Package.q()
+        # Only show packages with screenshots
+        packages = packages.filter(~model.Package.screenshots.any())
+
+        c.packages = h.paginate.Page(packages,
+            items_per_page=10,
+            page=int(request.params.get('page', 0)))
+        return render('/packages/index.mako')
+
     def moderate(self):
         """Show a list of not-yet-approved screenshots for the admin"""
         # Admins only
@@ -230,6 +241,16 @@ class PackagesController(BaseController):
         query = request.params.get('q')
         packages = model.Package.q().filter(model.Package.name.startswith(query))[:30]
         return '\n'.join(["%s|%s" % (package.name, package.description) for package in packages])
+
+    @jsonify
+    def ajax_get_version_for_package(self):
+        """Get the current version of a package from the database"""
+        query = request.params.get('q')
+        package = model.Package.q().filter_by(name=query).first()
+        if not package:
+            return ''
+        logging.debug('ajax_get_version_for_package(%s) -> %s' % (query, package.version))
+        return { 'version' : package.version }
 
 #--------------------------
 

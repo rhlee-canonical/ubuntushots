@@ -21,7 +21,7 @@ def make_map():
     map.connect('packages', '/packages', controller='packages', action='index')
     map.connect('moderate', '/packages/moderate', controller='packages', action='moderate')
     map.connect('image', '/image/:id', controller='packages', action='image')
-    map.connect('upload', '/upload', controller='packages', action='upload')
+    map.connect('upload', '/upload/:package', controller='packages', action='upload')
     map.connect('uploadfile', '/uploadfile', controller='packages', action='uploadfile')
     map.connect('guidelines', '/guidelines', controller='start', action='guidelines')
     map.connect('login', 'login', controller='start', action='login')

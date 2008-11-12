@@ -238,9 +238,6 @@ To Do list
 - redisplay search term after search is done
   (paging within search results currently loses the search term, too)
 - raise IOError("cannot read interlaced PNG files")
-- Minor issue I know, but I personally would insert the ‘(just type the first
-  letters)’ on the upload page using Javascript, since the autocomplete
-  functionality won’t be available to users with Javascript disabled.
 - How about adding links to the licensing boilerplate? These screenshots are
   licensed under the same terms[1] as ‘$package[2]‘ itself. Where [1] points to
   http://packages.debian.org/changelogs/pool/main/b/package/current/copyright
