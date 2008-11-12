@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""Set the version field of a screenshots to the version of the package in the packages table"""
+
+# This is a throw-away script. At first the version wasn't saved along with the
+# screenshots. So this script was run once to assign the version to the 250
+# uploaded screenshots automatically.
+
+import logging
+import os
+import urllib
+import sys
+import re
+import bz2
+from paste.deploy import appconfig
+from pylons import config
+from debian_bundle import debian_support, deb822
+import subprocess
+from debshots.config.environment import load_environment
+
+tempfile = '/tmp/sources'
+
+logging.basicConfig(
+    #level=logging.DEBUG,
+    level=logging.INFO,
+    #level=logging.WARNING,
+    format='%(asctime)s %(levelname)s %(message)s'
+    )
+
+def main():
+    logging.info("Initalising Pylons environment...")
+
+    conf = appconfig('config:' + sys.argv[1])
+    load_environment(conf.global_conf, conf.local_conf)
+
+    # Initialize database
+    from debshots import model
+
+    for screenshot in model.Screenshot.q():
+        logging.info("Screenshot #%s of package %s" % (screenshot.id, screenshot.package.name))
+        if not screenshot.version:
+            screenshot.version = screenshot.package.version
+            logging.info("- setting version to %s" % screenshot.version)
+
+    model.Session.commit()
+
+if __name__ == '__main__':
+    main()

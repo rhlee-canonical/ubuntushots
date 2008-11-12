@@ -214,10 +214,7 @@ To Do list
 - only allow packages with NOT role::app-data (debtags)
   (svn co svn://svn.debian.org/debtags/tagdb/tags)
   or rather use http://www.enricozini.org/2008/tips/hmpffh.html
-- list of packages without screenshots
 - optional text for each screenshot
-- store the version of the package (suggest the newest version
-  of the package but let the user change that when uploading) screenshot
 - move to zepolen's server
 - sync screenshots in database and on disk
 - what happens to screenshots of packages where the cachedbinarypackage
@@ -242,3 +239,4 @@ To Do list
   http://packages.debian.org/changelogs/pool/main/b/package/current/copyright
   and [2] points to (say) http://packages.debian.org/src:package ?
 - i18n (german translation offer by Florian Maier <droneauth@gmail.com>)
+  [better send to debian-i18n]
