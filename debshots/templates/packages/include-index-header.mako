@@ -21,7 +21,7 @@ ${ h.tags.form(h.url_for())}
     % endif
     ## Search field
     |
-    Search for: ${ h.tags.text(name='search') }
+    Search for: ${ h.tags.text(name='search', value=request.params.get('search')) }
 </p>
 </form>
 </div>

@@ -38,7 +38,8 @@ class PackagesController(BaseController):
 
         c.packages = h.paginate.Page(packages,
             items_per_page=10,
-            page=int(request.params.get('page', 0)))
+            page=int(request.params.get('page', 0)),
+            search=search)
         return render('/packages/index.mako')
 
     def without_screenshots(self):
