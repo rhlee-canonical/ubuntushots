@@ -60,7 +60,6 @@ packages_table = sql.Table(
     'packages', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('name', sql.Unicode(100), unique=True),
-    sql.Column('version', sql.Unicode(100)),
     sql.Column('description', sql.Unicode(80)),
     sql.Column('section', sql.Unicode(50)),
     sql.Column('maintainer', sql.Unicode(100)),
