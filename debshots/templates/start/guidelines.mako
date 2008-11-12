@@ -27,4 +27,5 @@
         Please only take a screenshot of the respective appliation and not
         of your whole desktop.
     </li>
+    <li>Interlaced PNG files cannot be processed. Please use non-interlaced images.</li>
 </ul>

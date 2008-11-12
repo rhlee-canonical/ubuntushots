@@ -26,9 +26,11 @@ class PackagesController(BaseController):
             packages = packages.filter(
                 (model.Package.name.like('%'+search+'%'))
                 |
-                (model.Package.cachebinarypackage.has(
-                    model.CacheBinaryPackage.description.ilike('%'+search+'%')))
+                (model.Package.description.ilike('%'+search+'%'))
             )
+        # Only show packages with screenshots
+        packages = packages.filter(model.Package.screenshots.any(approved=True))
+
         c.packages = h.paginate.Page(packages,
             items_per_page=10,
             page=int(request.params.get('page', 0)))
@@ -58,15 +60,15 @@ class PackagesController(BaseController):
             fields = my.validate(ValidateExistingDebianPackage)
         except formencode.Invalid, e:
             return my.htmlfill(self.upload(), e)
-        cachepackage = fields['packagename']
+        package = fields['packagename']
         filename = fields['file']
-        error = _process_screenshot(filehandle=filename.file, package=cachepackage.name)
+        error = _process_screenshot(filehandle=filename.file, package=package.name)
         if error:
             c.message=error
         else:
-            log.info("Screenshot uploaded for package '%s'" % cachepackage.name)
+            log.info("Screenshot uploaded for package '%s'" % package.name)
             my.message("Screenshot for package '%s' uploaded successfully."
-                % cachepackage.name)
+                % package.name)
 
         return render('/packages/upload.mako')
 
@@ -226,7 +228,7 @@ class PackagesController(BaseController):
     def ajax_autocomplete_packages(self):
         """Get a list of packages for the autocompleter"""
         query = request.params.get('q')
-        packages = model.CacheBinaryPackage.q().filter(model.CacheBinaryPackage.name.startswith(query))[:30]
+        packages = model.Package.q().filter(model.Package.name.startswith(query))[:30]
         return '\n'.join(["%s|%s" % (package.name, package.description) for package in packages])
 
 #--------------------------

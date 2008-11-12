@@ -19,17 +19,17 @@
 <div class="graybox">
 <h1>Package <em>'${ c.package.name }'</em></h1>
 <ul>
-    <li><b>Description</b>: ${ c.package.cachebinarypackage.description }</li>
-    <li><b>Section</b>: ${ c.package.cachebinarypackage.section }</li>
-    % if c.package.cachebinarypackage.homepage:
+    <li><b>Description</b>: ${ c.package.description }</li>
+    <li><b>Section</b>: ${ c.package.section }</li>
+    % if c.package.homepage:
         <li><b>Homepage</b>:
             ${ h.tags.link_to(
-                c.package.cachebinarypackage.homepage,
-                c.package.cachebinarypackage.homepage,
+                c.package.homepage,
+                c.package.homepage,
                 target='_blank') }
         </li>
     % endif
-    <li><b>Package maintainer</b>: ${ c.package.cachebinarypackage.maintainer }</li>
+    <li><b>Package maintainer</b>: ${ c.package.maintainer }</li>
     % if c.package.unapproved_screenshots.count()>0:
         <li>
             <em>

@@ -209,7 +209,6 @@ To Do list
 ==========
 
 - list of packages (cachebinarypackages) that do not have screenshots uploaded
-  (seems not to be easily possible with SQLAlchemy)
 - RSS feed for new uploads
 - screenshot index view: allow sorting by upload date
 - info for debian weekly news announcement (as soon as ready)
@@ -246,3 +245,4 @@ To Do list
   licensed under the same terms[1] as ‘$package[2]‘ itself. Where [1] points to
   http://packages.debian.org/changelogs/pool/main/b/package/current/copyright
   and [2] points to (say) http://packages.debian.org/src:package ?
+- i18n (german translation offer by Florian Maier <droneauth@gmail.com>)
