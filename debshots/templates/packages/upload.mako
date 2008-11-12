@@ -32,20 +32,20 @@
 ${ h.tags.form(h.url_for('uploadfile'), method='post', multipart=True) }
 <table>
 <tr>
-    <td>Package:</td>
+    <td>Package name:</td>
     <td>
         <input type="text" name="packagename" id="packagename" size="40" />
         <span id="autocompletehint"></span>
     </td>
 </tr>
 <tr>
-    <td>Version:</td>
+    <td>Software version:</td>
     <td>
-        <input type="text" name="version" id="version" size="40" />
+        <input type="text" name="version" id="version" size="40" /> (optional)
     </td>
 </tr>
 <tr>
-    <td>Screenshot:</td>
+    <td>Screenshot (PNG file):</td>
     <td>
         <input type="file" name="file" size="40"/>
     </td>
