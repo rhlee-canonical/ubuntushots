@@ -53,27 +53,20 @@ class MyOrm(object):
 
         return self.__class__.__name__ + '(' + ', '.join(x[0] + '=' + repr(x[1]) for x in atts) + ')'
 
-#----------
-# Cache created from Sources.gz files to get quick access to available binary packages
-cache_binary_packages_table = sql.Table(
-    'cache_binary_packages', metadata,
-    sql.Column('id', sql.Integer, primary_key=True),
-    sql.Column('name', sql.Unicode(100), index=True, unique=True),
-    sql.Column('description', sql.Unicode(80)),
-    sql.Column('section', sql.Unicode(50)),
-    sql.Column('maintainer', sql.Unicode(100)),
-    sql.Column('homepage', sql.Unicode(200)),
-)
-
-class CacheBinaryPackage(MyOrm): pass
-
-#----------
-
+# Table containing Debian packages
+#
+# This table gets updated by the debshots-update-packages script
 packages_table = sql.Table(
     'packages', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('name', sql.Unicode(100), unique=True),
     sql.Column('version', sql.Unicode(100)),
+    sql.Column('description', sql.Unicode(80)),
+    sql.Column('section', sql.Unicode(50)),
+    sql.Column('maintainer', sql.Unicode(100)),
+    sql.Column('maintainer_email', sql.Unicode(100)),
+    sql.Column('homepage', sql.Unicode(200)),
+    sql.Column('version', sql.Unicode(50)),
 )
 
 class Package(MyOrm):
@@ -132,6 +125,7 @@ screenshots_table = sql.Table(
     'screenshots', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('package_id', sql.Integer, sql.ForeignKey('packages.id')),
+    sql.Column('version', sql.Unicode(50)),
     sql.Column('uploaddatetime', sql.DateTime(), default=sql.func.now()),
     sql.Column('uploaderhash', sql.Unicode(72)),
     sql.Column('uploaderip', sql.Unicode(15)),
@@ -216,14 +210,6 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
             cascade='all, delete-orphan',
             lazy='dynamic'
             ),
-        # Create a reference to the package cache by looking for package of the same name
-        'cachebinarypackage':orm.relation(
-            CacheBinaryPackage,
-            primaryjoin=(packages_table.c.name==cache_binary_packages_table.c.name),
-            foreign_keys=[cache_binary_packages_table.c.name],
-            uselist=False,
-            viewonly=True, # prevent changes to the cachebinarypackage
-            ),
         })
 
 orm.mapper(Image, images_table)
@@ -237,7 +223,5 @@ orm.mapper(Screenshot, screenshots_table,
             #lazy='dynamic'
         )
     })
-
-orm.mapper(CacheBinaryPackage, cache_binary_packages_table)
 
 orm.mapper(Admin, admins_table)

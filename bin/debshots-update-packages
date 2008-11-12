@@ -1,0 +1,124 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""Extract the maintainers' email addresses and package names from Sources.gz"""
+# Mimics: zcat Sources.gz | grep-dctrl -FMaintainer,Uploaders foo@bar -ns package
+import logging
+import os
+import urllib
+import sys
+import re
+import bz2
+from paste.deploy import appconfig
+from pylons import config
+from debian_bundle import debian_support, deb822
+import subprocess
+from debshots.config.environment import load_environment
+
+tempfile = '/tmp/sources'
+# URL to Enrico Zini's Humongous Merged Packages File From Hell
+#hmpfmh_url = 'http://debtags.alioth.debian.org/data/HMPFFH.bz2'
+hmpfmh_url = 'http://workaround.org/HMPFFH.bz2'
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    #level=logging.INFO,
+    #level=logging.WARNING,
+    format='%(asctime)s %(levelname)s %(message)s'
+    )
+
+def file_paragraphs(text):
+    """Generator that reads sections (lines seperated by empty lines) from a file's text"""
+    paragraph = []
+    for line in text.split('\n'):
+        if not line.strip(): # empty line
+            if paragraph: # handle newlines at the end
+                yield paragraph
+                paragraph = []
+        else:
+            paragraph.append(line.rstrip())
+
+def paragraph_entries(paragraph):
+    """Reads entries (key, value) from a paragraph and returns a dict
+
+    Supports multiline values. Continued lines start with whitespace."""
+    key = ''
+    entries = {}
+    for line in paragraph:
+        # Multiline entries are continued by whitespace at the start of the line
+        if line.startswith(' '):
+            entries[key] += '\n' + line
+        else:
+            match = re.search(r'^(.*?): (.*)$', line.strip())
+            if match:
+                key, value = match.groups()
+                entries[key] = value
+            else:
+                logging.error('Package entry unexpected: %s' % line)
+
+    return entries
+
+def main():
+    logging.info("Initalising Pylons environment...")
+
+    conf = appconfig('config:' + sys.argv[1])
+    load_environment(conf.global_conf, conf.local_conf)
+
+    # Initialize database
+    from debshots import model
+
+    # Download HMPFMH from Enrico Zini
+    logging.info("Downloading Enrico Zini's Humongous Merged Packages File From Hell")
+    hmpfmh_bz2 = urllib.urlopen(hmpfmh_url).read()
+    logging.info("Unpacking bz2 file")
+    hmpfmh = bz2.decompress(hmpfmh_bz2)
+
+    logging.info("Parsing packages file into the packages table")
+    for package in file_paragraphs(hmpfmh):
+        # Parse the current package paragraph
+        entries = paragraph_entries(package)
+        logging.debug("Package: %s" % entries['Package'])
+
+        # Sometimes the HMPFHH misses a few lines - ignore such paragraphs
+        if 'Section' not in entries: continue
+        if 'Version' not in entries: continue
+        if 'Description' not in entries: continue
+
+        # Skip non-free packages
+        if entries['Section'].startswith('non-free/'):
+            logging.debug("Skipping non-free package")
+            continue
+
+        # The HMPFFH file contains multiple package versions for each distribution
+        # so we just take what's in 'Sid' here.
+        if entries['Distribution'] != 'sid':
+            logging.debug("Skipping package (this entry does not refer to Sid)")
+            continue
+
+        # Get package from the database
+        dbpkg = model.Package.q().filter_by(name=entries['Package'].decode('utf8')).first()
+        # Create a new package entry if there is none in the database yet
+        if not dbpkg:
+            dbpkg = model.Package(name=entries['Package'].decode('utf8'))
+
+        dbpkg.version = entries['Version'].decode('utf8')
+        dbpkg.description = entries['Description'].decode('utf8')
+        dbpkg.section = entries['Section'].decode('utf8')
+        dbpkg.homepage = entries.get('Homepage','').decode('utf8')
+        # TODO: debtags
+
+        match = re.match(r'(.+?) *\<(.+?)\>', entries['Maintainer'])
+        assert match, "Couldn't parse email address from maintainer entry (%s)" \
+            % pkg['maintainer']
+        maint_name, maint_email = match.groups()
+        dbpkg.maintainer = maint_name.decode('utf8')
+        dbpkg.maintainer_email = maint_email.decode('utf8')
+
+        logging.info("Package %s" % entries['Package'])
+
+    model.Session.save(dbpkg)
+
+    logging.info("Committing to database")
+    model.Session.commit()
+
+if __name__ == '__main__':
+    main()
