@@ -85,6 +85,7 @@ class PackagesController(BaseController):
             version=fields['version'])
         if error:
             c.message=error
+            my.message(error)
         else:
             log.info("Screenshot uploaded for package '%s'" % package.name)
             my.message("Screenshot for package '%s' uploaded successfully."
@@ -294,7 +295,10 @@ def _process_screenshot(filehandle, package, version):
         db.save(db_pkg)
 
     # Resize to 800x600
-    image_800_600, xsize, ysize = _resize(pil, 800, 600)
+    try:
+        image_800_600, xsize, ysize = _resize(pil, 800, 600)
+    except IOError, e:
+        return "There seems to be a problem with your image: %s" % e
 
     # Create screenshot entry
     db_screenshot = model.Screenshot(

@@ -4,18 +4,6 @@
 
 <%include file="/packages/include-js-lightbox.mako"/>
 
-<script type="application/x-javascript">
-    $(document).ready(function() {
-        $('#markfordelete').click(
-            function () {
-                $('#markfordelete-form').show('slow');
-                $('#markfordelete-reason').focus();
-            }
-        )
-    });
-</script>
-
-
 <div class="graybox">
 <h1>Package <em>'${ c.package.name }'</em></h1>
 <ul>
@@ -78,14 +66,15 @@
             ${ h.tags.link_to(
                 'Request removal',
                 '#',
-                id='markfordelete',
+                id='markfordelete%s' % screenshot.id,
+                onclick="$('#markfordelete-form-%s').show('slow')" % screenshot.id,
                 ) }
             ## Hidden field to enter the reason for markedfordelete
-            <div id="markfordelete-form" style="display: none">
+            <div id="markfordelete-form-${screenshot.id}" style="display: none">
                 ${ h.tags.form(h.url_for('delete_screenshot', screenshot=screenshot.id))}
                 Why should it get removed?
                 <br />
-                ${ h.tags.text('reason', id='markfordelete-reason') }
+                ${ h.tags.text('reason') }
                 <br />
                 ${ h.tags.submit('submit', 'Okay') }
                 </form>

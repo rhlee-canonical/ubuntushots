@@ -227,8 +227,6 @@ To Do list
 - search packages by maintainer (and which packages of a certain maintainer
   lack screenshots)
   [http://debtags.alioth.debian.org/todo.html?maint=pabs@debian.org]
-- redisplay search term after search is done
-  (paging within search results currently loses the search term, too)
 - raise IOError("cannot read interlaced PNG files")
 - How about adding links to the licensing boilerplate? These screenshots are
   licensed under the same terms[1] as ‘$package[2]‘ itself. Where [1] points to

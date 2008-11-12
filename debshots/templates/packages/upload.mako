@@ -58,5 +58,5 @@ ${ h.tags.form(h.url_for('uploadfile'), method='post', multipart=True) }
 by the admin team.</p>
 
 % if c.message:
-<p><i>${ c.message }</i></p>
+<p class="error-message">${ c.message }</p>
 % endif
