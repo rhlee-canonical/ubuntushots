@@ -29,8 +29,12 @@ class PackagesController(BaseController):
                 |
                 (model.Package.description.ilike('%'+search+'%'))
             )
-        # Only show packages with screenshots
-        packages = packages.filter(model.Package.screenshots.any(approved=True))
+        # Only show packages with approved screenshots or the user's own screenshots
+        packages = packages.filter(
+            (model.Package.screenshots.any(approved=True))
+            |
+            (model.Package.screenshots.any(uploaderhash=my.client_cookie_hash()))
+            )
 
         c.packages = h.paginate.Page(packages,
             items_per_page=10,

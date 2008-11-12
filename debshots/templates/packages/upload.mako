@@ -54,6 +54,9 @@ ${ h.tags.form(h.url_for('uploadfile'), method='post', multipart=True) }
 <input type="submit" value="Upload screenshot" />
 </form>
 
+<p>Remember: your uploaded screenshot will not be visible immediately. It will first be checked
+by the admin team.</p>
+
 % if c.message:
 <p><i>${ c.message }</i></p>
 % endif

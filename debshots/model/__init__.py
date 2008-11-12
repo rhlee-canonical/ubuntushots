@@ -97,6 +97,15 @@ class Package(MyOrm):
             approved=False)
 
     @property
+    def my_or_approved_screenshots(self):
+        """Return a list of the user's own or any approved screenshots"""
+        return self.screenshots.filter(
+            (Screenshot.approved==True)
+            |
+            (Screenshot.uploaderhash==my.client_cookie_hash())
+            )
+
+    @property
     def moderated_screenshots(self):
         """Return a list of freshly uploaded or marked for delete screenshots of this package"""
         return self.screenshots.filter(

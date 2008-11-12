@@ -45,12 +45,12 @@
 
     </tr>
     ## Second line shows screenshots
-    % if package.approved_screenshots.count():
+    % if package.my_or_approved_screenshots.count():
     <tr>
         <td></td>
-        <td colspan="3">
+        <td colspan="4">
             <div class="screenshots">
-            % for screenshot in package.approved_screenshots:
+            % for screenshot in package.my_or_approved_screenshots:
             <a class="image" href="${h.url_for('image', id=screenshot.large_image.id)}"
                 title="Screenshot of package '${screenshot.package.name}'">
                 <img src="${h.url_for('image', id=screenshot.small_image.id)}" alt="Screenshot" />

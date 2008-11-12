@@ -56,6 +56,10 @@
     <a class="image" href="${h.url_for('image', id=screenshot.large_image.id)}"
         title="Screenshot of package '${screenshot.package.name}'">
         <img src="${h.url_for('image', id=screenshot.small_image.id)}" alt="Screenshot" />
+        % if screenshot.version:
+        <br />
+        Version: ${ screenshot.version }
+        % endif
     </a>
     <br />
     ## TODO: Fancy icons :)
@@ -109,6 +113,10 @@
         title="Screenshot of package '${screenshot.package.name}'">
         <img src="${h.url_for('image', id=screenshot.small_image.id)}" alt="Screenshot" />
     </a>
+    % if screenshot.version:
+    <br />
+    Version: ${ screenshot.version }
+    % endif
     ## Allow the visitor to delete their own screenshots
     <br />
     ## TODO: Fancy icons :)
@@ -131,6 +139,10 @@
         title="Screenshot of package '${screenshot.package.name}'">
         <img src="${h.url_for('image', id=screenshot.small_image.id)}" alt="Screenshot" />
     </a>
+    % if screenshot.version:
+    <br />
+    Version: ${ screenshot.version }
+    % endif
     ## Allow the visitor to delete their own screenshots
     <br />
     ## TODO: Fancy icons :)

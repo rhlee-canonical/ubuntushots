@@ -208,7 +208,6 @@ has a list of admin users and their (salted MD5-hashed) passwords stored.
 To Do list
 ==========
 
-- list of packages (cachebinarypackages) that do not have screenshots uploaded
 - RSS feed for new uploads
 - screenshot index view: allow sorting by upload date
 - info for debian weekly news announcement (as soon as ready)
