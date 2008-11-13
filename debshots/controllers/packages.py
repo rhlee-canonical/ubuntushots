@@ -40,7 +40,7 @@ class PackagesController(BaseController):
 
         c.packages = h.paginate.Page(packages,
             items_per_page=10,
-            page=int(request.params.get('page', 0)),
+            page=request.params.get('page'),
             search=search,
             )
         return render('/packages/index.mako')
@@ -55,7 +55,7 @@ class PackagesController(BaseController):
 
         c.packages = h.paginate.Page(packages,
             items_per_page=10,
-            page=int(request.params.get('page', 0)))
+            page=request.params.get('page'))
         return render('/packages/index.mako')
 
     def moderate(self):
@@ -66,7 +66,7 @@ class PackagesController(BaseController):
         packages = model.packages_with_moderated_screenshots()
         c.packages = h.paginate.Page(
             packages,
-            page=int(request.params.get('page', 0)),
+            page=request.params.get('page'),
             items_per_page=1,
             )
         return render('/packages/moderate-index.mako')
