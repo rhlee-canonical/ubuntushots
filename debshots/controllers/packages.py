@@ -30,16 +30,19 @@ class PackagesController(BaseController):
                 (model.Package.description.ilike('%'+search+'%'))
             )
         # Only show packages with approved screenshots or the user's own screenshots
+        # (JOINing reduces the packages to those which have corresponding screenshots)
+        packages = packages.join('screenshots')
         packages = packages.filter(
-            (model.Package.screenshots.any(approved=True))
+            (model.Screenshot.approved==True)
             |
-            (model.Package.screenshots.any(uploaderhash=my.client_cookie_hash()))
+            (model.Screenshot.uploaderhash==my.client_cookie_hash())
             )
 
         c.packages = h.paginate.Page(packages,
             items_per_page=10,
             page=int(request.params.get('page', 0)),
-            search=search)
+            search=search,
+            )
         return render('/packages/index.mako')
 
     def without_screenshots(self):
@@ -47,6 +50,8 @@ class PackagesController(BaseController):
         packages = model.Package.q()
         # Only show packages with screenshots
         packages = packages.filter(~model.Package.screenshots.any())
+
+        # TODO: the subselect run by .any() is pretty slow. can we optimize that?
 
         c.packages = h.paginate.Page(packages,
             items_per_page=10,
@@ -66,8 +71,9 @@ class PackagesController(BaseController):
             )
         return render('/packages/moderate-index.mako')
 
-    def upload(self):
+    def upload(self, package):
         """Show package upload dialog"""
+        c.packagename=package
         return render('/packages/upload.mako')
 
     def uploadfile(self):
