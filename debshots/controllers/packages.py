@@ -125,7 +125,13 @@ class PackagesController(BaseController):
             return self._dummy_thumbnail()
 
         this_package = model.Package.q().filter_by(name=package).first()
+
+        # Given package is not in the database
         if not this_package:
+            return self._dummy_thumbnail()
+
+        # Package does not have screenshots yet
+        if this_package.screenshots.count() == 0:
             return self._dummy_thumbnail()
 
         first_screenshot = this_package.screenshots[0]

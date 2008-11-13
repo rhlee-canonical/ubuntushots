@@ -223,6 +223,7 @@ To Do list
 - search packages by maintainer (and which packages of a certain maintainer
   lack screenshots)
   [http://debtags.alioth.debian.org/todo.html?maint=pabs@debian.org]
+- robots.txt, favicon.ico
 
 Wishlist
 ========
