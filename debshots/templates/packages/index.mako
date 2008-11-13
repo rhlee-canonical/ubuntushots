@@ -61,6 +61,7 @@
     % endif
 % endfor
 </table>
+<p>${ c.packages.pager('Page: $link_first $link_previous ~10~ $link_next $link_last') }</p>
 % else:
 <p>No screenshots found.</p>
 % endif
