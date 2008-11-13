@@ -160,7 +160,10 @@ class PackagesController(BaseController):
             db.commit()
             return None
         fapp = paste.fileapp.FileApp(image.path,
-            headers=[('Content-Type', 'image/png')])
+            headers=[
+                ('Content-Type', 'image/png'),
+                ('Cache-Control', 'max-age=86400')
+            ])
         return fapp(request.environ, self.start_response)
 
     def _dummy_thumbnail(self):
