@@ -28,6 +28,9 @@
     % endif
     <li><a href="http://packages.debian.org/${ c.package.name }" target="_blank">Package
         page on packages.debian.org</a></li>
+    ## Upload link:
+    <li>${ h.tags.link_to('Upload a new screenshot',
+            h.url_for('upload', package=c.package.name)) }</li>
 </ul>
 </div>
 
@@ -84,7 +87,7 @@
     </div>
 % endfor
 % else:
-<p>There are no approved screenshots for this package yet.</p>
+<p>There are no (approved) screenshots for this package yet.</p>
 % endif
 </div>
 

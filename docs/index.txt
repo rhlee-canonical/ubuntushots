@@ -224,6 +224,7 @@ To Do list
   lack screenshots)
   [http://debtags.alioth.debian.org/todo.html?maint=pabs@debian.org]
 - robots.txt, favicon.ico
+- deleting screenshots for admins should get a security question (alert())
 
 Wishlist
 ========
