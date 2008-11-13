@@ -162,7 +162,9 @@ class PackagesController(BaseController):
         fapp = paste.fileapp.FileApp(image.path,
             headers=[
                 ('Content-Type', 'image/png'),
-                ('Cache-Control', 'max-age=86400')
+                # make images cacheable
+                ('Cache-Control', 'public, max-age=86400'),
+                ('Pragma', ''),
             ])
         return fapp(request.environ, self.start_response)
 
