@@ -7,21 +7,29 @@
     $(document).ready(function() {
         $('#autocompletehint').html('(just type the first letters)');
 
-        $('#packagename').change(
-            function () {
-                // Get the current package version from the database
-                package = $('#packagename').val();
+        $('#packagename').change(packagename_changed);
 
-                $.getJSON(
-                    '/packages/ajax_get_version_for_package',
-                    { q: package },
-                    function (data) {
-                        $('#version').val(data.version);
-                        }
-                    )
-                }
-            );
+        ## The /upload action allows to specify an optional package
+        % if c.packagename:
+            $('#packagename').val('${c.packagename}')
+            packagename_changed();
+        % endif
     });
+
+    function packagename_changed () {
+        // Get the current package version from the database
+        package = $('#packagename').val();
+
+        // Fetch the version number from the database
+        $.getJSON(
+            '/packages/ajax_get_version_for_package',
+            { q: package },
+            function (data) {
+                // Insert the version number into the respective field
+                $('#version').val(data.version);
+                }
+            )
+        }
 </script>
 
 
@@ -54,8 +62,8 @@ ${ h.tags.form(h.url_for('uploadfile'), method='post', multipart=True) }
 <input type="submit" value="Upload screenshot" />
 </form>
 
-<p>Remember: your uploaded screenshot will not be visible immediately. It will first be checked
-by the admin team.</p>
+<p>Remember: your uploaded screenshot will not be visible immediately. It will first
+be checked by the admin team. It is already visible to you though.</p>
 
 % if c.message:
 <p class="error-message">${ c.message }</p>
