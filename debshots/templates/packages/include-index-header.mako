@@ -11,9 +11,9 @@
 <h1>Browsing screenshots</h1>
 ${ h.tags.form(h.url_for())}
 <p>
-    <a href="/packages">All packages</a>
+    <a href="/packages">Packages with screenshots</a>
     |
-    <a href="/packages/without_screenshots">Without screenshots</a>
+    <a href="/packages/without_screenshots">Packages missing any screenshots</a>
     ## Admin options:
     % if 'username' in session:
     |
