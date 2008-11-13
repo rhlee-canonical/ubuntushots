@@ -24,7 +24,7 @@
         from a shell using after seting "export LANG=C".
     </li>
     <li>
-        Please only take a screenshot of the respective appliation and not
+        Please only take a screenshot of the respective application and not
         of your whole desktop.
     </li>
     <li>Interlaced PNG files cannot be processed. Please use non-interlaced images.</li>
