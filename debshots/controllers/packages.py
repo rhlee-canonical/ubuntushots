@@ -194,21 +194,11 @@ class PackagesController(BaseController):
 
         db.commit()
 
+        # Try to redirect to the backlink (if provided)
+        my.redirect_back()
 
-        # If this was the last screenshot for this package then remove the package, too
-        if package.screenshots.count()==0:
-            db.delete(package)
-            db.commit()
-
-            my.redirect_back()
-
-            # Redirect to the packages overview
-            redirect_to(h.url_for('packages'))
-        else:
-            my.redirect_back()
-
-            # Redirect to the package page
-            redirect_to(h.url_for('package', package=package.name))
+        # Otherwise redirect to the package overview
+        redirect_to(h.url_for('package', package=package.name))
 
     def approve_screenshot(self, screenshot):
         """Approve a screenshot. Sets it to status 'approved'."""
