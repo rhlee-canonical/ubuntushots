@@ -20,6 +20,7 @@ setup(
         "pastescript>=1.6",
         "paste>=1.6",
         "psycopg2",
+        "formencode>=1",
         ],
     scripts=['bin/debshots-update-packages',
         'bin/debshots-create-admin',
