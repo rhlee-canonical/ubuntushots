@@ -13,9 +13,9 @@ ${ c.packages.pager('Package $page of $page_count - $link_previous ~3~ $link_nex
     <div class="screenshots">
     % for screenshot in package.moderated_screenshots:
     <div class="screenshot">
-    <a class="image" href="${h.url_for('image', id=screenshot.large_image.id)}"
+    <a class="image" href="${screenshot.large_image_url}"
         title="Screenshot of package '${screenshot.package.name}'">
-        <img src="${h.url_for('image', id=screenshot.small_image.id)}" alt="Screenshot" />
+        <img src="${screenshot.small_image_url}" alt="Screenshot" />
     </a>
     <br />
     ## Unapproved screenshot? (approve or delete)

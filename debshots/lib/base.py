@@ -32,6 +32,9 @@ class BaseController(WSGIController):
         # available in environ['pylons.routes_dict']
         try:
             return WSGIController.__call__(self, environ, start_response)
+        except:
+            model.Session.rollback()
+            raise
         finally:
             model.Session.remove()
 

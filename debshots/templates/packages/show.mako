@@ -44,9 +44,9 @@
 % if c.package.approved_screenshots.count():
 % for screenshot in c.package.approved_screenshots:
     <div class="screenshot">
-    <a class="image" href="${h.url_for('image', id=screenshot.large_image.id)}"
+    <a class="image" href="${screenshot.large_image_url}"
         title="Screenshot of package '${screenshot.package.name}'">
-        <img src="${h.url_for('image', id=screenshot.small_image.id)}" alt="Screenshot" />
+        <img src="${screenshot.small_image_url}" alt="Screenshot" />
         % if screenshot.version:
         <br />
         Version: ${ screenshot.version }
@@ -101,9 +101,9 @@
 <h1>Your uploaded (not yet approved) screenshots</h1>
 % for screenshot in c.package.my_screenshots:
     <div class="screenshot">
-    <a class="image" href="${h.url_for('image', id=screenshot.large_image.id)}"
+    <a class="image" href="${screenshot.large_image_url}"
         title="Screenshot of package '${screenshot.package.name}'">
-        <img src="${h.url_for('image', id=screenshot.small_image.id)}" alt="Screenshot" />
+        <img src="${screenshot.small_image_url}" alt="Screenshot" />
     </a>
     % if screenshot.version:
     <br />
@@ -127,9 +127,9 @@
 <h1>Not yet approved screenshots</h1>
 % for screenshot in c.package.unapproved_screenshots:
     <div class="screenshot">
-    <a class="image" href="${h.url_for('image', id=screenshot.large_image.id)}"
+    <a class="image" href="${screenshot.large_image_url}"
         title="Screenshot of package '${screenshot.package.name}'">
-        <img src="${h.url_for('image', id=screenshot.small_image.id)}" alt="Screenshot" />
+        <img src="${screenshot.small_image_url}" alt="Screenshot" />
     </a>
     % if screenshot.version:
     <br />

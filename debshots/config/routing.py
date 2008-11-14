@@ -17,11 +17,14 @@ def make_map():
     map.connect('error/:action/:id', controller='error')
 
     # CUSTOM ROUTES HERE
+    map.connect('image', '/screenshots/:package_inital/:package/:(id)_:size.png',
+        requirements={'id': r'\d+', 'size': '(small|large)'})
+    map.connect('unapproved_image', '/image/:(id)_:size.png',
+        controller='packages', action='image',
+        requirements={'id': r'\d+', 'size': '(small|large)'})
     map.connect('start', '', controller='start', action='index')
     map.connect('packages', '/packages', controller='packages', action='index')
     map.connect('moderate', '/packages/moderate', controller='packages', action='moderate')
-    map.connect('image', '/image/:id', controller='packages', action='image',
-        requirements={ 'id': r'\d+' })
     map.connect('upload', '/upload/:package', controller='packages', action='upload', package=None)
     map.connect('uploadfile', '/uploadfile', controller='packages', action='uploadfile')
     map.connect('guidelines', '/guidelines', controller='start', action='guidelines')
@@ -39,5 +42,8 @@ def make_map():
     map.connect('logout', '/logout', controller='start', action='logout')
     map.connect(':controller/:action/:id')
     map.connect('*url', controller='template', action='view')
+
+
+
 
     return map
