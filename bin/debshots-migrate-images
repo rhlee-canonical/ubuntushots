@@ -1,37 +1,62 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #
-# This is a one-time script to be run when migrating from 0.3.x to 0.4.
+# This is a throwaway script to be run when migrating from 0.3.x to 0.4.
 # Make sure that all screenshots are approved already before running it.
+# It will rename screenshots from /f/foobar/123 to
+# /approved/f/foobar/456_large.png
+# and
+# /approved/f/foobar/456_small.png
 #
+# where '123' is the ID of the image and '456' is the ID of the screenshot.
+#
+# After running this script the images table can be removed.
 
 import os
+import sys
+from paste.deploy import appconfig
+from debshots.config.environment import load_environment
+from pylons import config
 
-OLD_PATH = 'data/screenshots'
-NEW_PATH = 'data/screenshots/approved'
+def main():
+    conf = appconfig('config:' + sys.argv[1])
+    load_environment(conf.global_conf, conf.local_conf)
 
-TEST_MODE = 1
-
-images = model.Session.connection().execute('''
-select images.id, images.large, images.screenshot_id, packages.name
-from images
-join screenshots on screenshots.id = images.screenshot_id
-join packages on packages.id = screenshots.package_id
-where screenshots.approved
-''').fetchall()
+    # Initialize database
+    from debshots import model
 
 
-for image in images:
-    new_name = '%i_%s.png' % (image.screenshot_id, image.large and 'large' or 'small')
-    old_path = os.path.join(OLD_PATH, image.name[0], image.name, str(image.id))
-    new_dir = os.path.join(NEW_PATH, image.name[0], image.name)
-    new_path = os.path.join(new_dir, new_name)
-    try:
-        os.makedirs(new_dir)
-    except:
-        pass
-    try:
-        os.rename(old_path, new_path)
-    except:
-        print old_path, new_path, '...ERROR!!'
+    OLD_PATH = os.path.join(
+        conf['debshots.screenshots_directory'], 'data', 'screenshots')
+    NEW_PATH = os.path.join(
+        conf['debshots.screenshots_directory'], 'data', 'screenshots', 'approved')
+
+    TEST_MODE = 1
+
+    images = model.Session.connection().execute('''
+    select images.id, images.large, images.screenshot_id, packages.name
+    from images
+    join screenshots on screenshots.id = images.screenshot_id
+    join packages on packages.id = screenshots.package_id
+    where screenshots.approved
+    ''').fetchall()
+
+    for image in images:
+        new_name = '%i_%s.png' % (image.screenshot_id, image.large and 'large' or 'small')
+        old_path = os.path.join(OLD_PATH, image.name[0], image.name, str(image.id))
+        new_dir = os.path.join(NEW_PATH, image.name[0], image.name)
+        new_path = os.path.join(new_dir, new_name)
+        try:
+            os.makedirs(new_dir)
+        except:
+            pass
+        try:
+            #print "Renaming from '%s' to '%s'" % (old_path, new_path)
+            os.rename(old_path, new_path)
+        except:
+            print old_path, new_path, '...ERROR!!'
+
+if __name__ == '__main__':
+    main()
 
 
