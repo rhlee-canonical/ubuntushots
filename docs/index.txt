@@ -225,6 +225,9 @@ To Do list
   [http://debtags.alioth.debian.org/todo.html?maint=pabs@debian.org]
 - robots.txt, favicon.ico
 - deleting screenshots for admins should get a security question (alert())
+- allow images to be served statically (e.g. from apache or nginx)
+  [/static/f/fyre/123]
+  drawback: eben not-yet-approved screenshots would be visible
 
 Wishlist
 ========
@@ -240,3 +243,4 @@ Wishlist
   (sections are not deprecated yet!)
 - optional text for each screenshot
 - backup script
+- handle interlaced PNG files (perhaps via python-imagemagick)

@@ -82,7 +82,7 @@ class PackagesController(BaseController):
         try:
             fields = my.validate(ValidateExistingDebianPackage)
         except formencode.Invalid, e:
-            return my.htmlfill(self.upload(), e)
+            return my.htmlfill(self.upload(None), e)
         package = fields['packagename']
         filename = fields['file']
         error = _process_screenshot(
@@ -327,7 +327,10 @@ def _process_screenshot(filehandle, package, version):
         )
 
     # Resize to 160x120
-    image_160_120, xsize, ysize = _resize(pil, 160, 120)
+    try:
+        image_160_120, xsize, ysize = _resize(pil, 160, 120)
+    except IOError, e:
+        return "There seems to be a problem with your image: %s" % e
 
     # Create small image entry
     db_image_small = model.Image(
