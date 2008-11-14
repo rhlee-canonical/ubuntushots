@@ -4,7 +4,11 @@
 <%include file="/packages/include-index-header.mako"/>
 <%include file="/packages/include-js-lightbox.mako"/>
 
-% if c.packages:
+% if not c.packages:
+<p>No screenshots found.</p>
+<% return %>
+% endif
+
 <p>${ c.packages.pager('Page: $link_first $link_previous ~10~ $link_next $link_last') }</p>
 <table>
     <tr>
@@ -50,18 +54,15 @@
         <td></td>
         <td colspan="4">
             <div class="screenshots">
-            % for screenshot in package.my_or_approved_screenshots:
-            <a class="image" href="${h.url_for('image', id=screenshot.large_image.id)}"
+        % for screenshot in package.my_or_approved_screenshots:
+            <a class="image" href="${screenshot.large_image_url}"
                 title="Screenshot of package '${screenshot.package.name}'">
-                <img src="${h.url_for('image', id=screenshot.small_image.id)}" alt="Screenshot" />
+                <img src="${screenshot.small_image_url}" alt="Screenshot" />
             </a>
-            % endfor
+        % endfor
         </td>
     </tr>
     % endif
 % endfor
 </table>
 <p>${ c.packages.pager('Page: $link_first $link_previous ~10~ $link_next $link_last') }</p>
-% else:
-<p>No screenshots found.</p>
-% endif

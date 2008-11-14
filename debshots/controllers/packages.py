@@ -114,12 +114,48 @@ class PackagesController(BaseController):
             # TODO: display a page that proposed to upload screenshots as none yet exist
         return render('/packages/show.mako')
 
-    def image(self, id):
+    def _image(self, id, size):
+        """Return an image or None if there is no such image."""
+        if not id:
+            return None
+
+        screenshot = model.Screenshot.q().get(id)
+
+        # Make sure the screenshot database row is available
+        if not screenshot:
+            return None
+
+        # only show images that are approved (or for admins or owners)
+        if not my.authorized_for_screenshot(screenshot):
+            return None
+
+
+        file_path = os.path.join(screenshot.directory, '%s_%s.png' % (id, size))
+
+        # Make sure the file on disk exists
+        if not os.path.isfile(file_path):
+            # The file is in the database but not on disk? Remove it from the database then.
+            log.error("Screenshot file #%s missing on disk. Removing screenshot from database." % screenshot.id)
+            db.delete(screenshot)
+            db.commit()
+            return None
+
+        fapp = paste.fileapp.FileApp(
+            file_path,
+            headers=[
+                ('Content-Type', 'image/png'),
+                # make images cacheable
+                ('Cache-Control', 'public, max-age=86400'),
+                ('Pragma', ''),
+            ])
+        return fapp(request.environ, self.start_response)
+
+    def image(self, id, size):
         """Return the binary PNG image for <img src...> tags
 
         id: id number of the image in the database"""
         # Try to retrieve a WSGI fileapp for this image
-        image_fapp = self._image(id)
+        image_fapp = self._image(id, size)
 
         if not image_fapp:
             abort(404)
@@ -143,37 +179,6 @@ class PackagesController(BaseController):
 
         first_screenshot = this_package.screenshots[0]
         return self.image(first_screenshot.small_image.id)
-
-    def _image(self, id):
-        """Return an image or None if there is no such image."""
-        if not id:
-            return None
-
-        image = model.Image.q().get(id)
-
-        # Make sure the screenshot database row is available
-        if not image:
-            return None
-
-        # only show images that are approved (or for admins or owners)
-        if not my.authorized_for_screenshot(image.screenshot):
-            return None
-
-        # Make sure the file on disk exists
-        if not os.path.isfile(image.path):
-            # The file is in the database but not on disk? Remove it from the database then.
-            log.error("Image file #%s missing on disk. Removing screenshot from database." % image.id)
-            db.delete(image.screenshot)
-            db.commit()
-            return None
-        fapp = paste.fileapp.FileApp(image.path,
-            headers=[
-                ('Content-Type', 'image/png'),
-                # make images cacheable
-                ('Cache-Control', 'public, max-age=86400'),
-                ('Pragma', ''),
-            ])
-        return fapp(request.environ, self.start_response)
 
     def _dummy_thumbnail(self):
         """Return 160x120 dummy thumbnail"""
@@ -199,9 +204,9 @@ class PackagesController(BaseController):
         # Admins or the one who uploaded the screenshot is allowed to delete
         elif ('username' in session) or (my.client_cookie_hash() == this_screenshot.uploaderhash):
             db.delete(this_screenshot)
-            for image in this_screenshot.images:
-                if os.path.isfile(image.path):
-                    os.unlink(image.path)
+            for image_path in this_screenshot.image_paths:
+                if os.path.isfile(image_path):
+                    os.unlink(image_path)
             my.message('Screenshot for package <em>%s</em> deleted.' % package.name)
         # If the screenshot is 'approved' and the current user is not an admin
         # then it's only possible to mark the screenshot for deletion by an admin.
@@ -224,14 +229,31 @@ class PackagesController(BaseController):
         if not this_screenshot:
             abort(404)
 
+        if this_screenshot.approved:
+            my.message("Screenshot for package <em>%s</em> already approved." % package.name)
+            my.redirect_back()
+            redirect_to(h.url_for('package', package=package.name))
+
         package = this_screenshot.package
 
         # Make sure the user is allowed to delete the screenshot!
         # Has this screenshot been uploaded by the current user?
         if not my.authorized_for_screenshot(this_screenshot):
             abort(403, "I'm afraid I can't do that, Dave.")
-        this_screenshot.approved=True
-        db.commit()
+
+        old_image_paths = this_screenshot.image_paths
+        this_screenshot.approved = True
+        new_image_paths = this_screenshot.image_paths
+
+        # sanity check
+        assert(len(old_image_paths) == len(new_image_paths))
+
+        try:
+            for old_path, new_path in zip(old_image_paths, new_image_paths):
+                os.rename(old_path, new_path)
+            db.commit()
+        except IOError:
+            raise
 
         my.message("Screenshot for package <em>%s</em> approved." % package.name)
 
@@ -284,20 +306,17 @@ def _process_screenshot(filehandle, package, version):
 
     - resize to no larger than 800x600
     - resize (thumbnail) to no larger than 160x120
-    - insert into database as Screenshot and two Image objects
+    - insert into database as Screenshot
     """
-    image = filehandle.read()
-    stringio_image = StringIO.StringIO(image)
-    # Load file into PIL (Python Imaging Libary) Image object
     try:
-        pil = PIL.Image.open(stringio_image)
+        image = PIL.Image.open(filehandle)
     except IOError, e:
         return "The file you uploaded is not a valid PNG image"
 
-    log.debug(u"Image dimensions: %s x %s" % pil.size)
-    log.debug(u"Image format: %s" % pil.format)
+    log.debug(u"Image dimensions: %s x %s" % image.size)
+    log.debug(u"Image format: %s" % image.format)
 
-    if pil.format != 'PNG':
+    if image.format != 'PNG':
         return "Your image file was not in PNG format"
 
     # Is there a database entry for this package already?
@@ -308,9 +327,14 @@ def _process_screenshot(filehandle, package, version):
         db_pkg = model.Package(name=package)
         db.save(db_pkg)
 
-    # Resize to 800x600
+    image_types = model.image_types
+    to_save = []
     try:
-        image_800_600, xsize, ysize = _resize(pil, 800, 600)
+        for image_type in image_types:
+            image_copy = image.copy()
+            image_copy.thumbnail(image_type['size'], PIL.Image.ANTIALIAS)
+            #imgc.convert('RGB')
+            to_save.append((image_copy, image_type))
     except IOError, e:
         return "There seems to be a problem with your image: %s" % e
 
@@ -322,32 +346,10 @@ def _process_screenshot(filehandle, package, version):
     )
     # Screenshots uploaded by admins are automatically approved
     if 'username' in session:
-        db_screenshot.approved=True
+        db_screenshot.approved = True
 
     db_pkg.screenshots.append(db_screenshot)
 
-    # Create large image entry
-    db_image_large = model.Image(
-        xsize=xsize,
-        ysize=ysize,
-        large=True,
-        )
-
-    # Resize to 160x120
-    try:
-        image_160_120, xsize, ysize = _resize(pil, 160, 120)
-    except IOError, e:
-        return "There seems to be a problem with your image: %s" % e
-
-    # Create small image entry
-    db_image_small = model.Image(
-        xsize=xsize,
-        ysize=ysize,
-        large=False,
-        )
-
-    db_screenshot.images.append(db_image_large)
-    db_screenshot.images.append(db_image_small)
     db.commit()
 
     # Create the package's screenshots path if it does not exist yet
@@ -355,44 +357,12 @@ def _process_screenshot(filehandle, package, version):
     if not os.path.isdir(db_screenshot.directory):
         log.debug("Create destination directory: %s" % db_screenshot.directory)
         os.makedirs(db_screenshot.directory)
-    log.debug("Saving large image to %s" % db_image_large.path)
-    image_800_600.save(db_image_large.path, format='PNG')
 
-    log.debug("Saving small image to %s" % db_image_large.path)
-    image_160_120.save(db_image_small.path, format='PNG')
+    for image, image_type in to_save:
+        image_path = os.path.join(db_screenshot.directory, '%s_%s.png' % (db_screenshot.id, image_type['extension']))
+        log.debug("Saving large image to %s" % image_path)
+        image.save(image_path)
 
     return None # Success
 
-def _resize(image, xmax, ymax):
-    """Resize image to a maximal given size while retaining its aspect"""
-    log.debug("Resizing image to %sx%s" % (xmax,ymax))
-    xold, yold = image.size
-    xold = float(xold)
-    yold = float(yold)
-    xmax = float(xmax)
-    ymax = float(ymax)
-    xnew = None
-    ynew = None
 
-    # Image has the right size or is smaller than x/y?
-    if xold<=xmax and yold<=ymax:
-        log.debug("Image is already smaller than %ix%i - no conversion necessary" % (xmax,ymax))
-        xnew = xold
-        ynew = yold
-    # Image too large
-    else:
-        # Image too wide for a x/y ratio?
-        if xold/yold > xmax/ymax:
-            xnew = xmax
-            ynew = yold*xmax/xold
-            log.debug("Image too wide for %ix%i. Resizing to %ix%i" % (xmax,ymax,xnew,ynew))
-        # Image too high for a x/y ratio?
-        else:
-            xnew = xold*ymax/yold
-            ynew = ymax
-            log.debug("Image too high for %ix%i. Resizing to %ix%i" % (xmax,ymax,xnew,ynew))
-
-        log.debug("Image will be resized to: %i x %i" % (xnew, ynew))
-        image = image.resize((int(xnew), int(ynew)), PIL.Image.ANTIALIAS)
-
-    return image, xnew, ynew

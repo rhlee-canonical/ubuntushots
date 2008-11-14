@@ -6,6 +6,7 @@ import pylons
 import os
 import md5
 from debshots.lib import my
+from routes import url_for
 
 import logging
 log = logging.getLogger(__name__)
@@ -132,9 +133,13 @@ def packages_without_screenshots():
 
 #----------
 
-# A screenshot here is an entry for each uploaded image. It does not contain the
-# image itself. Rather it has a dependent images_table that stores this screenshot
-# in different sizes (thumbnail and full-sized).
+
+image_types = [
+    {'size': (160,120), 'extension': 'small'},
+    {'size': (800,600), 'extension': 'large'}
+]
+
+# A screenshot here is an entry for each uploaded screenshot.
 screenshots_table = sql.Table(
     'screenshots', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
@@ -148,25 +153,42 @@ screenshots_table = sql.Table(
     sql.Column('delete_reason', sql.Unicode(100)),
 )
 
+
 class Screenshot(MyOrm):
     @property
+    def large_image_url(self):
+        if self.approved:
+            package_name = self.package.name
+            return url_for('image', package_inital=package_name[0], package=package_name, id=self.id, size='large')
+        return url_for('unapproved_image', id=self.id, size='large')
+
+    @property
+    def small_image_url(self):
+        if self.approved:
+            package_name = self.package.name
+            return url_for('image', package_inital=package_name[0], package=package_name, id=self.id, size='small')
+        return url_for('unapproved_image', id=self.id, size='small')
+
+    @property
     def directory(self):
-        """Return the directory in the filesystem where the screenshot images are saved"""
+        """Return the directory in the filesystem where the screenshot is saved"""
+        if self.approved:
+            directory = 'approved'
+        else:
+            directory = 'unapproved'
         return os.path.join(
-            pylons.config['debshots.images_directory'],
+            pylons.config['debshots.screenshots_directory'],
+            directory,
             self.package.name[0],
             self.package.name
             )
 
     @property
-    def small_image(self):
-        """Return the image object for the thumbnail"""
-        return Image.q().filter_by(screenshot=self).filter_by(large=False).first()
-
-    @property
-    def large_image(self):
-        """Return the image object for the full-sized image"""
-        return Image.q().filter_by(screenshot=self).filter_by(large=True).first()
+    def image_paths(self):
+        result = []
+        for image_type in image_types:
+            result.append(os.path.join(self.directory, '%s_%s.png' % (self.id, image_type['extension'])))
+        return result
 
 def moderated_screenshots():
     """Return a list of freshly uploaded or marked for delete screenshots"""
@@ -178,30 +200,8 @@ def moderated_screenshots():
 
 #----------
 
-# Each screenshot points to two 'images'. There is a small and a large image entry.
-# The actual PNG files are stored on disk.
-images_table = sql.Table(
-    'images', metadata,
-    sql.Column('id', sql.Integer, primary_key=True),
-    sql.Column('screenshot_id', sql.Integer, sql.ForeignKey('screenshots.id')),
-    sql.Column('large', sql.Boolean()), # whether a picture is full-sized (True) or a thumbnail (False)
-    sql.Column('xsize', sql.Integer()), # width of the image
-    sql.Column('ysize', sql.Integer()), # height of the image
-)
-
-class Image(MyOrm):
-    @property
-    def path(self):
-        """Return the path in the filesystem to the image file"""
-        return os.path.join(
-            self.screenshot.directory,
-            str(self.id)
-            )
-
-#----------
-
 # Table of admin users
-# (images can be uploaded by anyone - but they have to be approved by an admin)
+# (screenshots can be uploaded by anyone - but they have to be approved by an admin)
 admins_table = sql.Table(
     'admins', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
@@ -226,16 +226,6 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
             ),
         })
 
-orm.mapper(Image, images_table)
-
-orm.mapper(Screenshot, screenshots_table,
-    properties={
-        'images':orm.relation(
-            Image,
-            backref=orm.backref('screenshot', uselist=False),
-            cascade='all, delete-orphan',
-            #lazy='dynamic'
-        )
-    })
+orm.mapper(Screenshot, screenshots_table)
 
 orm.mapper(Admin, admins_table)
