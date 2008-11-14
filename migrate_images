@@ -1,0 +1,31 @@
+import os
+
+OLD_PATH = '/home/zepolen/projects/debshots/debshots/data/screenshots'
+NEW_PATH = '/home/zepolen/projects/debshots/debshots/debshots/public/ss'
+
+TEST_MODE = 1
+
+images = model.Session.connection().execute('''
+select images.id, images.large, images.screenshot_id, packages.name
+from images
+join screenshots on screenshots.id = images.screenshot_id
+join packages on packages.id = screenshots.package_id
+where screenshots.approved
+''').fetchall()
+
+
+for image in images:
+    new_name = '%i_%s.png' % (image.screenshot_id, image.large and 'large' or 'small')
+    old_path = os.path.join(OLD_PATH, image.name[0], image.name, str(image.id))
+    new_dir = os.path.join(NEW_PATH, image.name[0], image.name)
+    new_path = os.path.join(new_dir, new_name)
+    try:
+        os.makedirs(new_dir)
+    except:
+        pass
+    try:
+        os.rename(old_path, new_path)
+    except:
+        print old_path, new_path, '...ERROR!!'
+
+
