@@ -19,7 +19,7 @@ setup(
         "Webhelpers==0.6.3",
         "pastescript>=1.6",
         "paste>=1.6",
-        "psycopg2",
+        #"psycopg2>=2.0.6",  # can also be deployed with sqlite - then psycopg2 is unneeded
         "formencode>=1",
         ],
     scripts=['bin/debshots-update-packages',

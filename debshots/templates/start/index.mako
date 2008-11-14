@@ -24,6 +24,11 @@
     program name or a search word.
 </p>
 
+<h1>Software supporting screenshots</h1>
+<p>
+    Michael Vogt has added support into <em>synaptic</em>.
+</p>
+
 <h1>Using our screenshots</h1>
 <p>
     You can use the screenshots on your own website. These are the URLs that may be useful:
