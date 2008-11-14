@@ -27,7 +27,8 @@ ${ c.packages.pager('Package $page of $page_count - $link_previous ~3~ $link_nex
         <br />
         ${ h.tags.link_to(
             'Delete screenshot',
-            h.url_for('delete_screenshot', screenshot=screenshot.id, goto=h.url_for())) }
+            h.url_for('delete_screenshot', screenshot=screenshot.id, goto=h.url_for()),
+            onclick="return confirm('Really delete the screenshot?');") }
     ## Marked for delete? (keep or delete)
     % elif screenshot.markedfordelete:
         Removal requested (<em>${screenshot.delete_reason}</em>)
@@ -38,7 +39,8 @@ ${ c.packages.pager('Package $page of $page_count - $link_previous ~3~ $link_nex
         <br />
         ${ h.tags.link_to(
             'Delete screenshot',
-            h.url_for('delete_screenshot', screenshot=screenshot.id, goto=h.url_for())) }
+            h.url_for('delete_screenshot', screenshot=screenshot.id, goto=h.url_for()),
+            onclick="return confirm('Really delete the screenshot?');") }
     % endif
     </div>
     % endfor
