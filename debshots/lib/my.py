@@ -26,7 +26,7 @@ def htmlfill(html, exception_error=None):
     'html' contains the HTML page with the form (e.g. from render()).
     'exception_error' contains the formencode.Invalid exception."""
     if exception_error:
-        log.debug('my.htmlfill formencode exception: %s' % (exception_error,))
+        log.debug('my.htmlfill formencode exception: %s', exception_error)
     return formencode.htmlfill.render(
         form=html,
         defaults=pylons.request.params,
@@ -41,7 +41,7 @@ def client_ip():
 def client_cookie_hash():
     """Return the cookie hash used for the cookie-based session"""
     cookie_hash = unicode(pylons.request.cookies.get(pylons.config['beaker.session.key']))
-    log.debug("Client cookie hash is: %s" % cookie_hash)
+    log.debug("Client cookie hash is: %s", cookie_hash)
     return cookie_hash
 
 def authorized_for_screenshot(screenshot):
@@ -51,15 +51,15 @@ def authorized_for_screenshot(screenshot):
     or the visitor is an admin or the screenshots has been approved to be
     viewed publicly."""
     if client_cookie_hash() == screenshot.uploaderhash:
-        log.debug("Visitor is authorized to view screenshot '%s' (same cookie)" % screenshot)
+        log.debug("Visitor is authorized to view screenshot '%s' (same cookie)", screenshot)
         return True
 
     if 'username' in pylons.session:
-        log.debug("Visitor is authorized to view screenshot '%s' (admin logged in)" % screenshot)
+        log.debug("Visitor is authorized to view screenshot '%s' (admin logged in)", screenshot)
         return True
 
     if screenshot.approved:
-        log.debug("Screenshot is 'approved': '%s'" % screenshot)
+        log.debug("Screenshot is 'approved': '%s'", screenshot)
         return True
 
     return False

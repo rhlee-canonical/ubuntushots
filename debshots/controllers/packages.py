@@ -100,7 +100,7 @@ class PackagesController(BaseController):
             c.message=error
             my.message(error)
         else:
-            log.info("Screenshot uploaded for package '%s'" % package.name)
+            log.info("Screenshot uploaded for package '%s'", package.name)
             my.message("Screenshot for package '%s' uploaded successfully."
                 % package.name)
 
@@ -162,7 +162,7 @@ class PackagesController(BaseController):
         # Make sure the file on disk exists
         if not os.path.isfile(image.path):
             # The file is in the database but not on disk? Remove it from the database then.
-            log.error("Image file #%s missing on disk. Removing screenshot from database." % image.id)
+            log.error("Image file #%s missing on disk. Removing screenshot from database.", image.id)
             db.delete(image.screenshot)
             db.commit()
             return None
@@ -294,14 +294,14 @@ def _process_screenshot(filehandle, package, version):
     except IOError, e:
         return "The file you uploaded is not a valid PNG image"
 
-    log.debug(u"Image dimensions: %s x %s" % pil.size)
-    log.debug(u"Image format: %s" % pil.format)
+    log.debug(u"Image dimensions: %s x %s", pil.size)
+    log.debug(u"Image format: %s", pil.format)
 
     if pil.format != 'PNG':
         return "Your image file was not in PNG format"
 
     # Is there a database entry for this package already?
-    log.debug("Fetch package entry from database for package '%s'" % package)
+    log.debug("Fetch package entry from database for package '%s'", package)
     db_pkg = model.Package.q().filter_by(name=package).first()
     if not db_pkg: # otherwise create one
         log.debug("No package entry found. Creating a new one.")
@@ -353,19 +353,19 @@ def _process_screenshot(filehandle, package, version):
     # Create the package's screenshots path if it does not exist yet
     # (As small images are saved into the same directory we just use db_image_large here)
     if not os.path.isdir(db_screenshot.directory):
-        log.debug("Create destination directory: %s" % db_screenshot.directory)
+        log.debug("Create destination directory: %s", db_screenshot.directory)
         os.makedirs(db_screenshot.directory)
-    log.debug("Saving large image to %s" % db_image_large.path)
+    log.debug("Saving large image to %s", db_image_large.path)
     image_800_600.save(db_image_large.path, format='PNG')
 
-    log.debug("Saving small image to %s" % db_image_large.path)
+    log.debug("Saving small image to %s", db_image_large.path)
     image_160_120.save(db_image_small.path, format='PNG')
 
     return None # Success
 
 def _resize(image, xmax, ymax):
     """Resize image to a maximal given size while retaining its aspect"""
-    log.debug("Resizing image to %sx%s" % (xmax,ymax))
+    log.debug("Resizing image to %sx%s", xmax, ymax)
     xold, yold = image.size
     xold = float(xold)
     yold = float(yold)
@@ -376,7 +376,7 @@ def _resize(image, xmax, ymax):
 
     # Image has the right size or is smaller than x/y?
     if xold<=xmax and yold<=ymax:
-        log.debug("Image is already smaller than %ix%i - no conversion necessary" % (xmax,ymax))
+        log.debug("Image is already smaller than %ix%i - no conversion necessary", xmax, ymax)
         xnew = xold
         ynew = yold
     # Image too large
@@ -385,14 +385,14 @@ def _resize(image, xmax, ymax):
         if xold/yold > xmax/ymax:
             xnew = xmax
             ynew = yold*xmax/xold
-            log.debug("Image too wide for %ix%i. Resizing to %ix%i" % (xmax,ymax,xnew,ynew))
+            log.debug("Image too wide for %ix%i. Resizing to %ix%i", xmax, ymax, xnew, ynew)
         # Image too high for a x/y ratio?
         else:
             xnew = xold*ymax/yold
             ynew = ymax
-            log.debug("Image too high for %ix%i. Resizing to %ix%i" % (xmax,ymax,xnew,ynew))
+            log.debug("Image too high for %ix%i. Resizing to %ix%i", xmax, ymax, xnew, ynew)
 
-        log.debug("Image will be resized to: %i x %i" % (xnew, ynew))
+        log.debug("Image will be resized to: %i x %i", xnew, ynew)
         image = image.resize((int(xnew), int(ynew)), PIL.Image.ANTIALIAS)
 
     return image, xnew, ynew

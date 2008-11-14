@@ -49,11 +49,11 @@ class StartController(BaseController):
                 fields['password']+config['debshots.md5salt']).hexdigest()).first()
 
         if not admin:
-            log.info("Login failed: %s" % fields['username'])
+            log.info("Login failed: %s", fields['username'])
             c.error="Login failed"
             return render('/start/login.mako')
 
-        log.info("Admin logged in: %s" % (fields['username']))
+        log.info("Admin logged in: %s", fields['username'])
 
         # Set a cookie session variable to mark the maintainer as logged in
         session['username'] = admin.username
