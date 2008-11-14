@@ -228,6 +228,7 @@ To Do list
 - allow images to be served statically (e.g. from apache or nginx)
   [/static/f/fyre/123]
   drawback: eben not-yet-approved screenshots would be visible
+- announcement in debian-user-german and debian-user
 
 Wishlist
 ========
@@ -244,3 +245,6 @@ Wishlist
 - optional text for each screenshot
 - backup script
 - handle interlaced PNG files (perhaps via python-imagemagick)
+- let people vote for their favorite screenshot (that gets shown out of
+  several screenshots with the /thumbnail action). tampering could be
+  prevented by storing the vote and session number.

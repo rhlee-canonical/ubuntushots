@@ -13,19 +13,24 @@
     <li>Your screenshot should contain a typical scene when working with it.
         When snapshotting a browser load the debian.org home page. A screenshot
         of a graphics program should have a drawing loaded. Of a game please make
-        a screenshot while you are playing and not of the start screen.</li>
+        a screenshot while you are playing and not of the start screen.
+    </li>
     <li>
         Nice tools for taking screenshots are ksnaphot (KDE), Gimp, xwd or scrot.
     </li>
-    <li>You should not artificially switch off your window decorations.</li>
+    <li>You need not artificially switch off your window decorations.</li>
     <li>
         Please set your language to english so that everybody understands it.
         If you don't use english by default please start your application
-        from a shell using after seting "export LANG=C".
+        from a shell using after setting "export LANG=C".
     </li>
     <li>
         Please only take a screenshot of the respective application and not
-        of your whole desktop.
+        of your whole desktop (unless the screenshot is meant for a
+        window manager).
     </li>
-    <li>Interlaced PNG files cannot be processed. Please use non-interlaced images.</li>
+    <li>
+        Interlaced PNG files cannot be processed currently.
+        Please use non-interlaced images.
+    </li>
 </ul>
