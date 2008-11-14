@@ -47,9 +47,16 @@ class PackagesController(BaseController):
 
     def without_screenshots(self):
         """Show a lit of packages without screenshots"""
-        packages = model.Package.q()
-        # Only show packages with screenshots
-        packages = packages.filter(~model.Package.screenshots.any())
+        packages = model.packages_without_screenshots()
+
+        # Filter for search word if provided
+        search = request.params.get('search')
+        if search:
+            packages = packages.filter(
+                (model.Package.name.like('%'+search+'%'))
+                |
+                (model.Package.description.ilike('%'+search+'%'))
+            )
 
         # TODO: the subselect run by .any() is pretty slow. can we optimize that?
 

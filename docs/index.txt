@@ -230,6 +230,7 @@ To Do list
   [/static/f/fyre/123]
   drawback: eben not-yet-approved screenshots would be visible
 - announcement in debian-user-german and debian-user
+- browse by section
 
 Wishlist
 ========
@@ -249,3 +250,4 @@ Wishlist
 - let people vote for their favorite screenshot (that gets shown out of
   several screenshots with the /thumbnail action). tampering could be
   prevented by storing the vote and session number.
+- include popcon score in package list

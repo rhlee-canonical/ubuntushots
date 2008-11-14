@@ -122,6 +122,14 @@ def packages_with_moderated_screenshots():
         (Screenshot.c.markedfordelete==True)
     )
 
+def packages_without_screenshots():
+    """Return packages that do not have screenshots yet"""
+    packages = Package.q()
+    packages = packages.filter(~Package.id.in_(
+        sql.select([Screenshot.package_id])
+        ))
+    return packages
+
 #----------
 
 # A screenshot here is an entry for each uploaded image. It does not contain the
