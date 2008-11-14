@@ -133,7 +133,6 @@ def packages_without_screenshots():
 
 #----------
 
-
 image_types = [
     {'size': (160,120), 'extension': 'small'},
     {'size': (800,600), 'extension': 'large'}
