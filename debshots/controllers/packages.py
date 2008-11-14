@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+from sqlalchemy.orm import eagerload
 from debshots.lib.base import *
 import os
 import PIL.Image
@@ -36,10 +37,10 @@ class PackagesController(BaseController):
             (model.Screenshot.approved==True)
             |
             (model.Screenshot.uploaderhash==my.client_cookie_hash())
-            )
+            ).options(eagerload('screenshots'))
 
         c.packages = h.paginate.Page(packages,
-            items_per_page=10,
+            items_per_page=20,
             page=request.params.get('page',0),
             search=search,
             )
@@ -48,6 +49,8 @@ class PackagesController(BaseController):
     def without_screenshots(self):
         """Show a lit of packages without screenshots"""
         packages = model.packages_without_screenshots()
+
+        packages = packages.options(eagerload('screenshots'))
 
         # Filter for search word if provided
         search = request.params.get('search')

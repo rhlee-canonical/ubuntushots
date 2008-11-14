@@ -22,6 +22,9 @@ db = model.Session
 class BaseController(WSGIController):
 
     def __call__(self, environ, start_response):
+        print 100*"-"
+        print 100*"-"
+
         """Invoke the Controller"""
         # Make sure that there is 'messages' entry in the cookie session
         if 'messages' not in session: session['messages']=[]
@@ -32,6 +35,9 @@ class BaseController(WSGIController):
         # available in environ['pylons.routes_dict']
         try:
             return WSGIController.__call__(self, environ, start_response)
+        except:
+            model.Session.rollback()
+            raise
         finally:
             model.Session.remove()
 

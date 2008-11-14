@@ -49,7 +49,7 @@
 
     </tr>
     ## Second line shows screenshots
-    % if package.my_or_approved_screenshots.count():
+    % if package.my_or_approved_screenshots:
     <tr>
         <td></td>
         <td colspan="4">

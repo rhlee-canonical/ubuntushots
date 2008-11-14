@@ -73,17 +73,17 @@ class Package(MyOrm):
     @property
     def unapproved_screenshots(self):
         """Return a list of freshly uploaded (not yet approved) screenshots for this package"""
-        return self.screenshots.filter_by(approved=False)
+        return [ss for ss in self.screenshots if not ss.approved]
 
     @property
     def approved_screenshots(self):
         """Return a list of approved (by a moderator) screenshots for this package"""
-        return self.screenshots.filter_by(approved=True)
+        return [ss for ss in self.screenshots if ss.approved]
 
     @property
     def markedfordelete_screenshots(self):
         """Return a list of markedfordelete (not yet approved for deletion) screenshots for this package"""
-        return self.screenshots.filter_by(markedfordelete=True)
+        return [ss for ss in self.screenshots if ss.markedfordelete]
 
     @property
     def my_screenshots(self):
@@ -93,27 +93,17 @@ class Package(MyOrm):
         they are only identified by their client cookie. So this method
         returns all screenshots that have the same cookie hash value
         stored as the current cookie sent by the browser."""
-        return self.screenshots.filter_by(
-            uploaderhash=my.client_cookie_hash(),
-            approved=False)
+        return [ss for ss in self.screenshots if (ss.approved or ss.uploaderhash==my.client_cookie_hash())]
 
     @property
     def my_or_approved_screenshots(self):
         """Return a list of the user's own or any approved screenshots"""
-        return self.screenshots.filter(
-            (Screenshot.approved==True)
-            |
-            (Screenshot.uploaderhash==my.client_cookie_hash())
-            )
+        return [ss for ss in self.screenshots if (ss.approved or ss.uploaderhash==my.client_cookie_hash())]
 
     @property
     def moderated_screenshots(self):
         """Return a list of freshly uploaded or marked for delete screenshots of this package"""
-        return self.screenshots.filter(
-            (Screenshot.c.approved==False)
-            |
-            (Screenshot.c.markedfordelete==True)
-        )
+        return [ss for ss in self.screenshots if (not ss.approved or ss.markedfordelete)]
 
 def packages_with_moderated_screenshots():
     """Return a list of packages with screenshots that need moderation"""
@@ -221,7 +211,6 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
             Screenshot,
             backref=orm.backref('package', uselist=False),
             cascade='all, delete-orphan',
-            lazy='dynamic'
             ),
         })
 
