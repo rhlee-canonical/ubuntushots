@@ -32,6 +32,7 @@ debshots/lib/helpers.py
 debshots/lib/my.py
 debshots/lib/validators.py
 debshots/model/__init__.py
+debshots/public/robots.txt
 debshots/public/css/style.css
 debshots/public/images/dummy-thumbnail.png
 debshots/public/images/logo.png

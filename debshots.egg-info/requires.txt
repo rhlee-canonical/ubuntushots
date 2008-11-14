@@ -4,5 +4,4 @@ SQLAlchemy==0.4.6
 Webhelpers==0.6.3
 pastescript>=1.6
 paste>=1.6
-psycopg2
 formencode>=1
