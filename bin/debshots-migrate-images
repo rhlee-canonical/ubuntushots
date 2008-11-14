@@ -1,7 +1,13 @@
+#!/usr/bin/env python
+#
+# This is a one-time script to be run when migrating from 0.3.x to 0.4.
+# Make sure that all screenshots are approved already before running it.
+#
+
 import os
 
-OLD_PATH = '/home/zepolen/projects/debshots/debshots/data/screenshots'
-NEW_PATH = '/home/zepolen/projects/debshots/debshots/debshots/public/ss'
+OLD_PATH = 'data/screenshots'
+NEW_PATH = 'data/screenshots/approved'
 
 TEST_MODE = 1
 

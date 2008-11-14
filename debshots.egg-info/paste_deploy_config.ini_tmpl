@@ -46,7 +46,7 @@ sqlalchemy.url = postgres://debshots:shootme@torf:5432/debshots
 # First char of the package + package name.
 # Thumbnail:  .../c/cream/xxx (xxx=database id)
 # Screenshot: .../c/cream/xxx (xxx=database id)
-debshots.images_directory = %(here)s/data/screenshots
+debshots.screenshots_directory = %(here)s/data/screenshots
 
 # Sender address for automated emails
 debshots.email_sender = support@screenshots.debian.net
