@@ -50,7 +50,7 @@ ${ next.body() }
     <div id="footer">
         Powered by
         <a href="mailto:haas@debian.org">Christoph Haas'</a>
-        <a href="http://hg.workaround.org/repositories/debshots/">debshots</a> software
+        <a href="http://debshots.workaround.org">debshots</a> software
         using the <a href="http://pylonshq.com">Pylons web framework</a>
         and <a href="http://jquery.com">jQuery Javascript framework</a>.
         % if 'username' in session:
