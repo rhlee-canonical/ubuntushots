@@ -4,6 +4,7 @@ setup.cfg
 setup.py
 bin/debshots-create-admin
 bin/debshots-delete-admin
+bin/debshots-migrate-images
 bin/debshots-set-version-for-unversioned-screenshots
 bin/debshots-update-packages
 debshots/__init__.py
