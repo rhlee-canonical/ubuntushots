@@ -36,7 +36,8 @@ class PackagesController(BaseController):
             (model.Screenshot.approved==True)
             |
             (model.Screenshot.uploaderhash==my.client_cookie_hash())
-            ).options(model.orm.eagerload('screenshots'))
+            )
+        packages = packages.options(model.orm.eagerload('screenshots'))
 
         c.packages = h.paginate.Page(packages,
             items_per_page=20,
@@ -131,7 +132,6 @@ class PackagesController(BaseController):
         if not my.authorized_for_screenshot(screenshot):
             return None
 
-
         file_path = os.path.join(screenshot.directory, '%s_%s.png' % (id, size))
 
         # Make sure the file on disk exists
@@ -142,6 +142,10 @@ class PackagesController(BaseController):
             db.commit()
             return None
 
+        return self._image_fileapp(file_path)
+
+    def _image_fileapp(self, file_path):
+        """Return a static image from a path via a FileApp"""
         fapp = paste.fileapp.FileApp(
             file_path,
             headers=[
@@ -163,6 +167,26 @@ class PackagesController(BaseController):
             abort(404)
 
         return image_fapp
+
+    def static_image(self, package_inital, package, id, size):
+        """Return the binary PNG image for an approved screenshots (without database calls)
+
+        This is a fast method to serve screenshots without calling for information
+        from the database. Actually static images should directly get served from
+        the web server. But if /screenshots/... is handled through Pylons then this
+        method is used as a fallback."""
+        file_path = os.path.join(
+            config['debshots.screenshots_directory'],
+            'approved',
+            package_inital,
+            package,
+            '%s_%s.png' % (id, size))
+        log.debug("Serving static image from %s", file_path)
+        if not os.path.isfile(file_path):
+            log.warn("Image file %s not found" % file_path)
+            abort(404)
+
+        return self._image_fileapp(file_path)
 
     def thumbnail(self, package):
         """Return a thumbnail image or a dummy image for a certain package."""
@@ -365,5 +389,3 @@ def _process_screenshot(filehandle, package, version):
         image.save(image_path)
 
     return None # Success
-
-
