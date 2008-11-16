@@ -17,33 +17,62 @@ def make_map():
     map.connect('error/:action/:id', controller='error')
 
     # CUSTOM ROUTES HERE
+
+    # Show approved screenshots. It's faster to serve /screenshots from the
+    # web server as static files instead.
     map.connect('image', '/screenshots/:package_inital/:package/:(id)_:size.png',
+        controller='packages', action='static_image',
         requirements={'id': r'\d+', 'size': '(small|large)'})
+
     map.connect('unapproved_image', '/image/:(id)_:size.png',
         controller='packages', action='image',
         requirements={'id': r'\d+', 'size': '(small|large)'})
+
+    # Start page
     map.connect('start', '', controller='start', action='index')
+
+    # Packages view (list of packages with screenshots sorted by name)
     map.connect('packages', '/packages', controller='packages', action='index')
+
+    # View for logged-in administrators to approve or delete uploaded screenshots
     map.connect('moderate', '/packages/moderate', controller='packages', action='moderate')
+
+    # Show upload form
     map.connect('upload', '/upload/:package', controller='packages', action='upload', package=None)
+
+    # Process upload form
     map.connect('uploadfile', '/uploadfile', controller='packages', action='uploadfile')
+
+    # Static page with guidelines for screenshots
     map.connect('guidelines', '/guidelines', controller='start', action='guidelines')
+
+    # Admin login form
     map.connect('login', 'login', controller='start', action='login')
+
+    # Admin logout form
     map.connect('logout', 'logout', controller='start', action='logout')
+
+    # Details about a package
     map.connect('package', 'package/:package', controller='packages', action='show')
+
+    # Direct link to a thumbnail image of a certain package
+    # (shows a dummy 160x120 pixel large image instead of 404)
     map.connect('thumbnail', 'thumbnail/:package', controller='packages', action='thumbnail')
+
+    # Action to delete a screenshot (admin-only) or request its removal (users)
     map.connect('delete_screenshot', '/delete_screenshot/:screenshot',
         controller='packages', action='delete_screenshot')
+
+    # Action to approve a screenshots (admin-only)
     map.connect('approve_screenshot', '/approve_screenshot/:screenshot',
         controller='packages', action='approve_screenshot')
+
+    # Action to remove the 'markedfordelete' flag (admin-only)
     map.connect('keep_screenshot', '/keep_screenshot/:screenshot',
         controller='packages', action='keep_screenshot')
-    map.connect('login', '/login', controller='start', action='login')
-    map.connect('logout', '/logout', controller='start', action='logout')
+
+    # Generic controllers
     map.connect(':controller/:action/:id')
     map.connect('*url', controller='template', action='view')
-
-
-
 
     return map
