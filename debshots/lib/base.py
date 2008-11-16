@@ -31,10 +31,11 @@ class BaseController(WSGIController):
         # the request is routed to. This routing information is
         # available in environ['pylons.routes_dict']
         try:
-            return WSGIController.__call__(self, environ, start_response)
-        except:
-            model.Session.rollback()
-            raise
+            try:
+                return WSGIController.__call__(self, environ, start_response)
+            except:
+                model.Session.rollback()
+                raise
         finally:
             model.Session.remove()
 
