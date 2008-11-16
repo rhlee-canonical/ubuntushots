@@ -13,8 +13,8 @@
         <li><b>Homepage</b>:
             ${ h.tags.link_to(
                 c.package.homepage,
-                c.package.homepage,
-                target='_blank') }
+                c.package.homepage
+                ) }
         </li>
     % endif
     <li><b>Package maintainer</b>: ${ c.package.maintainer }</li>
@@ -26,7 +26,7 @@
             </em>
         </li>
     % endif
-    <li><a href="http://packages.debian.org/${ c.package.name }" target="_blank">Package
+    <li><a href="http://packages.debian.org/${ c.package.name }">Package
         page on packages.debian.org</a></li>
     ## Upload link:
     <li>${ h.tags.link_to('Upload a new screenshot',

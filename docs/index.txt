@@ -209,6 +209,7 @@ To Do list
 ==========
 
 - search box in missing_screenshots is broken
+- set up a Trac for debshots
 - if a package has screenshots in the moderation queue (not yet approved)
   then it will neither be shown in the "packages with screenshots" list
   nor on the "packages without any screenshots" list

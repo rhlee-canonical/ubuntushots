@@ -28,8 +28,8 @@
             <td>
                 ${ h.tags.link_to(
                     package.homepage,
-                    package.homepage,
-                    target='_blank') }
+                    package.homepage
+                    ) }
             </td>
             ## Show link to upload screenshots
             <td>
@@ -42,13 +42,14 @@
         <tr>
             <td></td>
             <td colspan="4">
-                <div class="screenshots">
+            <div class="screenshots">
             % for screenshot in package.my_or_approved_screenshots:
                 <a class="image" href="${screenshot.large_image_url}"
                     title="Screenshot of package '${screenshot.package.name}'">
                     <img src="${screenshot.small_image_url}" alt="Screenshot" />
                 </a>
             % endfor
+            </div>
             </td>
         </tr>
         % endif
