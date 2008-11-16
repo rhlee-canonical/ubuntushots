@@ -63,7 +63,8 @@ class PackagesController(BaseController):
 
         c.packages = h.paginate.Page(packages,
             items_per_page=10,
-            page=request.params.get('page',0))
+            page=request.params.get('page',0),
+            search=search)
         return render('/packages/index.mako')
 
     def moderate(self):
