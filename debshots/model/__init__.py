@@ -93,7 +93,7 @@ class Package(MyOrm):
         they are only identified by their client cookie. So this method
         returns all screenshots that have the same cookie hash value
         stored as the current cookie sent by the browser."""
-        return [ss for ss in self.screenshots if (ss.approved or ss.uploaderhash==my.client_cookie_hash())]
+        return [ss for ss in self.screenshots if ss.uploaderhash==my.client_cookie_hash()]
 
     @property
     def my_or_approved_screenshots(self):
