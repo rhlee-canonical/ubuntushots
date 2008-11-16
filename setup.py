@@ -26,6 +26,7 @@ setup(
         'bin/debshots-create-admin',
         'bin/debshots-delete-admin',
         'bin/debshots-set-version-for-unversioned-screenshots',
+        'bin/debshots-migrate-images',
         ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,

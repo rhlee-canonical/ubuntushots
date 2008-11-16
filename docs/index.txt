@@ -209,6 +209,9 @@ To Do list
 ==========
 
 - search box in missing_screenshots is broken
+- if a package has screenshots in the moderation queue (not yet approved)
+  then it will neither be shown in the "packages with screenshots" list
+  nor on the "packages without any screenshots" list
 - RSS feed for new uploads
 - screenshot index view: allow sorting by upload date
 - info for debian weekly news announcement (as soon as ready)

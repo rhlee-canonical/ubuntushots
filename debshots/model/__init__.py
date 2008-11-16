@@ -172,11 +172,22 @@ class Screenshot(MyOrm):
             self.package.name
             )
 
+    def image_path(self, size):
+        """Return the path to a certain image file on disk.
+
+        'size' can be 'large' or 'small'."""
+        assert size in ('small', 'large')
+        return os.path.join(self.directory, '%s_%s.png' % (self.id, size))
+
     @property
     def image_paths(self):
+        """Returns a list of paths to the images of all (both) sizes"""
         result = []
         for image_type in image_types:
-            result.append(os.path.join(self.directory, '%s_%s.png' % (self.id, image_type['extension'])))
+            result.append(os.path.join(
+                self.directory,
+                '%s_%s.png' % (self.id, image_type['extension'])
+                ))
         return result
 
 def moderated_screenshots():

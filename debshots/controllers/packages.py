@@ -47,7 +47,7 @@ class PackagesController(BaseController):
         return render('/packages/index.mako')
 
     def without_screenshots(self):
-        """Show a lit of packages without screenshots"""
+        """Show a list of packages without screenshots"""
         packages = model.packages_without_screenshots()
 
         packages = packages.options(model.orm.eagerload('screenshots'))
@@ -60,8 +60,6 @@ class PackagesController(BaseController):
                 |
                 (model.Package.description.ilike('%'+search+'%'))
             )
-
-        # TODO: the subselect run by .any() is pretty slow. can we optimize that?
 
         c.packages = h.paginate.Page(packages,
             items_per_page=10,
@@ -200,11 +198,11 @@ class PackagesController(BaseController):
             return self._dummy_thumbnail()
 
         # Package does not have screenshots yet
-        if this_package.screenshots.count() == 0:
+        if not this_package.screenshots:
             return self._dummy_thumbnail()
 
         first_screenshot = this_package.screenshots[0]
-        return self.image(first_screenshot.small_image.id)
+        return self._image_fileapp(first_screenshot.image_path('small'))
 
     def _dummy_thumbnail(self):
         """Return 160x120 dummy thumbnail"""
@@ -276,6 +274,10 @@ class PackagesController(BaseController):
 
         try:
             for old_path, new_path in zip(old_image_paths, new_image_paths):
+                if not os.path.isdir(this_screenshot.directory):
+                    log.debug("Creating new directory %s", this_screenshot.directory)
+                    os.makedirs(this_screenshot.directory)
+                log.debug("Renaming %s to %s", old_path, new_path)
                 os.rename(old_path, new_path)
             db.commit()
         except IOError:
