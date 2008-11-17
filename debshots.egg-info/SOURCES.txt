@@ -35,6 +35,7 @@ debshots/lib/validators.py
 debshots/model/__init__.py
 debshots/public/robots.txt
 debshots/public/css/style.css
+debshots/public/images/dummy-screenshot.png
 debshots/public/images/dummy-thumbnail.png
 debshots/public/images/logo.png
 debshots/public/images/spinner.gif

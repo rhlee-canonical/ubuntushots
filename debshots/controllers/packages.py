@@ -205,11 +205,39 @@ class PackagesController(BaseController):
         first_screenshot = this_package.screenshots[0]
         return self._image_fileapp(first_screenshot.image_path('small'))
 
+    def screenshot(self, package):
+        """Return a large image or a dummy image for a certain package."""
+        if not package:
+            return self._dummy_screenshot()
+
+        this_package = model.Package.q().filter_by(name=package).first()
+
+        # Given package is not in the database
+        if not this_package:
+            return self._dummy_screenshot()
+
+        # Package does not have screenshots yet
+        if not this_package.screenshots:
+            return self._dummy_screenshot()
+
+        first_screenshot = this_package.screenshots[0]
+        return self._image_fileapp(first_screenshot.image_path('large'))
+
     def _dummy_thumbnail(self):
         """Return 160x120 dummy thumbnail"""
         image_path = os.path.join(
             config['pylons.paths']['static_files'],
             'images/dummy-thumbnail.png'
+            )
+        fapp = paste.fileapp.FileApp(image_path,
+            headers=[('Content-Type', 'image/png')])
+        return fapp(request.environ, self.start_response)
+
+    def _dummy_screenshot(self):
+        """Return 800x600 dummy screenshot"""
+        image_path = os.path.join(
+            config['pylons.paths']['static_files'],
+            'images/dummy-screenshot.png'
             )
         fapp = paste.fileapp.FileApp(image_path,
             headers=[('Content-Type', 'image/png')])
