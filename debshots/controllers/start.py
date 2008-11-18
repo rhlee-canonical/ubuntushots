@@ -27,11 +27,10 @@ class StartController(BaseController):
         """Welcome page"""
 
         # Show newest screenshot if available
-        newest_screenshots = model.Screenshot.q().filter_by(approved=True) \
-            .order_by(model.Screenshot.uploaddatetime.desc())
+        newest_screenshots = model.newest_screenshots()
         if newest_screenshots.count():
-            # Return up to 4 screenshots
-            c.newest_screenshots = newest_screenshots[:4]
+            # Return up to 8 screenshots
+            c.newest_screenshots = newest_screenshots[:8]
 
         return render('/start/index.mako')
 

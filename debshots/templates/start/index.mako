@@ -11,6 +11,7 @@
 </p>
 
 % if c.newest_screenshots:
+## Activate Lightbox plugin for screenshots DIV
 <%include file="/packages/include-js-lightbox.mako"/>
 <h1>Newest screenshots</h1>
     <div class="screenshots">
@@ -20,12 +21,10 @@
         title="Screenshot of package '${screenshot.package.name}'">
         <img src="${screenshot.small_image_url}" alt="Screenshot" />
     </a>
-    <p>
+    <br />
         ${ h.tags.link_to(
             screenshot.package.name,
             h.url_for('package', package=screenshot.package.name)) }
-        (${ screenshot.package.description })
-    </p>
     </div>
     % endfor
     </div>

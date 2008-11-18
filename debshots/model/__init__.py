@@ -198,6 +198,12 @@ def moderated_screenshots():
         (Screenshot.markedfordelete==True)
     )
 
+def newest_screenshots():
+    """Return a query of all approved screenshots ordered by upload date"""
+    return Screenshot.q().filter_by(approved=True) \
+            .order_by(Screenshot.uploaddatetime.desc())
+
+
 #----------
 
 # Table of admin users
