@@ -16,7 +16,7 @@
 <h1>Newest screenshots</h1>
     <div class="screenshots">
     % for screenshot in c.newest_screenshots:
-    <div class="screenshot">
+    <div class="screenshot" style="height: 150px">
     <a class="image" href="${screenshot.large_image_url}"
         title="Screenshot of package '${screenshot.package.name}'">
         <img src="${screenshot.small_image_url}" alt="Screenshot" />
