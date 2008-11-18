@@ -10,6 +10,28 @@
     publicly visible.
 </p>
 
+% if c.newest_screenshots:
+<%include file="/packages/include-js-lightbox.mako"/>
+<h1>Newest screenshots</h1>
+    <div class="screenshots">
+    % for screenshot in c.newest_screenshots:
+    <div class="screenshot">
+    <a class="image" href="${screenshot.large_image_url}"
+        title="Screenshot of package '${screenshot.package.name}'">
+        <img src="${screenshot.small_image_url}" alt="Screenshot" />
+    </a>
+    <p>
+        ${ h.tags.link_to(
+            screenshot.package.name,
+            h.url_for('package', package=screenshot.package.name)) }
+        (${ screenshot.package.description })
+    </p>
+    </div>
+    % endfor
+    </div>
+    <br clear="all" />
+% endif
+
 <h1>Uploading new screenshots</h1>
 <p>
     Whether you are a developer or not - we appreciate if you upload screenshots. Please take
@@ -50,6 +72,13 @@
         <br />
         (Returns a thumbnail (160x120 pixels or less) of a package's first found
         screenshot. If no screenshot was found then a dummy image will be returned.
+        In no case an HTTP error 404 is returned.)
+    </li>
+    <li>
+        http://screenshots.debian.net/screenshot/PACKAGENAME
+        <br />
+        (Returns a screenshot (800x600 pixels or less) of a package.
+        If no screenshot was found then a dummy image will be returned.
         In no case an HTTP error 404 is returned.)
     </li>
 </ul>
