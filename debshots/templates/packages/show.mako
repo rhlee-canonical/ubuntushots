@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 ## Details and screenshots of a package
+
 <%inherit file="/base.mako"/>
 
 <%include file="/packages/include-js-lightbox.mako"/>
@@ -77,7 +78,7 @@
                 ${ h.tags.form(h.url_for('delete_screenshot', screenshot=screenshot.id))}
                 Why should it get removed?
                 <br />
-                ${ h.tags.text('reason') }
+                ${ h.tags.text('reason', size=20, maxlength=100) }
                 <br />
                 ${ h.tags.submit('submit', 'Okay') }
                 </form>

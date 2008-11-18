@@ -114,6 +114,9 @@ class PackagesController(BaseController):
         if not c.package:
             abort(404)
             # TODO: display a page that proposed to upload screenshots as none yet exist
+
+        c.title = 'Package ' + c.package.name
+
         return render('/packages/show.mako')
 
     def _image(self, id, size):
@@ -265,7 +268,7 @@ class PackagesController(BaseController):
         # then it's only possible to mark the screenshot for deletion by an admin.
         else:
             this_screenshot.markedfordelete=True
-            this_screenshot.delete_reason=request.params.get('reason','?')
+            this_screenshot.delete_reason=request.params.get('reason','?')[:100]
             my.message('Admins will be asked to delete this screenshot.')
 
         db.commit()
