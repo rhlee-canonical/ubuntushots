@@ -26,13 +26,19 @@ class StartController(BaseController):
     def index(self):
         """Welcome page"""
 
+        cached =  g.cache.get('debshots:front_page')
+        if cached is not None:
+            return cached
+
         # Show newest screenshot if available
         newest_screenshots = model.newest_screenshots()
         if newest_screenshots.count():
             # Return up to 8 screenshots
             c.newest_screenshots = newest_screenshots[:8]
 
-        return render('/start/index.mako')
+        rendered = render('/start/index.mako')
+        g.cache.set('debshots:front_page', rendered)
+        return rendered
 
     #def rss(self):
     #    """Welcome page"""

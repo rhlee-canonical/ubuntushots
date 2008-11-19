@@ -19,9 +19,6 @@ class ValidateExistingDebianPackage(formencode.Schema):
 
 class PackagesController(BaseController):
     def index(self):
-        cached =  g.cache.get('debshots:front_page')
-        if cached is not None:
-            return cached
         """Show a list of packages with screenshots"""
         packages = model.Package.q()
         search = request.params.get('search')
@@ -48,9 +45,7 @@ class PackagesController(BaseController):
             search=search,
             )
 
-        rendered = render('/packages/index.mako')
-        g.cache.set('debshots:front_page', rendered)
-        return rendered
+        return render('/packages/index.mako')
 
     def without_screenshots(self):
         """Show a list of packages without screenshots"""
