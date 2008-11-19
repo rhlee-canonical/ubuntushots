@@ -19,6 +19,9 @@ class ValidateExistingDebianPackage(formencode.Schema):
 
 class PackagesController(BaseController):
     def index(self):
+        cached =  g.cache.get('debshots:front_page')
+        if cached is not None:
+            return cached
         """Show a list of packages with screenshots"""
         packages = model.Package.q()
         search = request.params.get('search')
@@ -44,7 +47,10 @@ class PackagesController(BaseController):
             page=request.params.get('page',0),
             search=search,
             )
-        return render('/packages/index.mako')
+
+        rendered = render('/packages/index.mako')
+        g.cache.set('debshots:front_page', rendered)
+        return rendered
 
     def without_screenshots(self):
         """Show a list of packages without screenshots"""
@@ -316,6 +322,8 @@ class PackagesController(BaseController):
             raise
 
         my.message("Screenshot for package <em>%s</em> approved." % package.name)
+
+        g.cache.delete('debshots:front_page') # could make it add the new render explicitly later
 
         my.redirect_back()
         redirect_to(h.url_for('package', package=package.name))
