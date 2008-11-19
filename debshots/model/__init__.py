@@ -200,9 +200,10 @@ def moderated_screenshots():
 
 def newest_screenshots():
     """Return a query of all approved screenshots ordered by upload date"""
-    return Screenshot.q().filter_by(approved=True) \
-            .order_by(Screenshot.uploaddatetime.desc())
-
+    screenshots = Screenshot.q().filter_by(approved=True)
+    newest_screenshots = screenshots.order_by(Screenshot.uploaddatetime.desc())
+    newest_screenshots = newest_screenshots.options(orm.eagerload('package'))
+    return newest_screenshots
 
 #----------
 
