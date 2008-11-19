@@ -274,6 +274,9 @@ class PackagesController(BaseController):
 
         db.commit()
 
+        # The approved screenshots have changes. Remove the cached start page.
+        g.cache.delete('debshots:front_page') # could make it add the new render explicitly later
+
         # Try to redirect to the backlink (if provided)
         my.redirect_back()
 
@@ -318,6 +321,7 @@ class PackagesController(BaseController):
 
         my.message("Screenshot for package <em>%s</em> approved." % package.name)
 
+        # The approved screenshots have changes. Remove the cached start page.
         g.cache.delete('debshots:front_page') # could make it add the new render explicitly later
 
         my.redirect_back()

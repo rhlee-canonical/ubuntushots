@@ -43,15 +43,15 @@ class StartController(BaseController):
     #def rss(self):
     #    """Welcome page"""
     #
-    #    # Show newest screenshot if available
-    #    newest_screenshots = model.newest_screenshots()[:50]
-    #    feed = feedgenerator.Rss201rev2Feed(
-    #        title=u"Debian Package Screenshots",
-    #        link=u"http://www.poynter.org/column.asp?id=31",
-    #        description=u"A group weblog by the sharpest minds in online media/journalism/publishing.",
-    #        language=u"en",
-    #        )
-    #    feed.add_item(title="Hello", link=u"http://www.holovaty.com/test/", description="Testing.")
+        ## Show newest screenshot if available
+        #newest_screenshots = model.newest_screenshots()[:50]
+        #feed = feedgenerator.Rss201rev2Feed(
+            #title=u"Debian Package Screenshots",
+            #link=u"http://www.poynter.org/column.asp?id=31",
+        #    description=u"A group weblog by the sharpest minds in online media/journalism/publishing.",
+        #    language=u"en",
+        #    )
+        #feed.add_item(title="Hello", link=u"http://www.holovaty.com/test/", description="Testing.")
 
 
     def guidelines(self):
