@@ -6,6 +6,7 @@
 <ul>
     <li>Screenshots are published under the terms of the packaged software itself.</li>
     <li>Your screenshots must be in PNG format.</li>
+    <li>Due to legal reasons screenshots for non-free packages aren't accecpted.</li>
     <li>Images larger than 800x600 pixels will automatically be reduced to that
         size (retaining the aspect ratio of course).
         So if you like to control the exact result of what you upload then
@@ -16,7 +17,7 @@
         a screenshot while you are playing and not of the start screen.
     </li>
     <li>
-        Nice tools for taking screenshots are ksnaphot (KDE), Gimp, xwd or scrot.
+        Nice tools for taking screenshots are ksnapshot (KDE), gimp, xwd or scrot.
     </li>
     <li>You need not artificially switch off your window decorations.</li>
     <li>
