@@ -121,12 +121,32 @@ def packages_without_screenshots():
         ))
     return packages
 
-#----------
+#---------------
 
 image_types = [
     {'size': (160,120), 'extension': 'small'},
     {'size': (800,600), 'extension': 'large'}
 ]
+
+#---------------
+
+debtags_table = sql.Table(
+    'debtags', metadata,
+    sql.Column('id', sql.Integer, primary_key=True),
+    sql.Column('tag', sql.Unicode(50)),
+)
+
+class Debtag(MyOrm): pass
+
+#---------------
+# Mapping table for packages to debtags (many-to-many)
+packages_to_debtags_table = sql.Table(
+    'packages_to_debtags', metadata,
+    sql.Column('package_id', sql.Integer, sql.ForeignKey('packages.id')),
+    sql.Column('debtag_id', sql.Integer, sql.ForeignKey('debtags.id')),
+)
+
+#---------------
 
 # A screenshot here is an entry for each uploaded screenshot.
 screenshots_table = sql.Table(
@@ -230,8 +250,16 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
             backref=orm.backref('package', uselist=False),
             cascade='all, delete-orphan',
             ),
+        'debtags':orm.relation(
+            Debtag,
+            backref=orm.backref('packages'),
+            cascade='all, delete-orphan',
+            secondary=packages_to_debtags_table,
+            ),
         })
 
 orm.mapper(Screenshot, screenshots_table)
 
 orm.mapper(Admin, admins_table)
+
+orm.mapper(Debtag, debtags_table)
