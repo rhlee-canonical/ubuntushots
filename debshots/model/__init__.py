@@ -135,6 +135,12 @@ debtags_table = sql.Table(
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('tag', sql.Unicode(50)),
     sql.Column('description', sql.Unicode(1000)),
+    sql.Column('facet', sql.Unicode(50)),
+    sql.Column('facet_description', sql.Unicode(100)),
+    # Note: Actually facets to tags should be a one-to-many relationship.
+    #       I am storing the facets right here in the tags table even if I
+    #       know this means duplicate data. But the number of tags is roughly
+    #       1200 and querying for the facet saves an extra database query.
 )
 
 class Debtag(MyOrm): pass

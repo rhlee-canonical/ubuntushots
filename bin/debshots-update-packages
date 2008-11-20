@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Extract the maintainers' email addresses and package names from Sources.gz"""
+"""Read Packages.gz package lists and debtags into the database"""
 # Mimics: zcat Sources.gz | grep-dctrl -FMaintainer,Uploaders foo@bar -ns package
 import logging
 import os
@@ -15,23 +15,26 @@ import subprocess
 from debshots.config.environment import load_environment
 
 tempfile = '/tmp/sources'
+debtags_url = 'http://svn.debian.org/viewsvn/*checkout*/debtags/tagdb/tags'
+debtags_descriptions_url = 'http://svn.debian.org/viewsvn/*checkout*/debtags/vocabulary/trunk/debian-packages'
 
 logging.basicConfig(
-    #level=logging.DEBUG,
-    level=logging.INFO,
+    level=logging.DEBUG,
+    #level=logging.INFO,
     #level=logging.WARNING,
     format='%(asctime)s %(levelname)s %(message)s'
     )
 
-def main():
-    logging.info("Initalising Pylons environment...")
+logging.info("Initalising Pylons environment...")
 
-    conf = appconfig('config:' + sys.argv[1])
-    load_environment(conf.global_conf, conf.local_conf)
+conf = appconfig('config:' + sys.argv[1])
+load_environment(conf.global_conf, conf.local_conf)
 
-    # Initialize database
-    from debshots import model
+# Initialize database
+from debshots import model
 
+
+def parse_packages():
     logging.info("Parsing packages file into the packages table")
     # Remove old tempfile
     if os.path.isfile(tempfile):
@@ -83,6 +86,91 @@ def main():
                 db_binpkg.version = pkg['Version'][:50].decode('utf8')
 
     logging.info("Committing to database")
+    model.Session.commit()
+
+
+def parse_debtags():
+    logging.info('Parsing debtags into database')
+    # Get debtags file
+    logging.debug('Downloading debtags file')
+    debtags_file = urllib.urlopen(debtags_url)
+
+    for line in debtags_file:
+        if ': ' not in line:
+            continue
+        package_name, tagstring = line.rstrip().split(': ')
+        logging.debug('Found tags for package: %s', package_name)
+        tags = tagstring.split(', ')
+        # Get package from database
+        db_package = model.Package.q().filter_by(name=unicode(package_name))
+        db_package = db_package.options(model.orm.eagerload('debtags'))
+        db_package = db_package.first()
+        if not db_package:
+            logging.debug('Package not found in database. Skipping.')
+            continue
+        # Remove existing tags from package
+        db_package.debtags=[]
+        # Add tags to package
+        for tag in tags:
+            logging.debug('Tag: %s', tag)
+            # Get tag from database
+            db_tag = model.Debtag.q().filter_by(tag=unicode(tag)).first()
+            if not db_tag:
+                # Debtag not yet present in the database: create it
+                db_tag = model.Debtag(tag=unicode(tag))
+                logging.debug('Tag not found in database. Creating new one.')
+            db_package.debtags.append(db_tag)
+
+    #logging.info("Committing to database")
+    #model.Session.commit()
+
+
+def parse_debtags_descriptions():
+    logging.info("Parsing debtags' descriptions into database")
+    # Get debtags descriptions/packages file
+    logging.debug('Downloading debtags descriptions file')
+    descriptions_file = urllib.urlopen(debtags_descriptions_url)
+
+    # Store facets (there aren't that many) in a dictionary to add the information
+    # to each debtag.
+    facets = {}
+
+    for paragraph in generator_paragraphs(descriptions_file):
+        section = deb822.Deb822(paragraph)
+        if 'Tag' in section:    # section describing a tag
+            logging.debug("Tag: %s", section['Tag'])
+            # Load tag from database
+            db_tag = model.Debtag.q().filter_by(tag=unicode(section['Tag'])).first()
+            if not db_tag:
+                # If this tag does not exist in the database it means that no package has
+                # this tag assigned. It's safe to ignore it then.
+                continue
+            db_tag.description=unicode(section['Description']).split('\n')[0]
+            # Does this tag have a facet?
+            if '::' in section['Tag']:
+                facet_string = section['Tag'].split('::')[0]
+                db_tag.facet = unicode(facet_string)
+                db_tag.facet_description = unicode(facets[facet_string])
+
+        elif 'Facet' in section:    # section describing a facet
+            logging.debug("Facet: %s", section['Facet'])
+            facets[section['Facet']] = unicode(section['Description'].split('\n')[0])
+
+def generator_paragraphs(filehandle):
+    """Returns paragraphs (lines seperated by empty lines) as a generator"""
+    paragraph = []
+    for line in filehandle:
+        if not line.strip():    # empty line
+            yield paragraph
+            paragraph = []
+        else:
+            paragraph.append(line.rstrip())
+
+
+def main():
+    #parse_packages()
+    #parse_debtags()
+    parse_debtags_descriptions()
     model.Session.commit()
 
 if __name__ == '__main__':
