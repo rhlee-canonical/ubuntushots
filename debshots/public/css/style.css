@@ -49,6 +49,11 @@ table {
 td {
     border: 1px solid #d0d0d0;
     padding: 0.2em 0.5em;
+    vertical-align: top;
+}
+
+td.noborder {
+    border: none;
 }
 
 th {
@@ -92,7 +97,7 @@ ul {
 }
 
 li {
-    padding-bottom: .4em;
+    padding-bottom: .2em;
 }
 
 h1
@@ -104,9 +109,9 @@ h1
 
 h2
 {
-    font-size: 130%;
-    margin: 1em 0 0.2em 0;
-    color: #E98F1D;
+    font-size: 120%;
+    margin: 1em 0 0.4em 0;
+    color: #c70036;
 }
 
 h3

@@ -21,14 +21,34 @@ class PackagesController(BaseController):
     def index(self):
         """Show a list of packages with screenshots"""
         packages = model.Package.q()
+
+        # Search for word
         search = request.params.get('search')
-        # TODO: only print packages with 0 unapproved screenshots
         if search:
             packages = packages.filter(
                 (model.Package.name.like('%'+search+'%'))
                 |
                 (model.Package.description.ilike('%'+search+'%'))
             )
+
+        # Search for debtag
+        debtags_search = request.params.get('debtag')
+        if debtags_search:
+            db_debtag = model.Debtag.q().filter_by(tag=unicode(debtags_search)).first()
+            if not db_debtag:
+                abort(404, 'Sorry, no packages with this debtag could be found.')
+
+            packages = packages.options(model.orm.eagerload('debtags'))
+            #packages = packages.filter(
+                #model.Debtag.id==db_debtag.id,
+                #model.Package.debtags.any(db_debtag)
+            #)
+            # Slow like hell:
+            packages = packages.filter(
+                model.Package.debtags.any(model.Debtag.tag==debtags_search)
+            )
+            #packages =
+
         # Only show packages with approved screenshots or the user's own screenshots
         # (JOINing reduces the packages to those which have corresponding screenshots)
         packages = packages.join('screenshots')

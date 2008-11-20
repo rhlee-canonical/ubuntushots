@@ -7,6 +7,8 @@
 
 <div class="graybox">
 <h1>Package <em>'${ c.package.name }'</em></h1>
+<table><tr><td class="noborder">
+<h2>Details</h2>
 <ul>
     <li><b>Description</b>: ${ c.package.description }</li>
     <li><b>Section</b>: ${ c.package.section }</li>
@@ -33,6 +35,22 @@
     <li>${ h.tags.link_to('Upload a new screenshot',
             h.url_for('upload', package=c.package.name)) }</li>
 </ul>
+
+</td><td class="noborder">
+
+## Debtags
+% if c.package.debtags:
+    <h2>Tags</h2>
+    <ul>
+    % for tag in c.package.debtags:
+        <li>
+            ${ tag.description }: ${ tag.facet_description }
+            [<a href="${ h.url_for('packages', debtag=tag.tag) }">Similar packages</a>]
+        </li>
+    % endfor
+    </ul>
+% endif
+</td></tr></table>
 </div>
 
 ## Show approved screenshots
