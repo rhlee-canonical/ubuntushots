@@ -134,6 +134,7 @@ debtags_table = sql.Table(
     'debtags', metadata,
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('tag', sql.Unicode(50)),
+    sql.Column('description', sql.Unicode(1000)),
 )
 
 class Debtag(MyOrm): pass
@@ -262,4 +263,4 @@ orm.mapper(Screenshot, screenshots_table)
 
 orm.mapper(Admin, admins_table)
 
-orm.mapper(Debtag, debtags_table)
+orm.mapper(Debtag, debtags_table, order_by=debtags_table.c.tag)
