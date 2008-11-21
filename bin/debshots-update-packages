@@ -156,6 +156,18 @@ def parse_debtags_descriptions():
             logging.debug("Facet: %s", section['Facet'])
             facets[section['Facet']] = unicode(section['Description'].split('\n')[0])
 
+def remove_tags_without_description():
+    """Remove tags that are unsupported (without a description in the debtags file)
+
+    Sometimes packages use tags that are not in the list of official tags.
+    This function removes them from the database because they would show up
+    with a description of NULL otherwise."""
+    logging.info("Removing tags without descriptions (unofficial tags)")
+    for tag in model.Debtag.q():
+        if tag.description is None:
+            model.Session.delete(tag)
+            logging.debug("Removing tag: %s", tag.tag)
+
 def generator_paragraphs(filehandle):
     """Returns paragraphs (lines seperated by empty lines) as a generator"""
     paragraph = []
@@ -168,9 +180,11 @@ def generator_paragraphs(filehandle):
 
 
 def main():
-    #parse_packages()
-    #parse_debtags()
+    parse_packages()
+    parse_debtags()
     parse_debtags_descriptions()
+    remove_tags_without_description()
+    #remove_boring_packages()
     model.Session.commit()
 
 if __name__ == '__main__':
