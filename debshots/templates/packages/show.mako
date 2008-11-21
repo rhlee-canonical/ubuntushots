@@ -44,7 +44,7 @@
     <ul>
     % for tag in c.package.debtags:
         <li>
-            ${ tag.description }: ${ tag.facet_description }
+            ${ tag.facet_description }: ${ tag.description }
             [<a href="${ h.url_for('packages', debtag=tag.tag) }">Similar packages</a>]
         </li>
     % endfor

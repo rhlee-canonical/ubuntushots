@@ -22,6 +22,16 @@ class PackagesController(BaseController):
         """Show a list of packages with screenshots"""
         packages = model.Package.q()
 
+        # Only show packages with approved screenshots or the user's own screenshots
+        # (JOINing reduces the packages to those which have corresponding screenshots)
+        packages = packages.join('screenshots')
+        packages = packages.filter(
+            (model.Screenshot.approved==True)
+            |
+            (model.Screenshot.uploaderhash==my.client_cookie_hash())
+            )
+        packages = packages.options(model.orm.eagerload('screenshots'))
+
         # Search for word
         search = request.params.get('search')
         if search:
@@ -38,16 +48,6 @@ class PackagesController(BaseController):
             if not db_debtag:
                 abort(404, 'Sorry, no packages with this debtag could be found.')
             packages = packages.join('debtags').filter(model.Debtag.tag==unicode(debtags_search))
-
-        # Only show packages with approved screenshots or the user's own screenshots
-        # (JOINing reduces the packages to those which have corresponding screenshots)
-        packages = packages.join('screenshots')
-        packages = packages.filter(
-            (model.Screenshot.approved==True)
-            |
-            (model.Screenshot.uploaderhash==my.client_cookie_hash())
-            )
-        packages = packages.options(model.orm.eagerload('screenshots'))
 
         c.packages = h.paginate.Page(packages,
             items_per_page=20,
