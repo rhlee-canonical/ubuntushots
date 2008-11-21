@@ -37,17 +37,7 @@ class PackagesController(BaseController):
             db_debtag = model.Debtag.q().filter_by(tag=unicode(debtags_search)).first()
             if not db_debtag:
                 abort(404, 'Sorry, no packages with this debtag could be found.')
-
-            packages = packages.options(model.orm.eagerload('debtags'))
-            #packages = packages.filter(
-                #model.Debtag.id==db_debtag.id,
-                #model.Package.debtags.any(db_debtag)
-            #)
-            # Slow like hell:
-            packages = packages.filter(
-                model.Package.debtags.any(model.Debtag.tag==debtags_search)
-            )
-            #packages =
+            packages = packages.join('debtags').filter(model.Debtag.tag==unicode(debtags_search))
 
         # Only show packages with approved screenshots or the user's own screenshots
         # (JOINing reduces the packages to those which have corresponding screenshots)
