@@ -53,6 +53,7 @@ class PackagesController(BaseController):
             items_per_page=20,
             page=request.params.get('page',0),
             search=search,
+            debtag=debtags_search,
             )
 
         return render('/packages/index.mako')
