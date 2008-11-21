@@ -31,6 +31,8 @@
     % endif
     <li><a href="http://packages.debian.org/${ c.package.name }">Package
         page on packages.debian.org</a></li>
+    <li><a href="http://bugs.debian.org/${ c.package.name }">Bug reports for this package</a>
+        </li>
     ## Upload link:
     <li>${ h.tags.link_to('Upload a new screenshot',
             h.url_for('upload', package=c.package.name)) }</li>
