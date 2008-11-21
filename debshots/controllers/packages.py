@@ -301,7 +301,7 @@ class PackagesController(BaseController):
             abort(404)
 
         if this_screenshot.approved:
-            my.message("Screenshot for package <em>%s</em> already approved." % package.name)
+            my.message("Screenshot for package <em>%s</em> already approved." % this_screenshot.package.name)
             my.redirect_back()
             redirect_to(h.url_for('package', package=package.name))
 
