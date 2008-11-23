@@ -168,6 +168,37 @@ def remove_tags_without_description():
             model.Session.delete(tag)
             logging.debug("Removing tag: %s", tag.tag)
 
+def remove_boring_packages():
+    """Remove packages with certain debtags that are not worthy of screenshots
+
+    The tags are defined in the INI file as debshots.ignore_tags"""
+    ignore_tags = conf['debshots.ignore_tags'].split()
+    for ignore_tag in ignore_tags:
+        db_debtag = model.Debtag.q().filter_by(tag=unicode(ignore_tag)).first()
+        if not db_debtag:
+            logging.warning('Tag "%s" not found in database. Did you spell it right in the ini file?')
+            continue
+
+        ignore_packages = model.Package.q().join('debtags').filter(model.Debtag.tag==unicode(ignore_tag))
+        for ignore_package in ignore_packages:
+            model.Session.delete(ignore_package)
+            logging.debug('Deleting package: %s', ignore_package.name)
+
+        #model.Session.delete(db_debtag)
+        #logging.debug('Deleting tags (and assigned packages): %s', ignore_tag)
+        #model.Session.delete(db_debtag.packages)
+        # This query is too manual for my taste and not making use of SQLAlchemy.
+        # Besides I would have to deal with the foreign key constraings manually.
+        #model.Session.connection().execute(model.sql.text("""
+        #    delete from packages
+        #    where id in (
+        #        select packages_to_debtags.package_id from packages_to_debtags
+        #        join debtags on debtags.id=packages_to_debtags.debtag_id
+        #        where debtags.tag=:tagname
+        #    )
+        #    """), tagname=ignore_tag)
+
+
 def generator_paragraphs(filehandle):
     """Returns paragraphs (lines seperated by empty lines) as a generator"""
     paragraph = []
@@ -180,11 +211,11 @@ def generator_paragraphs(filehandle):
 
 
 def main():
-    parse_packages()
-    parse_debtags()
-    parse_debtags_descriptions()
-    remove_tags_without_description()
-    #remove_boring_packages()
+    #parse_packages()
+    #parse_debtags()
+    #parse_debtags_descriptions()
+    #remove_tags_without_description()
+    remove_boring_packages()
     model.Session.commit()
 
 if __name__ == '__main__':
