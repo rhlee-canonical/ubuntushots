@@ -80,7 +80,7 @@
         (Removal was requested.)
     % else:
         ## Admins can remove the screenshots directly:
-        % if ('username' in session) or (h.my.client_cookie_hash() == screenshot.uploaderhash):
+        % if 'username' in session:
             ${ h.tags.link_to(
                 'Remove this screenshot',
                 h.url_for('delete_screenshot', screenshot=screenshot.id),
