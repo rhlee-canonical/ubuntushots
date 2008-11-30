@@ -18,6 +18,8 @@
     </li>
     <li>
         Nice tools for taking screenshots are ksnapshot (KDE), gimp, xwd or scrot.
+        See the <a href="http://wiki.debian.org/ScreenShots">Debian wiki</a> for more information
+        on how to make screenshots under Debian.
     </li>
     <li>You need not artificially switch off your window decorations.</li>
     <li>
