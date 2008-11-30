@@ -50,7 +50,7 @@ def authorized_for_screenshot(screenshot):
     Either the screenshot was uploaded by the same client (checks cookie hash)
     or the visitor is an admin or the screenshots has been approved to be
     viewed publicly."""
-    if client_cookie_hash() == screenshot.uploaderhash:
+    if client_cookie_hash() is not None and client_cookie_hash() == screenshot.uploaderhash:
         log.debug("Visitor is authorized to view screenshot '%s' (same cookie)", screenshot)
         return True
 

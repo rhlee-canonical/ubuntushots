@@ -28,7 +28,7 @@ class PackagesController(BaseController):
         packages = packages.filter(
             (model.Screenshot.approved==True)
             |
-            (model.Screenshot.uploaderhash==my.client_cookie_hash())
+            (my.client_cookie_hash() is not None and model.Screenshot.uploaderhash==my.client_cookie_hash())
             )
         packages = packages.options(model.orm.eagerload('screenshots'))
 
@@ -270,7 +270,7 @@ class PackagesController(BaseController):
             abort(403, "I'm afraid I can't do that, Dave.")
 
         # Admins or the one who uploaded the screenshot is allowed to delete
-        elif ('username' in session) or (my.client_cookie_hash() == this_screenshot.uploaderhash):
+        elif ('username' in session) or (my.client_cookie_hash() is not None and my.client_cookie_hash() == this_screenshot.uploaderhash):
             db.delete(this_screenshot)
             for image_path in this_screenshot.image_paths:
                 if os.path.isfile(image_path):
