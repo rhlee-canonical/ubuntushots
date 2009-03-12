@@ -13,10 +13,10 @@ setup(
     author_email='email@christoph-haas.de',
     #url='',
     install_requires=[
-        "Pylons==0.9.6.2",
+        "Pylons==0.9.7",
         "PIL>=1.1.6",
         "SQLAlchemy==0.4.6",
-        "Webhelpers==0.6.3",
+        "Webhelpers==0.6.4",
         "pastescript>=1.6",
         "paste>=1.6",
         #"psycopg2>=2.0.6",  # can also be deployed with sqlite - then psycopg2 is unneeded

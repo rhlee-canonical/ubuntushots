@@ -11,13 +11,13 @@ from pylons.i18n import _, ungettext, N_
 from pylons.templating import render
 
 import debshots.lib.helpers as h
-import debshots.model as model
+from debshots import model
 from debshots.lib import my
 
 import logging
 log = logging.getLogger(__name__)
 
-db = model.Session
+db = model.meta.Session
 
 class BaseController(WSGIController):
 
@@ -31,13 +31,9 @@ class BaseController(WSGIController):
         # the request is routed to. This routing information is
         # available in environ['pylons.routes_dict']
         try:
-            try:
-                return WSGIController.__call__(self, environ, start_response)
-            except:
-                model.Session.rollback()
-                raise
-        finally:
-            model.Session.remove()
+            return WSGIController.__call__(self, environ, start_response)
+        except:
+            model.meta.Session.remove()
 
 # Include the '_' function in the public names
 __all__ = [__name for __name in locals().keys() if not __name.startswith('_') \

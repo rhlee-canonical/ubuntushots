@@ -5,28 +5,24 @@ import sqlalchemy.orm as orm
 import pylons
 import os
 import md5
+from debshots.model import meta
 from debshots.lib import my
 from routes import url_for
 
 import logging
 log = logging.getLogger(__name__)
 
-# Global session manager.  Session() returns the session object
-# appropriate for the current web request.
-Session = orm.scoped_session(orm.sessionmaker(
-    autoflush=True,
-    transactional=True,
-    bind=pylons.config['pylons.g'].sa_engine))
-
-# Global metadata
-metadata = sql.MetaData()
+def init_model(engine):
+    """Call me before using any of the tables or classes in the model"""
+    meta.Session.configure(bind=engine)
+    meta.engine = engine
 
 # Base class for object-relational mappers
 class MyOrm(object):
     @classmethod
     def q(self):
         """Create Query object of an ORM class"""
-        return Session.query(self)
+        return meta.Session.query(self)
 
     # from http://www.sqlalchemy.org/trac/wiki/UsageRecipes/GenericOrmBaseClass
     def __init__(self, **kw):
@@ -58,7 +54,7 @@ class MyOrm(object):
 #
 # This table gets updated by the debshots-update-packages script
 packages_table = sql.Table(
-    'packages', metadata,
+    'packages', meta.metadata,
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('name', sql.Unicode(100), unique=True),
     sql.Column('description', sql.Unicode(80)),
@@ -135,7 +131,7 @@ image_types = [
 #---------------
 
 debtags_table = sql.Table(
-    'debtags', metadata,
+    'debtags', meta.metadata,
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('tag', sql.Unicode(50)),
     sql.Column('description', sql.Unicode(1000)),
@@ -152,7 +148,7 @@ class Debtag(MyOrm): pass
 #---------------
 # Mapping table for packages to debtags (many-to-many)
 packages_to_debtags_table = sql.Table(
-    'packages_to_debtags', metadata,
+    'packages_to_debtags', meta.metadata,
     sql.Column('package_id', sql.Integer, sql.ForeignKey('packages.id')),
     sql.Column('debtag_id', sql.Integer, sql.ForeignKey('debtags.id')),
 )
@@ -161,7 +157,7 @@ packages_to_debtags_table = sql.Table(
 
 # A screenshot here is an entry for each uploaded screenshot.
 screenshots_table = sql.Table(
-    'screenshots', metadata,
+    'screenshots', meta.metadata,
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('package_id', sql.Integer, sql.ForeignKey('packages.id')),
     sql.Column('version', sql.Unicode(50)),
@@ -241,7 +237,7 @@ def newest_screenshots():
 # Table of admin users
 # (screenshots can be uploaded by anyone - but they have to be approved by an admin)
 admins_table = sql.Table(
-    'admins', metadata,
+    'admins', meta.metadata,
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('username', sql.Unicode(20), unique=True),
     sql.Column('passwordhash', sql.Unicode(32)), # MD5 hash of the admin's password
