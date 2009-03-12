@@ -204,3 +204,19 @@ assigned. Each 'package' has a number of 'screenshots' assigned which is
 what a user would upload. And in turn each 'screenshot' consists of different
 'images' like a big image and a thumbnail. And finally the 'admins' table
 has a list of admin users and their (salted MD5-hashed) passwords stored.
+
+supervisord.conf
+================
+
+[program:debshots]
+command = /home/debshots/bin/paster serve /home/debshots/debshots-live.ini
+directory = /home/debshots
+process_name = paster
+autostart = true
+startsecs = 5
+;exitcodes = 0,2
+user = debshots
+redirect_stderr = true
+stdout_logfile = /home/debshots/error.log
+environment = PYTHON_EGG_CACHE=/home/debshots/.python-eggs
+
