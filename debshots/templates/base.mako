@@ -18,7 +18,7 @@
         '/javascript/jquery.flyout.js', ## for image zooming
         '/javascript/jquery.jgrowl.js', ## message popups
         ) }
-    <!--<link rel="alternate" href="some feed url" title="RSS Feed" type="application/rss+xml" />-->
+    <link rel="alternate" href="/rss" title="RSS Feed" type="application/rss+xml" />
 
     ## display popup messages stored in the session via jGrowl (jQuery plugin)
     % if session['messages']:

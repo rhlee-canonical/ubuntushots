@@ -7,6 +7,7 @@ import StringIO
 import paste
 from debshots.lib import my, validators
 import formencode
+from webhelpers.feedgenerator import Rss201rev2Feed
 
 log = logging.getLogger(__name__)
 
@@ -375,6 +376,29 @@ class PackagesController(BaseController):
             return ''
         logging.debug('ajax_get_version_for_package(%s) -> %s' % (query, package.version))
         return { 'version' : package.version }
+
+    def rss(self):
+        """Return an RSS feed of the latest uploads"""
+        feed = Rss201rev2Feed(
+            title=u"screenshots.debian.net recent uploads",
+            link='http://screenshots.debian.net',
+            description=u"Recent uploads of screenshots to screenshots.debian.net",
+            language=u"en",
+        )
+
+        # Show newest screenshot if available
+        newest_screenshots = model.newest_screenshots()
+        if newest_screenshots.count():
+            # Return up to 30 screenshots in RSS feed
+            for screenshot in newest_screenshots[:30]:
+                feed.add_item(
+                    title='Screenshot for %s (%s)' % (
+                        screenshot.package.name, screenshot.package.description),
+                    link=h.url_for(screenshot.large_image_url, qualified=True),
+                    description=screenshot.package.name)
+
+        response.content_type = 'application/rss+xml'
+        return feed.writeString('utf-8')
 
 #--------------------------
 

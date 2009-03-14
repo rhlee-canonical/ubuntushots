@@ -73,6 +73,8 @@ def make_map():
     map.connect('keep_screenshot', '/keep_screenshot/:screenshot',
         controller='packages', action='keep_screenshot')
 
+    map.connect('rss', '/rss', controller='packages', action='rss')
+
     # Generic controllers
     map.connect(':controller/:action/:id')
     map.connect('*url', controller='template', action='view')
