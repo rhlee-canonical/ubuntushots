@@ -25,6 +25,9 @@ def load_environment(global_conf, app_conf):
     # Initialize config with the basic options
     config.init_app(global_conf, app_conf, package='debshots', paths=paths)
 
+    # Don't stumble upon undefined c variables in templates (restores Pylons 0.9.6 behavior)
+    config['pylons.strict_c'] = False
+
     config['routes.map'] = make_map()
     config['pylons.app_globals'] = app_globals.Globals()
     config['pylons.h'] = debshots.lib.helpers
