@@ -59,6 +59,26 @@ class PackagesController(BaseController):
 
         return render('/packages/index.mako')
 
+    @jsonify
+    def pkglist(self):
+        """Return list of packages in CSV format"""
+        packages = model.Package.q()
+
+        # Only show packages with approved screenshots or the user's own screenshots
+        # (JOINing reduces the packages to those which have corresponding screenshots)
+        packages = packages.join('screenshots')
+        packages = packages.filter(model.Screenshot.approved==True)
+        return {'packages':
+            [
+                {
+                    'name': p.name,
+                    'url': h.url_for('package', package=p.name, qualified=True),
+                    'description': p.description
+                }
+                for p in packages
+            ]
+        }
+
     def without_screenshots(self):
         """Show a list of packages without screenshots"""
         packages = model.packages_without_screenshots()
