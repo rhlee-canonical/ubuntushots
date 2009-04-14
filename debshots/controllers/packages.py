@@ -83,6 +83,29 @@ class PackagesController(BaseController):
             ]
         }
 
+    @jsonify
+    def screenshotslist(self):
+        """Return list of screenshots as a JSON dictionary"""
+        screenshots = model.newest_screenshots()
+
+        return {'screenshots':
+            [
+                {
+                    'name': s.package.name,
+                    'url': h.url_for('package', package=s.package.name, qualified=True),
+                    'description': s.package.description,
+                    'maintainer': s.package.maintainer,
+                    'maintainer_email': s.package.maintainer_email,
+                    'section': s.package.section,
+                    'homepage': s.package.homepage,
+                    'version': s.version,
+                    'small_image_url': h.url_for(s.small_image_url, qualified=True),
+                    'large_image_url': h.url_for(s.large_image_url, qualified=True),
+                }
+                for s in screenshots
+            ]
+        }
+
     def without_screenshots(self):
         """Show a list of packages without screenshots"""
         packages = model.packages_without_screenshots()

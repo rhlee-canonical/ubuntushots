@@ -36,6 +36,7 @@ def make_map():
 
     # List of packages with screenshots
     map.connect('packageslist', '/packages/list', controller='packages', action='pkglist')
+    map.connect('screenshotslist', '/screenshots/list', controller='packages', action='screenshotslist')
 
     # View for logged-in administrators to approve or delete uploaded screenshots
     map.connect('moderate', '/packages/moderate', controller='packages', action='moderate')
