@@ -61,7 +61,7 @@ class PackagesController(BaseController):
 
     @jsonify
     def pkglist(self):
-        """Return list of packages in CSV format"""
+        """Return list of packages as a JSON dictionary"""
         packages = model.Package.q()
 
         # Only show packages with approved screenshots or the user's own screenshots
@@ -73,7 +73,11 @@ class PackagesController(BaseController):
                 {
                     'name': p.name,
                     'url': h.url_for('package', package=p.name, qualified=True),
-                    'description': p.description
+                    'description': p.description,
+                    'maintainer': p.maintainer,
+                    'maintainer_email': p.maintainer_email,
+                    'section': p.section,
+                    'homepage': p.homepage,
                 }
                 for p in packages
             ]
