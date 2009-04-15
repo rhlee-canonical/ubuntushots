@@ -33,6 +33,7 @@ debshots/lib/helpers.py
 debshots/lib/my.py
 debshots/lib/validators.py
 debshots/model/__init__.py
+debshots/model/meta.py
 debshots/public/robots.txt
 debshots/public/css/style.css
 debshots/public/images/dummy-screenshot.png
@@ -51,6 +52,7 @@ debshots/templates/packages/include-index-header.mako
 debshots/templates/packages/include-js-autocomplete-package.mako
 debshots/templates/packages/include-js-lightbox.mako
 debshots/templates/packages/index.mako
+debshots/templates/packages/list.mako
 debshots/templates/packages/moderate-index.mako
 debshots/templates/packages/show.mako
 debshots/templates/packages/upload.mako
