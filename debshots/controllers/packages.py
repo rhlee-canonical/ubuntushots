@@ -2,12 +2,23 @@
 import logging
 from debshots.lib.base import *
 import os
-import PIL.Image
+try:
+    import Image
+except:
+    import PIL.Image as Image
 import StringIO
 import paste
+from paste.deploy.converters import asbool
 from debshots.lib import my, validators
 import formencode
 from webhelpers.feedgenerator import Rss201rev2Feed
+
+SCREENSHOT_HEADERS = [
+    ('Content-Type', 'image/png'),
+    # make images cacheable
+    ('Cache-Control', 'public, max-age=86400'),
+    ('Pragma', ''),
+]
 
 log = logging.getLogger(__name__)
 
@@ -207,15 +218,18 @@ class PackagesController(BaseController):
         return self._image_fileapp(file_path)
 
     def _image_fileapp(self, file_path):
-        """Return a static image from a path via a FileApp"""
+        """Return a static image from a path via a FileApp (or via x-sendfile
+        header if webserver supports it)"""
+
+        if 'debshots.xsendfile' in config:
+            response.headers[config['debshots.xsendfile']] = file_path
+            for header, value in SCREENSHOT_HEADERS:
+                response.headers[header] = value
+            return ''
+
         fapp = paste.fileapp.FileApp(
             file_path,
-            headers=[
-                ('Content-Type', 'image/png'),
-                # make images cacheable
-                ('Cache-Control', 'public, max-age=86400'),
-                ('Pragma', ''),
-            ])
+            headers=SCREENSHOT_HEADERS)
         return fapp(request.environ, self.start_response)
 
     def image(self, id, size):
@@ -458,7 +472,7 @@ def _process_screenshot(filehandle, package, version):
     - insert into database as Screenshot
     """
     try:
-        image = PIL.Image.open(filehandle)
+        image = Image.open(filehandle)
     except IOError, e:
         return "The file you uploaded is not a valid PNG image"
 
@@ -481,7 +495,7 @@ def _process_screenshot(filehandle, package, version):
     try:
         for image_type in image_types:
             image_copy = image.copy()
-            image_copy.thumbnail(image_type['size'], PIL.Image.ANTIALIAS)
+            image_copy.thumbnail(image_type['size'], Image.ANTIALIAS)
             #imgc.convert('RGB')
             to_save.append((image_copy, image_type))
     except IOError, e:
