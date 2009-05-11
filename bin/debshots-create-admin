@@ -15,8 +15,8 @@ def main():
 
     new_admin = model.Admin(username=unicode(sys.argv[2]))
     new_admin.setpassword(sys.argv[3])
-    model.Session.save(new_admin)
-    model.Session.commit()
+    model.meta.Session.save(new_admin)
+    model.meta.Session.commit()
 
     print "Admin user '%s' created." % sys.argv[2]
 
