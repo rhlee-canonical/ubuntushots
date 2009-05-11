@@ -32,7 +32,7 @@ load_environment(conf.global_conf, conf.local_conf)
 
 # Initialize database
 from debshots import model
-
+db = model.meta.Session
 
 def parse_packages():
     logging.info("Parsing packages file into the packages table")
@@ -72,7 +72,7 @@ def parse_packages():
                 # If the package is not yet found in the database then create a new entry
                 if not db_binpkg:
                     db_binpkg = model.Package(name=pkg['package'].decode('utf8'))
-                    model.Session.save(db_binpkg)
+                    db.save(db_binpkg)
 
                 # Skip this entry if the package's database entry has the same version
                 if db_binpkg.version==pkg['version']:
@@ -86,7 +86,7 @@ def parse_packages():
                 db_binpkg.version = pkg['Version'][:50].decode('utf8')
 
     logging.info("Committing to database")
-    model.Session.commit()
+    db.commit()
 
 
 def parse_debtags():
@@ -165,7 +165,7 @@ def remove_tags_without_description():
     logging.info("Removing tags without descriptions (unofficial tags)")
     for tag in model.Debtag.q():
         if tag.description is None:
-            model.Session.delete(tag)
+            db.delete(tag)
             logging.debug("Removing tag: %s", tag.tag)
 
 def remove_boring_packages():
@@ -181,7 +181,7 @@ def remove_boring_packages():
 
         ignore_packages = model.Package.q().join('debtags').filter(model.Debtag.tag==unicode(ignore_tag))
         for ignore_package in ignore_packages:
-            model.Session.delete(ignore_package)
+            db.delete(ignore_package)
             logging.debug('Deleting package: %s', ignore_package.name)
 
         #model.Session.delete(db_debtag)
@@ -216,7 +216,7 @@ def main():
     #parse_debtags_descriptions()
     #remove_tags_without_description()
     remove_boring_packages()
-    model.Session.commit()
+    db.commit()
 
 if __name__ == '__main__':
     main()
