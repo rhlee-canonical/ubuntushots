@@ -117,10 +117,10 @@
 ## This view is not shown if the user is an administrator or otherwise
 ## the screenshots would also show up in the "not yet approved screenshots"
 ## section below.
-% if ('username' not in session) and (c.package.my_screenshots):
+% if ('username' not in session) and (c.package.my_unapproved_screenshots):
 <div class="screenshots">
 <h1>Your uploaded (not yet approved) screenshots</h1>
-% for screenshot in c.package.my_screenshots:
+% for screenshot in c.package.my_unapproved_screenshots:
     <div class="screenshot">
     <a class="image" href="${screenshot.large_image_url}"
         title="Screenshot of package '${screenshot.package.name}'">

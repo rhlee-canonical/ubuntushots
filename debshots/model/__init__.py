@@ -66,6 +66,9 @@ packages_table = sql.Table(
 )
 
 class Package(MyOrm):
+    # The following methods are done as list operations instead of SQLAlchemy queries
+    # because there is usually a low number of screenshots and this saves several
+    # extra SQL queries and thus is faster.
     @property
     def unapproved_screenshots(self):
         """Return a list of freshly uploaded (not yet approved) screenshots for this package"""
@@ -92,6 +95,11 @@ class Package(MyOrm):
         return [ss for ss in self.screenshots
                 if my.client_cookie_hash() is not None
                 and ss.uploaderhash==my.client_cookie_hash()]
+
+    @property
+    def my_unapproved_screenshots(self):
+        """Return unapproved screenshots of the current user."""
+        return [ss for ss in self.my_screenshots if ss.approved==False]
 
     @property
     def my_or_approved_screenshots(self):
