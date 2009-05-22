@@ -21,7 +21,7 @@
     <link rel="alternate" href="/rss" title="RSS Feed" type="application/rss+xml" />
 
     ## display popup messages stored in the session via jGrowl (jQuery plugin)
-    % if session['messages']:
+    % if session.get('messages'):
         % for message in session['messages'].pop():
         <script type="application/x-javascript">
             $(document).ready(function() {
