@@ -3,12 +3,13 @@
 Provides the BaseController class for subclassing, and other objects
 utilized by Controllers.
 """
-from pylons import c, cache, config, g, request, response, session
-from pylons.controllers import WSGIController
+#from pylons import c, cache, config, g, request, response, session
 from pylons.controllers.util import abort, etag_cache, redirect_to
-from pylons.decorators import jsonify, validate
-from pylons.i18n import _, ungettext, N_
-from pylons.templating import render
+#from pylons.i18n import _, ungettext, N_
+from pylons.controllers import WSGIController
+from pylons.templating import render_mako as render
+from pylons.decorators import validate, jsonify
+from pylons import request, response, session, tmpl_context as c, config
 
 import debshots.lib.helpers as h
 from debshots import model
