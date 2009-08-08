@@ -11,10 +11,12 @@ def make_map():
     """Create, configure and return the routes Mapper"""
     map = Mapper(directory=config['pylons.paths']['controllers'],
                  always_scan=config['debug'])
+    map.minimization = False
 
     # The ErrorController route (handles 404/500 error pages); it should
     # likely stay at the top, ensuring it can always be resolved
-    map.connect('error/:action/:id', controller='error')
+    map.connect('/error/{action}', controller='error')
+    map.connect('/error/{action}/{id}', controller='error')
 
     # CUSTOM ROUTES HERE
 
@@ -29,7 +31,7 @@ def make_map():
         requirements={'id': r'\d+', 'size': '(small|large)'})
 
     # Start page
-    map.connect('start', '', controller='start', action='index')
+    map.connect('start', '/', controller='start', action='index')
 
     # Packages view (list of packages with screenshots sorted by name)
     map.connect('packages', '/packages', controller='packages', action='index')
@@ -42,7 +44,9 @@ def make_map():
     map.connect('moderate', '/packages/moderate', controller='packages', action='moderate')
 
     # Show upload form
-    map.connect('upload', '/upload/:package', controller='packages', action='upload', package=None)
+    map.connect('upload', '/upload', controller='packages', action='upload', package=None)
+    # Handle the actual upload
+    map.connect('upload', '/upload/:package', controller='packages', action='upload')
 
     # Process upload form
     map.connect('uploadfile', '/uploadfile', controller='packages', action='uploadfile')
@@ -51,13 +55,13 @@ def make_map():
     map.connect('guidelines', '/guidelines', controller='start', action='guidelines')
 
     # Admin login form
-    map.connect('login', 'login', controller='start', action='login')
+    map.connect('login', '/login', controller='start', action='login')
 
     # Admin logout form
-    map.connect('logout', 'logout', controller='start', action='logout')
+    map.connect('logout', '/logout', controller='start', action='logout')
 
     # Details about a package
-    map.connect('package', 'package/:package', controller='packages', action='show')
+    map.connect('package', '/package/:package', controller='packages', action='show')
 
     # Direct link to a thumbnail image of a certain package
     # (shows a dummy 160x120 pixel large image instead of 404)
@@ -80,7 +84,13 @@ def make_map():
     map.connect('rss', '/rss', controller='packages', action='rss')
 
     # Generic controllers
-    map.connect(':controller/:action/:id')
-    map.connect('*url', controller='template', action='view')
+    #map.connect(':controller/:action/:id')
+    map.connect('/:controller/:action')
+    #map.connect('*url', controller='template', action='view')
+
+    #map.connect('/{controller}/{action}')
+    #map.connect('/{controller}/{action}/{id}')
+
 
     return map
+

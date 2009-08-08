@@ -20,7 +20,8 @@ class Globals(object):
 
     def __init__(self):
         """One instance of Globals is created during application
-        initialization and is available during requests via the 'g'
-        variable
+        initialization and is available during requests via the
+        'app_globals' variable
         """
         pass
+

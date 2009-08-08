@@ -1,2 +1,3 @@
+include debshots/config/deployment.ini_tmpl
 recursive-include debshots/public *
 recursive-include debshots/templates *

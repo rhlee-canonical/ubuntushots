@@ -1,23 +1,19 @@
 """Setup the debshots application"""
 import logging
 import os
-
-from paste.deploy import appconfig
 from pylons import config
 
 from debshots.config.environment import load_environment
+from debshots.model import meta
 
 log = logging.getLogger(__name__)
 
-def setup_config(command, filename, section, vars):
+def setup_app(command, conf, vars):
     """Place any commands to setup debshots here"""
-    conf = appconfig('config:' + filename)
     load_environment(conf.global_conf, conf.local_conf)
 
-    # Initialize database
-    from debshots import model
-    print "Create database tables"
-    model.metadata.create_all(bind=config['pylons.g'].sa_engine)
+    # Create the tables if they don't already exist
+    meta.metadata.create_all(bind=meta.engine)
 
     if not os.path.isdir(config['debshots.screenshots_directory']):
         print "Creating screenshots directory"

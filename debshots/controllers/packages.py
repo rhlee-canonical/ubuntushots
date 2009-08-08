@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from debshots.lib.base import *
+from pylons.controllers.util import Response
 import os
 try:
     import Image
@@ -199,20 +200,21 @@ class PackagesController(BaseController):
 
         # Make sure the screenshot database row is available
         if not screenshot:
+            log.warn("Requested screenshot #%s which was not found in the database", id)
             return None
 
         # only show images that are approved (or for admins or owners)
         if not my.authorized_for_screenshot(screenshot):
+            log.warn("User is not authorized to access screenshot #%s", id)
             return None
 
-        file_path = os.path.join(screenshot.directory, '%s_%s.png' % (id, size))
+        file_path = screenshot.image_path(size)
 
         # Make sure the file on disk exists
         if not os.path.isfile(file_path):
             # The file is in the database but not on disk? Remove it from the database then.
-            log.error("Screenshot file #%s missing on disk. Removing screenshot from database." % screenshot.id)
-            db.delete(screenshot)
-            db.commit()
+            log.error("Screenshot #%s exists in database but is missing on disk at '%s'." % \
+                      (screenshot.id, file_path))
             return None
 
         return self._image_fileapp(file_path)
@@ -240,7 +242,8 @@ class PackagesController(BaseController):
         image_fapp = self._image(id, size)
 
         if not image_fapp:
-            abort(404)
+            if size=='large': return self._dummy_screenshot()
+            elif size=='small': return self._dummy_thumbnail()
 
         return image_fapp
 
@@ -300,25 +303,24 @@ class PackagesController(BaseController):
         first_screenshot = this_package.screenshots[0]
         return self._image_fileapp(first_screenshot.image_path('large'))
 
-    def _dummy_thumbnail(self):
-        """Return 160x120 dummy thumbnail"""
+    def _dummy_image(self, file):
+        """Return an image in the images/ directory"""
         image_path = os.path.join(
             config['pylons.paths']['static_files'],
-            'images/dummy-thumbnail.png'
+            'images',
+            file
             )
         fapp = paste.fileapp.FileApp(image_path,
             headers=[('Content-Type', 'image/png')])
         return fapp(request.environ, self.start_response)
 
+    def _dummy_thumbnail(self):
+        """Return 160x120 dummy thumbnail"""
+        return self._dummy_image('dummy-thumbnail.png')
+
     def _dummy_screenshot(self):
         """Return 800x600 dummy screenshot"""
-        image_path = os.path.join(
-            config['pylons.paths']['static_files'],
-            'images/dummy-screenshot.png'
-            )
-        fapp = paste.fileapp.FileApp(image_path,
-            headers=[('Content-Type', 'image/png')])
-        return fapp(request.environ, self.start_response)
+        return self._dummy_image('dummy-screenshot.png')
 
     def delete_screenshot(self, screenshot):
         this_screenshot = model.Screenshot.q().get(screenshot)

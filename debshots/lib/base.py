@@ -1,20 +1,17 @@
 """The base Controller API
 
-Provides the BaseController class for subclassing, and other objects
-utilized by Controllers.
+Provides the BaseController class for subclassing.
 """
-#from pylons import c, cache, config, g, request, response, session
 from pylons.controllers.util import abort, etag_cache, redirect_to
-#from pylons.i18n import _, ungettext, N_
+from pylons.decorators import validate, jsonify
+from pylons import request, response, session, tmpl_context as c, config, g
 from pylons.controllers import WSGIController
 from pylons.templating import render_mako as render
-from pylons.decorators import validate, jsonify
-from pylons import request, response, session, tmpl_context as c, config
 
 import debshots.lib.helpers as h
-from debshots import model
+from debshots.model import meta
 from debshots.lib import my
-
+from debshots import model
 import logging
 log = logging.getLogger(__name__)
 
@@ -33,9 +30,5 @@ class BaseController(WSGIController):
         # available in environ['pylons.routes_dict']
         try:
             return WSGIController.__call__(self, environ, start_response)
-        except:
-            model.meta.Session.remove()
-
-# Include the '_' function in the public names
-__all__ = [__name for __name in locals().keys() if not __name.startswith('_') \
-           or __name == '_']
+        finally:
+            meta.Session.remove()

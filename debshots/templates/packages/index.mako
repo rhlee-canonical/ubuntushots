@@ -26,10 +26,12 @@
                 ${ package.section }
             </td>
             <td>
+                % if package.homepage:
                 ${ h.tags.link_to(
                     package.homepage,
                     package.homepage
                     ) }
+                % endif
             </td>
             ## Show link to upload screenshots
             <td>

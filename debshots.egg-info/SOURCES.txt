@@ -8,6 +8,7 @@ bin/debshots-migrate-images
 bin/debshots-set-version-for-unversioned-screenshots
 bin/debshots-update-packages
 debshots/__init__.py
+debshots/ez_setup.py
 debshots/websetup.py
 debshots.egg-info/PKG-INFO
 debshots.egg-info/SOURCES.txt
@@ -18,6 +19,7 @@ debshots.egg-info/paster_plugins.txt
 debshots.egg-info/requires.txt
 debshots.egg-info/top_level.txt
 debshots/config/__init__.py
+debshots/config/deployment.ini_tmpl
 debshots/config/environment.py
 debshots/config/middleware.py
 debshots/config/routing.py
@@ -34,8 +36,14 @@ debshots/lib/my.py
 debshots/lib/validators.py
 debshots/model/__init__.py
 debshots/model/meta.py
+debshots/public/bg.png
+debshots/public/favicon.png
+debshots/public/pylons-logo.gif
 debshots/public/robots.txt
 debshots/public/css/style.css
+debshots/public/images/404-screenshot.png
+debshots/public/images/404-thumbnail.png
+debshots/public/images/camera.png
 debshots/public/images/dummy-screenshot.png
 debshots/public/images/dummy-thumbnail.png
 debshots/public/images/logo.png
