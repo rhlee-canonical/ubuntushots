@@ -65,9 +65,9 @@ def make_map():
 
     # Direct link to a thumbnail image of a certain package
     # (shows a dummy 160x120 pixel large image instead of 404)
-    map.connect('thumbnail', 'thumbnail/:package', controller='packages', action='thumbnail')
+    map.connect('thumbnail', '/thumbnail/:package', controller='packages', action='thumbnail')
     # Same for the large image
-    map.connect('screenshot', 'screenshot/:package', controller='packages', action='screenshot')
+    map.connect('screenshot', '/screenshot/:package', controller='packages', action='screenshot')
 
     # Action to delete a screenshot (admin-only) or request its removal (users)
     map.connect('delete_screenshot', '/delete_screenshot/:screenshot',
