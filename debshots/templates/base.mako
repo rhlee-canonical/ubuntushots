@@ -33,7 +33,7 @@
     % endif
     
     ## Favicon
-    <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
   </head>
 
   <body>
