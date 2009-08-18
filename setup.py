@@ -15,7 +15,8 @@ setup(
     install_requires=[
         "Pylons==0.9.7",
         "PIL>=1.1.6",
-        "SQLAlchemy==0.4.6",
+        "SQLAlchemy==0.5.5",
+        #"SQLAlchemy==0.4.6",
         "Webhelpers==0.6.4",
         "pastescript>=1.6",
         "paste>=1.6",

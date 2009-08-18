@@ -27,10 +27,23 @@ class MyOrm(object):
     # from http://www.sqlalchemy.org/trac/wiki/UsageRecipes/GenericOrmBaseClass
     def __init__(self, **kw):
         for key in kw:
-            if key in self.c:
+            if not key.startswith('_') and key in self.__dict__:
                 setattr(self, key, kw[key])
-            else:
-                raise AttributeError('Cannot set attribute which is not column in mapped table: %s' % (key,))
+
+    def __repr__(self):
+        attrs = []
+        for key in self.__dict__:
+            if not key.startswith('_'):
+                attrs.append((key, getattr(self, key)))
+        return self.__class__.__name__ + '(' + ', '.join(x[0] + '=' +
+                                            repr(x[1]) for x in attrs) + ')'
+
+    #def __init__(self, **kw):
+    #    for key in kw:
+    #        if key in self.c:
+    #            setattr(self, key, kw[key])
+    #        else:
+    #            raise AttributeError('Cannot set attribute which is not column in mapped table: %s' % (key,))
 
     def update(self, update_dict, ignore_missing_columns=True):
         """Update ORM object attributes"""
@@ -40,15 +53,15 @@ class MyOrm(object):
             elif not ignore_missing_columns:
                 raise AttributeError('Cannot set attribute which is not column in mapped table: %s' % (key,))
 
-    def __repr__(self):
-        atts = []
-        for key in self.c.keys():
-            if key in self.__dict__:
-                if not (hasattr(self.c.get(key).default, 'arg') and
-                        getattr(self.c.get(key).default, 'arg') == getattr(self, key)):
-                    atts.append( (key, getattr(self, key)) )
-
-        return self.__class__.__name__ + '(' + ', '.join(x[0] + '=' + repr(x[1]) for x in atts) + ')'
+    #def __repr__(self):
+    #    atts = []
+    #    for key in self.c.keys():
+    #        if key in self.__dict__:
+    #            if not (hasattr(self.c.get(key).default, 'arg') and
+    #                    getattr(self.c.get(key).default, 'arg') == getattr(self, key)):
+    #                atts.append( (key, getattr(self, key)) )
+    #
+    #    return self.__class__.__name__ + '(' + ', '.join(x[0] + '=' + repr(x[1]) for x in atts) + ')'
 
 # Table containing Debian packages
 #
@@ -264,11 +277,12 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
             Screenshot,
             backref=orm.backref('package', uselist=False),
             cascade='all, delete-orphan',
+            single_parent=True,
             ),
         'debtags':orm.relation(
             Debtag,
             backref=orm.backref('packages'),
-            cascade='all, delete-orphan',
+            #cascade='all, delete-orphan',
             secondary=packages_to_debtags_table,
             ),
         })
