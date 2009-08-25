@@ -20,7 +20,7 @@ import tempfile
 #from sqlalchemy import engine_from_config
 
 #dde_packages_url = 'http://torf.workaround.org/ddetest'
-dde_packages_url = 'http://dde.debian.net/dde/q/udd/packages/all?t=pickle'
+#dde_packages_url = 'http://dde.debian.net/dde/q/udd/packages/all?t=pickle'
 #dde_packages_url = 'http://dde.debian.net/dde/q/udd/packages/prio-debian-sid?t=pickle'
 #packages_url = 'http://debexpo.alioth.debian.org/cgi-bin/packages'
 
@@ -43,17 +43,7 @@ logging.basicConfig(
 from debshots.model import meta
 from debshots import model
 
-# Setup the SQLAlchemy database engine
-#engine = engine_from_config(config, 'sqlalchemy.')
-#model.init_model(engine)
-
 db = model.meta.Session
-
-#if not os.path.isdir(config['debshots.screenshots_directory']):
-    #print "Creating screenshots directory"
-    #os.makedirs(config['debshots.screenshots_directory'])
-#else:
-    #print "Image directory already exists"
 
 EXAMPLE_ENTRY="""
 {'architecture': ['all'],
@@ -113,6 +103,7 @@ def main():
     #db.commit()
     #return 0
 
+    dde_packages_url = config['debshots.dde_update_url']
 
     # Download pickle'd file from dde to a temporary file to prevent
     # HTTP timeouts while parsing the output
