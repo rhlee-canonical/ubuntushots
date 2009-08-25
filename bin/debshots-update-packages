@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Read Packages.gz package lists and debtags into the database"""
-# Mimics: zcat Sources.gz | grep-dctrl -FMaintainer,Uploaders foo@bar -ns package
 import logging
+# Mimics: zcat Sources.gz | grep-dctrl -FMaintainer,Uploaders foo@bar -ns package
 import os
 import urllib
 import sys
@@ -10,14 +10,26 @@ import re
 import bz2
 from paste.deploy import appconfig
 from pylons import config
-from debian_bundle import debian_support, deb822
-import subprocess
+#from debian_bundle import debian_support, deb822
+#import subprocess
 from debshots.config.environment import load_environment
+from urllib2 import urlopen
+import cPickle as pickle
+#import json
+import tempfile
+#from sqlalchemy import engine_from_config
 
-tempfile = '/tmp/sources'
-debtags_url = 'http://svn.debian.org/viewsvn/*checkout*/debtags/tagdb/tags'
-debtags_descriptions_url = 'http://svn.debian.org/viewsvn/*checkout*/debtags/vocabulary/trunk/debian-packages'
+#dde_packages_url = 'http://torf.workaround.org/ddetest'
+dde_packages_url = 'http://dde.debian.net/dde/q/udd/packages/all?t=pickle'
+#dde_packages_url = 'http://dde.debian.net/dde/q/udd/packages/prio-debian-sid?t=pickle'
+#packages_url = 'http://debexpo.alioth.debian.org/cgi-bin/packages'
 
+#---------------------------
+
+conf = appconfig('config:' + sys.argv[1])
+load_environment(conf.global_conf, conf.local_conf)
+
+log = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.DEBUG,
     #level=logging.INFO,
@@ -25,7 +37,168 @@ logging.basicConfig(
     format='%(asctime)s %(levelname)s %(message)s'
     )
 
-logging.info("Initalising Pylons environment...")
+#logging.info("Initialising Pylons environment...")
+
+# Initialize database
+from debshots.model import meta
+from debshots import model
+
+# Setup the SQLAlchemy database engine
+#engine = engine_from_config(config, 'sqlalchemy.')
+#model.init_model(engine)
+
+db = model.meta.Session
+
+#if not os.path.isdir(config['debshots.screenshots_directory']):
+    #print "Creating screenshots directory"
+    #os.makedirs(config['debshots.screenshots_directory'])
+#else:
+    #print "Image directory already exists"
+
+EXAMPLE_ENTRY="""
+{'architecture': ['all'],
+ 'build_essential': None,
+ 'conflicts': '',
+ 'depends': '',
+ 'description': 'perl script to convert an addressbook to VCARD file format',
+ 'drc': 'ubuntu intrepid universe',
+ 'enhances': '',
+ 'essential': None,
+ 'homepage': None,
+ 'installed_size': 108,
+ 'long_description': ' 2vcard is a little perl script that you can use to convert the\n popular vcard file format. Currently 2vcard can only convert addressbooks\n and alias files from the following formats: abook,eudora,juno,ldif,mutt,\n mh and pine.\n .\n The VCARD format is used by gnomecard, for example, which is used by the\n balsa email client.',
+ 'maintainer': 'Ubuntu MOTU Developers <ubuntu-motu@lists.ubuntu.com>',
+ 'origin': 'Ubuntu',
+ 'original_maintainer': 'Martin Albisetti <argentina@gmail.com>',
+ 'package': '2vcard',
+ 'popcon': {'insts': 4645,
+            'nofiles': 2,
+            'olde': 4503,
+            'recent': 93,
+            'vote': 47},
+ 'pre_depends': '',
+ 'priority': 'optional',
+ 'provides': '',
+ 'python_version': None,
+ 'recommends': '',
+ 'replaces': '',
+ 'section': 'universe/utils',
+ 'size': 14332,
+ 'suggests': '',
+ 'sv': '2vcard 0.5-3',
+ 'tag': ['implemented-in::perl', 'role::program', 'use::converting'],
+ 'task': None,
+ 'version': '0.5-3'}
+"""
+
+def unpickle(inputfd):
+    unp = pickle.Unpickler(inputfd)
+    # This should make it more secure
+    unp.find_global = None
+    while True:
+        try:
+            yield unp.load()
+        except pickle.UnpicklingError:
+            logging.error("Unpickle error")
+        except EOFError:
+            break
+
+
+def main():
+    #p=model.Package()
+    #p.name='12345'
+    #p.description='test package'
+    #p.section='testsection'
+    #db.add(p)
+    #db.commit()
+    #return 0
+
+
+    # Download pickle'd file from dde to a temporary file to prevent
+    # HTTP timeouts while parsing the output
+    logging.info("Downloading package information from: %s" % dde_packages_url)
+    tempname = tempfile.mktemp()
+    downloadfile = open(tempname, 'w')
+    for line in urlopen(dde_packages_url):
+        downloadfile.write(line)
+    downloadfile.close()
+
+    #for pkg in unpickle(urlopen(dde_packages_url)):
+    # Parse package information from temporary file
+    logging.info("Parsing package information")
+    downloadfile = open(tempname, 'r')
+    # "Rewind" to the start of the file
+    for pkg in unpickle(downloadfile):
+        #pkg = json.read(line)
+        # Skip Ubuntu packages
+        if pkg['origin'] is not None: continue
+
+        logging.debug("---------")
+        #print pkg
+        #break
+        #logging.debug(u"Package:       %s " % pkg['package'])
+
+        match = re.search(r'^(.*?) <(.*?)>$', pkg['maintainer'])
+        maint_name, maint_email = match.groups()
+        maint_name=unicode(maint_name)
+        maint_email=unicode(maint_email)
+
+        logging.debug(u"Maintainer:    %s" % maint_name)
+        logging.debug(u"Email:         %s" % maint_email)
+
+        # Get first line of the description
+        description = pkg['description'].split('\n')[0]
+        logging.debug(u"Description:   %s" % description)
+
+        # Get the package entry from the database (if it exists yet)
+        db_binpkg = model.Package.q().filter_by(name=unicode(pkg['package'])).first()
+
+        # If the package is not yet found in the database then create a new entry
+        if not db_binpkg:
+            logging.info("New package: %s", pkg['package'])
+            #db_binpkg = model.Package(name=unicode(pkg['package']))
+            db_binpkg = model.Package()
+            db_binpkg.name=unicode(pkg['package'])
+            db.add(db_binpkg)
+            #db.commit()
+            #return 1
+        else:
+            logging.info("Updating package: %s", pkg['package'])
+
+        # Skip this entry if the package's database entry has the same version
+        if db_binpkg.version==pkg['version']:
+            continue
+
+        db_binpkg.description = unicode(description[:80])
+        db_binpkg.section = unicode(pkg['section'])
+        db_binpkg.maintainer = maint_name[:100]
+        db_binpkg.maintainer_email = maint_email[:100]
+        db_binpkg.homepage = unicode(pkg['homepage'] or '')[:200]
+        db_binpkg.version = unicode(pkg['version'][:50])
+        logging.debug("Committing to database...")
+        db.commit()
+
+    logging.info("Committing to database")
+    db.commit()
+
+    downloadfile.close()
+    os.unlink(tempname)
+
+if __name__=='__main__': sys.exit(main())
+
+
+#######################
+#######################
+#######################
+#######################
+#######################
+#######################
+#######################
+
+tempfile = '/tmp/sources'
+debtags_url = 'http://svn.debian.org/viewsvn/*checkout*/debtags/tagdb/tags'
+debtags_descriptions_url = 'http://svn.debian.org/viewsvn/*checkout*/debtags/vocabulary/trunk/debian-packages'
+
 
 conf = appconfig('config:' + sys.argv[1])
 load_environment(conf.global_conf, conf.local_conf)
