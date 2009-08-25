@@ -34,8 +34,7 @@ app_instance_uuid = ${app_instance_uuid}
 set debug = false
 
 # Database URI
-sqlalchemy.url = postgres://debshots:shootme@torf:5432/debshots
-#sqlalchemy.url = sqlite:///%(here)s/debshots.db
+sqlalchemy.url = sqlite:///%(here)s/debshots.db
 
 # WARNING: *THE LINE BELOW MUST BE UNCOMMENTED ON A PRODUCTION ENVIRONMENT*
 # Debug mode will enable the interactive debugging tool, allowing ANYONE to
@@ -52,20 +51,25 @@ debshots.screenshots_directory = %(here)s/data/screenshots
 debshots.email_sender = support@screenshots.debian.net
 
 # Additional salt to avoid reverse-engineering of MD5-hashed passwords
-debshots.md5salt = rqxc5HrD1TUl
-
-# Near Debian mirror to get Sources.gz files from (to create package cache)
-debshots.debian_mirror = http://ftp.de.debian.org/debian
+debshots.md5salt = lish3oonoweiTuuwah1J
 
 # Google analytics ID. If commented out the tracking script will not be included.
 #debshots.google_analytics_id = UA-1234567-1
 
 # memcached server (the front page gets cached to prevent slashdotting)
-debshots.memcache_server = 127.0.0.1:11211
+#debshots.memcache_server = 127.0.0.1:11211
 
 # For using Sendfile acceleration (http://wiki.nginx.org/NginxXSendfile)
 # If set the front side webserver will handle the actual delivery of the file
 #debshots.xsendfile = X-Accel-Redirect
+
+# URL to get pickled information on available packages on
+# (usually points to Enrico Zini's dde.debian.net)
+#debshots.dde_update_url = http://dde.debian.net/dde/q/udd/packages/all?t=pickle
+# dde.debian.net seems to have trouble with large result sets.
+# So using the CGI version on alioth is a working workaround.
+debshots.dde_update_url = http://debtags.alioth.debian.org/cgi-bin/dde/q/udd/packages/all?t=pickle
+
 
 # Logging configuration
 [loggers]
