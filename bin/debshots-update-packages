@@ -95,24 +95,20 @@ def unpickle(inputfd):
 
 
 def main():
-    #p=model.Package()
-    #p.name='12345'
-    #p.description='test package'
-    #p.section='testsection'
-    #db.add(p)
-    #db.commit()
-    #return 0
+    update_debtags_vocabulary()
+    return 0
 
     dde_packages_url = config['debshots.dde_update_url']
 
     # Download pickle'd file from dde to a temporary file to prevent
     # HTTP timeouts while parsing the output
-    logging.info("Downloading package information from: %s" % dde_packages_url)
-    tempname = tempfile.mktemp()
-    downloadfile = open(tempname, 'w')
-    for line in urlopen(dde_packages_url):
-        downloadfile.write(line)
-    downloadfile.close()
+    #logging.info("Downloading package information from: %s" % dde_packages_url)
+    #tempname = tempfile.mktemp()
+    #downloadfile = open(tempname, 'w')
+    #for line in urlopen(dde_packages_url):
+    #    downloadfile.write(line)
+    #downloadfile.close()
+    tempname = "/home/www/torf.workaround.org/ddetest"
 
     #for pkg in unpickle(urlopen(dde_packages_url)):
     # Parse package information from temporary file
@@ -157,8 +153,8 @@ def main():
             logging.info("Updating package: %s", pkg['package'])
 
         # Skip this entry if the package's database entry has the same version
-        if db_binpkg.version==pkg['version']:
-            continue
+        #if db_binpkg.version==pkg['version']:
+        #    continue
 
         db_binpkg.description = unicode(description[:80])
         db_binpkg.section = unicode(pkg['section'])
@@ -166,6 +162,7 @@ def main():
         db_binpkg.maintainer_email = maint_email[:100]
         db_binpkg.homepage = unicode(pkg['homepage'] or '')[:200]
         db_binpkg.version = unicode(pkg['version'][:50])
+        logging.debug("Tags: %s", pkg['tag'])
         logging.debug("Committing to database...")
         db.commit()
 
@@ -174,6 +171,92 @@ def main():
 
     downloadfile.close()
     os.unlink(tempname)
+
+
+def update_debtags_vocabulary():
+    """Download and update the debtags descriptions in the database"""
+    logging.info("Updating debtags vocabulary")
+    #for line in urlopen(config['debshots.debtags_vocabulary_url']):
+    #    print line
+
+    # Iterate over facets or tags
+    # (see: http://svn.debian.org/viewsvn/debtags/vocabulary/trunk/debian-packages)
+    for paragraph in generator_paragraphs(urlopen(config['debshots.debtags_vocabulary_url'])):
+        # Iterate over entries in this facet or tag section
+        for entry in generator_entries(paragraph):
+            print entry
+            #print paragraph
+            print "----------"
+        print "======================"
+        continue
+        if 'Tag' in section:    # section describing a tag
+            logging.debug("Tag: %s", section['Tag'])
+            # Load tag from database
+            db_tag = model.Debtag.q().filter_by(tag=unicode(section['Tag'])).first()
+            if not db_tag:
+                # If this tag does not exist in the database it means that no package has
+                # this tag assigned. It's safe to ignore it then.
+                continue
+            db_tag.description=unicode(section['Description']).split('\n')[0]
+            # Does this tag have a facet?
+            if '::' in section['Tag']:
+                facet_string = section['Tag'].split('::')[0]
+                db_tag.facet = unicode(facet_string)
+                db_tag.facet_description = unicode(facets[facet_string])
+
+        elif 'Facet' in section:    # section describing a facet
+            logging.debug("Facet: %s", section['Facet'])
+            facets[section['Facet']] = unicode(section['Description'].split('\n')[0])
+
+
+def generator_paragraphs(filehandle):
+    """Returns paragraphs (lines seperated by empty lines) as a generator"""
+    paragraph = []
+    for line in filehandle:
+        if not line.strip():    # empty line
+            yield paragraph
+            paragraph = []
+        else:
+            paragraph.append(line.rstrip())
+
+
+def generator_entries(paragraph):
+    """Returns entries from a Debian control file styled paragraph
+    
+    E.g.:
+        Tag: accessibility::input
+        Description: Input Systems
+         Applies to input methods for non-latin languages as well as special input
+         systems.
+
+    Returns:
+        ['Tag: accessibility::input'],
+        ['Description: Input Systems',
+         'Applies to input methods for non-latin languages as well as special input',
+         'systems.']
+    """
+    lines = []
+    key = ''
+    for this_line in paragraph:
+        #print "this:", this_line
+        # No indentation
+        if not this_line.startswith(' '):
+            if lines:
+                #print "yield"
+                yield key, '\n'.join(lines)
+                key, value = this_line.split(': ', 1)
+                lines = [value]
+            else:
+                #print "append unindented"
+                key, value = this_line.split(': ', 1)
+                lines.append(value)
+        # Indentation
+        else:
+            #print "append indented"
+            lines.append(this_line.lstrip())
+    # Yield at end of entry
+    yield key, '\n'.join(lines)
+
 
 if __name__=='__main__': sys.exit(main())
 
@@ -363,15 +446,6 @@ def remove_boring_packages():
         #    """), tagname=ignore_tag)
 
 
-def generator_paragraphs(filehandle):
-    """Returns paragraphs (lines seperated by empty lines) as a generator"""
-    paragraph = []
-    for line in filehandle:
-        if not line.strip():    # empty line
-            yield paragraph
-            paragraph = []
-        else:
-            paragraph.append(line.rstrip())
 
 
 def main():
