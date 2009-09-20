@@ -267,38 +267,33 @@ class PackagesController(BaseController):
 
         return self._image_fileapp(file_path)
 
-    def thumbnail(self, package):
+    def thumbnail(self, package, dummy_image_on_404='yes'):
         """Return a thumbnail image or a dummy image for a certain package."""
-        if not package:
-            return self._dummy_thumbnail()
 
         this_package = model.Package.q().filter_by(name=package).first()
 
         # Given package is not in the database
-        if not this_package:
-            return self._dummy_thumbnail()
-
-        # Package does not have screenshots yet
-        if not this_package.screenshots:
-            return self._dummy_thumbnail()
+        # or package does not have screenshots yet
+        if not this_package or not this_package.screenshots:
+            if dummy_image_on_404=='yes':
+                return self._dummy_thumbnail()
+            else:
+                abort(404)
 
         first_screenshot = this_package.screenshots[0]
         return self._image_fileapp(first_screenshot.image_path('small'))
 
-    def screenshot(self, package):
+    def screenshot(self, package, dummy_image_on_404='yes'):
         """Return a large image or a dummy image for a certain package."""
-        if not package:
-            return self._dummy_screenshot()
-
         this_package = model.Package.q().filter_by(name=package).first()
 
         # Given package is not in the database
-        if not this_package:
-            return self._dummy_screenshot()
-
-        # Package does not have screenshots yet
-        if not this_package.screenshots:
-            return self._dummy_screenshot()
+        # or package does not have screenshots yet
+        if not this_package or not this_package.screenshots:
+            if dummy_image_on_404=='yes':
+                return self._dummy_screenshot()
+            else:
+                abort(404)
 
         first_screenshot = this_package.screenshots[0]
         return self._image_fileapp(first_screenshot.image_path('large'))
