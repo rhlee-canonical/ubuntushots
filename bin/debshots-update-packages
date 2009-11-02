@@ -118,7 +118,8 @@ def main():
     for pkg in unpickle(downloadfile):
         #pkg = json.read(line)
         # Skip Ubuntu packages
-        if pkg['origin'] is not None: continue
+        # (currently not)
+        #if pkg['origin'] is not None: continue
 
         logging.debug("---------")
         #print pkg
