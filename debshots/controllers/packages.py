@@ -13,6 +13,7 @@ from paste.deploy.converters import asbool
 from debshots.lib import my, validators
 import formencode
 from webhelpers.feedgenerator import Rss201rev2Feed
+from hashlib import md5
 
 SCREENSHOT_HEADERS = [
     ('Content-Type', 'image/png'),
@@ -267,36 +268,38 @@ class PackagesController(BaseController):
 
         return self._image_fileapp(file_path)
 
-    def thumbnail(self, package, dummy_image_on_404='yes'):
+    def _thumb_or_screenshot(self, photo_type, package, dummy_image_on_404):
         """Return a thumbnail image or a dummy image for a certain package."""
 
-        this_package = model.Package.q().filter_by(name=package).first()
+        cache_key = 'package_image:%s:%s' % (photo_type, md5(package).hexdigest())
+        file_path = g.cache.get(cache_key)
 
-        # Given package is not in the database
-        # or package does not have screenshots yet
-        if not this_package or not this_package.screenshots:
-            if dummy_image_on_404=='yes':
-                return self._dummy_thumbnail()
+        if file_path is None:
+            this_package = model.Package.q().filter_by(name=package).first()
+
+            if not this_package or not this_package.screenshots:
+                file_path = 'DOES_NOT_EXIST' # needed because memcache libraries don't really differentiate False well
             else:
-                abort(404)
+                file_path = this_package.screenshots[0].image_path(photo_type)
 
-        first_screenshot = this_package.screenshots[0]
-        return self._image_fileapp(first_screenshot.image_path('small'))
+            g.cache.set(cache_key, file_path, 300)
+
+
+        if file_path != 'DOES_NOT_EXIST':
+            return self._image_fileapp(file_path)
+
+        if dummy_image_on_404=='yes':
+            if photo_type == 'small':
+                return self._dummy_thumbnail()
+            elif photo_type == 'large':
+                return self._dummy_screenshot()
+        abort(404)
+
+    def thumbnail(self, package, dummy_image_on_404='yes'):
+        return self._thumb_or_screenshot('small', package, dummy_image_on_404)
 
     def screenshot(self, package, dummy_image_on_404='yes'):
-        """Return a large image or a dummy image for a certain package."""
-        this_package = model.Package.q().filter_by(name=package).first()
-
-        # Given package is not in the database
-        # or package does not have screenshots yet
-        if not this_package or not this_package.screenshots:
-            if dummy_image_on_404=='yes':
-                return self._dummy_screenshot()
-            else:
-                abort(404)
-
-        first_screenshot = this_package.screenshots[0]
-        return self._image_fileapp(first_screenshot.image_path('large'))
+        return self._thumb_or_screenshot('large', package, dummy_image_on_404)
 
     def _dummy_image(self, file):
         """Return an image in the images/ directory"""
@@ -307,6 +310,7 @@ class PackagesController(BaseController):
             )
         fapp = paste.fileapp.FileApp(image_path,
             headers=[('Content-Type', 'image/png')])
+
         return fapp(request.environ, self.start_response)
 
     def _dummy_thumbnail(self):
