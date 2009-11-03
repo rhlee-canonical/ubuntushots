@@ -274,39 +274,53 @@ class PackagesController(BaseController):
     def _thumb_or_screenshot(self, size, package, dummy_image_on_404):
         """Return a thumbnail image or a dummy image for a certain package."""
 
+        log.debug("Image requested. Size=%s. Package=%s. Dummy image on 404: %s",
+                      size, package, dummy_image_on_404)
+
         # To save database accesses we use memcached to store information
         # on whether a certain package has screenshots or not.
-        cache_key = 'package_image:%s:%s' % (size, md5(package).hexdigest())
+        cache_key = 'package_image:%s:%s' % (size, md5(package.encode('utf8')).hexdigest())
         file_path = g.cache.get(cache_key)
 
         if file_path is None:
+            log.debug('Image information not found in memcached. Need to query database.')
+
             # No information found in memcached. Need to query the database.
             this_package = model.Package.q().filter_by(name=package).first()
 
             if not this_package or not this_package.screenshots:
                 # The package doesn't exist or has no screenshots.
                 file_path = 'DOES_NOT_EXIST' # needed because memcache libraries don't really differentiate False well
+                #log.debug('No screenshot available for package: %s', package)
             else:
                 # The package has screenshots. Store the path to the image
                 # in memcached so next time we have the information readily available.
                 file_path = this_package.screenshots[0].image_path(size)
+                log.debug('Screenshot found at: %s', file_path)
 
             # Store the information in memcached. It is valid for 5 minutes.
+            log.debug('Saving memcached entry for screenshot. Key: %s. Path: %s.',
+                      cache_key, file_path)
             g.cache.set(cache_key, file_path, 300)
+        else:
+            log.debug('Image information found in memcached. File is at: %s', file_path)
 
         if file_path != 'DOES_NOT_EXIST':
             # Image exists. Return it.
+            log.debug('Returning image.')
             return self._image_fileapp(file_path)
 
         # Image does not exist. Return either a dummy image or return a 404-Not-Found.
 
         if dummy_image_on_404=='yes':
+            log.debug('Returning dummy image for size: %s', size)
             if size == 'small':
                 return self._dummy_thumbnail()
             elif size == 'large':
                 return self._dummy_screenshot()
-            else:
-                abort(404)
+
+        log.debug('Returning 404')
+        abort(404)
 
     def thumbnail(self, package, dummy_image_on_404='yes'):
         return self._thumb_or_screenshot('small', package, dummy_image_on_404)
@@ -447,7 +461,7 @@ class PackagesController(BaseController):
         package = model.Package.q().filter_by(name=query).first()
         if not package:
             return ''
-        logging.debug('ajax_get_version_for_package(%s) -> %s' % (query, package.version))
+        log.debug('ajax_get_version_for_package(%s) -> %s' % (query, package.version))
         return { 'version' : package.version }
 
     def rss(self):
