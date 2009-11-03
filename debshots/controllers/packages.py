@@ -300,7 +300,6 @@ class PackagesController(BaseController):
 
     def thumbnail(self, package, dummy_image_on_404='yes'):
         return self._thumb_or_screenshot('small', package, dummy_image_on_404)
-
     def screenshot(self, package, dummy_image_on_404='yes'):
         return self._thumb_or_screenshot('large', package, dummy_image_on_404)
 
