@@ -271,10 +271,10 @@ class PackagesController(BaseController):
 
         return self._image_fileapp(file_path)
 
-    def _thumb_or_screenshot(self, photo_type, package, dummy_image_on_404):
+    def _thumb_or_screenshot(self, size, package, dummy_image_on_404):
         """Return a thumbnail image or a dummy image for a certain package."""
 
-        cache_key = 'package_image:%s:%s' % (photo_type, md5(package).hexdigest())
+        cache_key = 'package_image:%s:%s' % (size, md5(package).hexdigest())
         file_path = g.cache.get(cache_key)
 
         if file_path is None:
@@ -283,7 +283,7 @@ class PackagesController(BaseController):
             if not this_package or not this_package.screenshots:
                 file_path = 'DOES_NOT_EXIST' # needed because memcache libraries don't really differentiate False well
             else:
-                file_path = this_package.screenshots[0].image_path(photo_type)
+                file_path = this_package.screenshots[0].image_path(size)
 
             g.cache.set(cache_key, file_path, 300)
 
@@ -292,9 +292,9 @@ class PackagesController(BaseController):
             return self._image_fileapp(file_path)
 
         if dummy_image_on_404=='yes':
-            if photo_type == 'small':
+            if size == 'small':
                 return self._dummy_thumbnail()
-            elif photo_type == 'large':
+            elif size == 'large':
                 return self._dummy_screenshot()
         abort(404)
 
