@@ -13,7 +13,10 @@ from paste.deploy.converters import asbool
 from debshots.lib import my, validators
 import formencode
 from webhelpers.feedgenerator import Rss201rev2Feed
-from hashlib import md5
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5
 
 SCREENSHOT_HEADERS = [
     ('Content-Type', 'image/png'),
