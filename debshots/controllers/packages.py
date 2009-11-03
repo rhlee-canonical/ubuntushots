@@ -13,6 +13,10 @@ from paste.deploy.converters import asbool
 from debshots.lib import my, validators
 import formencode
 from webhelpers.feedgenerator import Rss201rev2Feed
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5
 
 SCREENSHOT_HEADERS = [
     ('Content-Type', 'image/png'),
@@ -267,36 +271,47 @@ class PackagesController(BaseController):
 
         return self._image_fileapp(file_path)
 
-    def thumbnail(self, package, dummy_image_on_404='yes'):
+    def _thumb_or_screenshot(self, size, package, dummy_image_on_404):
         """Return a thumbnail image or a dummy image for a certain package."""
 
-        this_package = model.Package.q().filter_by(name=package).first()
+        # To save database accesses we use memcached to store information
+        # on whether a certain package has screenshots or not.
+        cache_key = 'package_image:%s:%s' % (size, md5(package).hexdigest())
+        file_path = g.cache.get(cache_key)
 
-        # Given package is not in the database
-        # or package does not have screenshots yet
-        if not this_package or not this_package.screenshots:
-            if dummy_image_on_404=='yes':
-                return self._dummy_thumbnail()
+        if file_path is None:
+            # No information found in memcached. Need to query the database.
+            this_package = model.Package.q().filter_by(name=package).first()
+
+            if not this_package or not this_package.screenshots:
+                # The package doesn't exist or has no screenshots.
+                file_path = 'DOES_NOT_EXIST' # needed because memcache libraries don't really differentiate False well
             else:
-                abort(404)
+                # The package has screenshots. Store the path to the image
+                # in memcached so next time we have the information readily available.
+                file_path = this_package.screenshots[0].image_path(size)
 
-        first_screenshot = this_package.screenshots[0]
-        return self._image_fileapp(first_screenshot.image_path('small'))
+            # Store the information in memcached. It is valid for 5 minutes.
+            g.cache.set(cache_key, file_path, 300)
 
-    def screenshot(self, package, dummy_image_on_404='yes'):
-        """Return a large image or a dummy image for a certain package."""
-        this_package = model.Package.q().filter_by(name=package).first()
+        if file_path != 'DOES_NOT_EXIST':
+            # Image exists. Return it.
+            return self._image_fileapp(file_path)
 
-        # Given package is not in the database
-        # or package does not have screenshots yet
-        if not this_package or not this_package.screenshots:
-            if dummy_image_on_404=='yes':
+        # Image does not exist. Return either a dummy image or return a 404-Not-Found.
+
+        if dummy_image_on_404=='yes':
+            if size == 'small':
+                return self._dummy_thumbnail()
+            elif size == 'large':
                 return self._dummy_screenshot()
             else:
                 abort(404)
 
-        first_screenshot = this_package.screenshots[0]
-        return self._image_fileapp(first_screenshot.image_path('large'))
+    def thumbnail(self, package, dummy_image_on_404='yes'):
+        return self._thumb_or_screenshot('small', package, dummy_image_on_404)
+    def screenshot(self, package, dummy_image_on_404='yes'):
+        return self._thumb_or_screenshot('large', package, dummy_image_on_404)
 
     def _dummy_image(self, file):
         """Return an image in the images/ directory"""
