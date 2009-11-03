@@ -25,13 +25,13 @@
         % for message in session['messages'].pop():
         <script type="application/x-javascript">
             $(document).ready(function() {
-                $.jGrowl('${ message }');
+                $.jGrowl('${h.tags.literal(message)}');
             });
         </script>
         % endfor
         <% session.save() %>
     % endif
-    
+
     ## Favicon
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
   </head>
