@@ -128,7 +128,7 @@ class Package(MyOrm):
 
 def packages_with_moderated_screenshots():
     """Return a list of packages with screenshots that need moderation"""
-    return Package.q().join('screenshots').filter(
+    return Package.q().distinct().join('screenshots').filter(
         (Screenshot.approved==False)
         |
         (Screenshot.markedfordelete==True)
