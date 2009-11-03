@@ -59,10 +59,12 @@ ${ next.body() }
         Powered by
         <a href="mailto:haas@debian.org">Christoph Haas'</a>
         <a href="http://debshots.workaround.org">debshots</a> software
-        using the <a href="http://pylonshq.com">Pylons web framework</a>
-        and <a href="http://jquery.com">jQuery Javascript framework</a>.
+        using <a href="http://pylonshq.com">Pylons</a>,
+        <a href="http://jquery.com">jQuery</a>
+        and its <a href="http://nixboxdesigns.com/demos/jquery-image-flyout.php">flyout</a>
+        and <a href="http://stanlemon.net/projects/jgrowl.html">jGrowl</a> plugins.
         % if 'username' in session:
-        Logged in as <em>${session['username']}</em>.
+        You're logged in as <em>${session['username']}</em>.
         <a href="/logout">(Logout)</a>
         % endif
     </div>

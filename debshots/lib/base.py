@@ -23,7 +23,6 @@ class BaseController(WSGIController):
         """Invoke the Controller"""
         # Make sure that there is 'messages' entry in the cookie session
         if 'messages' not in session: session['messages']=[]
-        #session.save()
 
         # WSGIController.__call__ dispatches to the Controller method
         # the request is routed to. This routing information is
