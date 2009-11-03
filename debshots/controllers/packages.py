@@ -274,22 +274,31 @@ class PackagesController(BaseController):
     def _thumb_or_screenshot(self, size, package, dummy_image_on_404):
         """Return a thumbnail image or a dummy image for a certain package."""
 
+        # To save database accesses we use memcached to store information
+        # on whether a certain package has screenshots or not.
         cache_key = 'package_image:%s:%s' % (size, md5(package).hexdigest())
         file_path = g.cache.get(cache_key)
 
         if file_path is None:
+            # No information found in memcached. Need to query the database.
             this_package = model.Package.q().filter_by(name=package).first()
 
             if not this_package or not this_package.screenshots:
+                # The package doesn't exist or has no screenshots.
                 file_path = 'DOES_NOT_EXIST' # needed because memcache libraries don't really differentiate False well
             else:
+                # The package has screenshots. Store the path to the image
+                # in memcached so next time we have the information readily available.
                 file_path = this_package.screenshots[0].image_path(size)
 
+            # Store the information in memcached. It is valid for 5 minutes.
             g.cache.set(cache_key, file_path, 300)
 
-
         if file_path != 'DOES_NOT_EXIST':
+            # Image exists. Return it.
             return self._image_fileapp(file_path)
+
+        # Image does not exist. Return either a dummy image or return a 404-Not-Found.
 
         if dummy_image_on_404=='yes':
             if size == 'small':
