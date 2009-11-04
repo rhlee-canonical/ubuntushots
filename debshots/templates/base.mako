@@ -60,8 +60,10 @@ ${ next.body() }
         <a href="mailto:haas@debian.org">Christoph Haas'</a>
         <a href="http://debshots.workaround.org">debshots</a> software
         using <a href="http://pylonshq.com">Pylons</a>,
+        <a href="http://www.sqlalchemy.org/">SQLAlchemy</a>,
         <a href="http://jquery.com">jQuery</a>
-        and its <a href="http://nixboxdesigns.com/demos/jquery-image-flyout.php">flyout</a>
+        and its <a href="http://nixboxdesigns.com/demos/jquery-image-flyout.php">flyout</a>,
+        <a href="http://bassistance.de/jquery-plugins/jquery-plugin-autocomplete/">autocomplete</a>
         and <a href="http://stanlemon.net/projects/jgrowl.html">jGrowl</a> plugins.
         % if 'username' in session:
         You're logged in as <em>${session['username']}</em>.
