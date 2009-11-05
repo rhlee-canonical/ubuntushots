@@ -68,7 +68,7 @@ class PackagesController(BaseController):
             packages = packages.join('debtags').filter(model.Debtag.tag==unicode(debtags_search))
 
         c.packages = h.paginate.Page(packages,
-            items_per_page=20,
+            items_per_page=10,
             page=request.params.get('page',0),
             search=search,
             debtag=debtags_search,
