@@ -27,7 +27,7 @@ def make_map():
         requirements={'id': r'\d+', 'size': '(small|large)'})
 
     map.connect('unapproved_image', '/image/:(id)_:size.png',
-        controller='packages', action='image',
+        controller='packages', action='image_by_id',
         requirements={'id': r'\d+', 'size': '(small|large)'})
 
     # Start page
@@ -64,17 +64,14 @@ def make_map():
     map.connect('package', '/package/:package', controller='packages', action='show')
 
     # Direct link to a thumbnail image of a certain package
-    # (shows a dummy 160x120 pixel large image instead of 404)
-    map.connect('thumbnail', '/thumbnail/:package', controller='packages', action='thumbnail',
-            dummy_image_on_404='yes')
-    # Return a 404 instead
-    map.connect('thumbnail-404', '/thumbnail-404/:package', controller='packages', action='thumbnail',
-            dummy_image_on_404='no')
+    # (shows a dummy 160x120 pixel large along with response code 404)
+    map.connect('thumbnail', '/thumbnail/:package', controller='packages', action='thumbnail')
+    # URL used by the Ubuntu software center
+    map.connect('thumbnail-404', '/thumbnail-404/:package', controller='packages', action='thumbnail')
     # Same for the large image
-    map.connect('screenshot', '/screenshot/:package', controller='packages', action='screenshot',
-            dummy_image_on_404='yes')
-    map.connect('screenshot-404', '/screenshot-404/:package', controller='packages', action='screenshot',
-            dummy_image_on_404='no')
+    map.connect('screenshot', '/screenshot/:package', controller='packages', action='screenshot')
+    # URL used by the Ubuntu software center
+    map.connect('screenshot-404', '/screenshot-404/:package', controller='packages', action='screenshot')
 
     # Action to delete a screenshot (admin-only) or request its removal (users)
     map.connect('delete_screenshot', '/delete_screenshot/:screenshot',

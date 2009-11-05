@@ -41,11 +41,12 @@ class PackagesController(BaseController):
 
         # Only show packages with approved screenshots or the user's own screenshots
         # (JOINing reduces the packages to those which have corresponding screenshots)
+        cookie_hash = my.client_cookie_hash()
         packages = packages.join('screenshots')
         packages = packages.filter(
             (model.Screenshot.approved==True)
             |
-            (my.client_cookie_hash() is not None and model.Screenshot.uploaderhash==my.client_cookie_hash())
+            (cookie_hash is not None and model.Screenshot.uploaderhash==cookie_hash)
             )
         packages = packages.options(model.orm.eagerload('screenshots'))
 
@@ -195,62 +196,6 @@ class PackagesController(BaseController):
 
         return render('/packages/show.mako')
 
-    def _image(self, id, size):
-        """Return an image or None if there is no such image."""
-        if not id:
-            return None
-
-        screenshot = model.Screenshot.q().get(id)
-
-        # Make sure the screenshot database row is available
-        if not screenshot:
-            log.warn("Requested screenshot #%s which was not found in the database", id)
-            return None
-
-        # only show images that are approved (or for admins or owners)
-        if not my.authorized_for_screenshot(screenshot):
-            log.warn("User is not authorized to access screenshot #%s", id)
-            return None
-
-        file_path = screenshot.image_path(size)
-
-        # Make sure the file on disk exists
-        if not os.path.isfile(file_path):
-            # The file is in the database but not on disk? Remove it from the database then.
-            log.error("Screenshot #%s exists in database but is missing on disk at '%s'." % \
-                      (screenshot.id, file_path))
-            return None
-
-        return self._image_fileapp(file_path)
-
-    def _image_fileapp(self, file_path):
-        """Return a static image from a path via a FileApp (or via x-sendfile
-        header if webserver supports it)"""
-
-        if 'debshots.xsendfile' in config:
-            response.headers[config['debshots.xsendfile']] = file_path
-            for header, value in SCREENSHOT_HEADERS:
-                response.headers[header] = value
-            return ''
-
-        fapp = paste.fileapp.FileApp(
-            file_path,
-            headers=SCREENSHOT_HEADERS)
-        return fapp(request.environ, self.start_response)
-
-    def image(self, id, size):
-        """Return the binary PNG image for <img src...> tags
-
-        id: id number of the image in the database"""
-        # Try to retrieve a WSGI fileapp for this image
-        image_fapp = self._image(id, size)
-
-        if not image_fapp:
-            if size=='large': return self._dummy_screenshot()
-            elif size=='small': return self._dummy_thumbnail()
-
-        return image_fapp
-
     def static_image(self, package_inital, package, id, size):
         """Return the binary PNG image for an approved screenshots (without database calls)
 
@@ -267,17 +212,16 @@ class PackagesController(BaseController):
         log.debug("Serving static image from %s", file_path)
         if not os.path.isfile(file_path):
             log.warn("Image file %s not found" % file_path)
-            abort(404)
+            return self._image404(size)
 
-        return self._image_fileapp(file_path)
+        return self._image_by_path(file_path)
 
-    def _thumb_or_screenshot(self, size, package, dummy_image_on_404):
+    def _image_by_package(self, package, size):
         """Return a thumbnail image or a dummy image for a certain package."""
 
-        log.debug("Image requested. Size=%s. Package=%s. Dummy image on 404: %s",
-                      size, package, dummy_image_on_404)
+        log.debug("Image requested. Size=%s. Package=%s.", size, package)
 
-        # To save database accesses we use memcached to store information
+        # To save database queries we use memcached to store information
         # on whether a certain package has screenshots or not.
         cache_key = 'package_image:%s:%s' % (size, md5(package.encode('utf8')).hexdigest())
         file_path = g.cache.get(cache_key)
@@ -303,48 +247,95 @@ class PackagesController(BaseController):
                       cache_key, file_path)
             g.cache.set(cache_key, file_path, 300)
         else:
-            log.debug('Image information found in memcached. File is at: %s', file_path)
+            log.debug('Image information found in memcached: %s', file_path)
 
-        if file_path != 'DOES_NOT_EXIST':
+        if file_path == 'DOES_NOT_EXIST' or not os.path.exists(file_path):
+            # Image does not exist. Return a dummy image with response code 404 (Not found)
+            return self._image404(size=size)
+        else:
             # Image exists. Return it.
-            log.debug('Returning image.')
-            return self._image_fileapp(file_path)
+            log.debug("Serving static image from %s", file_path)
+            if not os.path.isfile(file_path):
+                log.warn("Image file %s not found" % file_path)
+                return self._image404(size)
+            return self._image_by_path(file_path)
 
-        # Image does not exist. Return either a dummy image or return a 404-Not-Found.
+    def image_by_id(self, id, size):
+        """Return an image or None if there is no such image."""
+        screenshot = model.Screenshot.q().get(id)
 
-        if dummy_image_on_404=='yes':
-            log.debug('Returning dummy image for size: %s', size)
-            if size == 'small':
-                return self._dummy_thumbnail()
-            elif size == 'large':
-                return self._dummy_screenshot()
+        # Make sure the screenshot database row is available
+        if not screenshot:
+            log.warn("Requested screenshot #%s which was not found in the database", id)
+            return self._image404(size)
 
-        log.debug('Returning 404')
-        abort(404)
+        # only show images that are approved (or for admins or owners)
+        if not my.authorized_for_screenshot(screenshot):
+            log.warn("User is not authorized to access screenshot #%s", id)
+            return self._image404(size)
 
-    def thumbnail(self, package, dummy_image_on_404='yes'):
-        return self._thumb_or_screenshot('small', package, dummy_image_on_404)
-    def screenshot(self, package, dummy_image_on_404='yes'):
-        return self._thumb_or_screenshot('large', package, dummy_image_on_404)
+        file_path = screenshot.image_path(size)
 
-    def _dummy_image(self, file):
-        """Return an image in the images/ directory"""
+        # Make sure the file on disk exists
+        if not os.path.isfile(file_path):
+            # The file is in the database but not on disk? Remove it from the database then.
+            log.error("Screenshot #%s exists in database but is missing on disk at '%s'." % \
+                      (screenshot.id, file_path))
+            return self._image404(size)
+
+        return self._image_by_path(file_path)
+
+    def _image_by_path(self, image_path, status_code=None):
+        """Return a PNG from disk.
+        If status_code is set it defines the response code (e.g. 404)"""
+        log.debug('Return image from path: %s', image_path)
+
+        if status_code:
+            # Don't use the Pylons default HTML response on 404 errors
+            # (see also: http://pylonshq.com/docs/en/0.9.7/modules/middleware/#pylons.middleware.StatusCodeRedirect)
+            request.environ['pylons.status_code_redirect'] = True
+            response.status_int = status_code
+
+        # If this applications runs behind an nginx with the xsendfile extension
+        # enabled then we can just return an empty body and set the
+        # X-Accel-Redirect header. nginx will then deliver the image directly
+        # which is faster.
+        if 'debshots.xsendfile' in config:
+            response.headers[config['debshots.xsendfile']] = image_path
+            log.debug('Telling the frontend web server to deliver the image directly from: %s', image_path)
+            return ''
+
+        response.headers['Content-Type'] = 'image/png'
+        image_file = open(image_path,'rb')
+        image_data = image_file.read()
+        image_file.close()
+        return image_data
+
+    def _image404(self, size):
+        """Return a dummy image with response code 404
+
+        'size' is either 'small' for a thumbnail or 'large' for the
+        full-sized screenshot."""
+        log.debug('Returning dummy image for size: %s', size)
+        if size == 'small':
+            file_name='dummy-thumbnail.png'
+        elif size == 'large':
+            file_name='dummy-screenshot.png'
+        # Dummy image is found in public/images/ within the project directory
         image_path = os.path.join(
             config['pylons.paths']['static_files'],
             'images',
-            file
+            file_name
             )
-        fapp = paste.fileapp.FileApp(image_path,
-            headers=[('Content-Type', 'image/png')])
-        return fapp(request.environ, self.start_response)
+        return self._image_by_path(image_path, status_code=404)
 
-    def _dummy_thumbnail(self):
-        """Return 160x120 dummy thumbnail"""
-        return self._dummy_image('dummy-thumbnail.png')
+    def thumbnail(self, package):
+        """Return a thumbnail image of a certain package's screenshot"""
+        return self._image_by_package(package=package, size='small')
 
-    def _dummy_screenshot(self):
-        """Return 800x600 dummy screenshot"""
-        return self._dummy_image('dummy-screenshot.png')
+    def screenshot(self, package):
+        """Return a full-size image of a certain package's screenshot"""
+        return self._image_by_package(package=package, size='large')
 
     def delete_screenshot(self, screenshot):
         this_screenshot = model.Screenshot.q().get(screenshot)
