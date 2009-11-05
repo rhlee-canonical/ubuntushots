@@ -7,7 +7,7 @@ except ImportError:
 
 setup(
     name='debshots',
-    version="0.4.5.8",
+    version="0.4.5.9",
     description='Web application that manages screenshots of applications available in Debian',
     author='Christoph Haas',
     author_email='email@christoph-haas.de',
