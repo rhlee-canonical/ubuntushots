@@ -99,9 +99,10 @@ def unpickle(inputfd):
 def parse_debtags_descriptions():
     """Download and parse the current debtags vocabulary
 
-    Returns two hashes for facets and debtags.
+    Returns three hashes for facets, debtags and tag records in the database.
     Facets: facet->description
-    Debtag: debtag->description"""
+    Debtag: debtag->description
+    Debtag database recors: debtag->model.Debtag instance"""
 
     from debian_bundle.deb822 import Deb822
     # Download from e.g. http://svn.debian.org/viewsvn/debtags/vocabulary/trunk/debian-packages
@@ -109,8 +110,9 @@ def parse_debtags_descriptions():
     logging.info('Downloading debtags vocabulary from: %s', vocabulary_url)
     vocabulary_file = urlopen(vocabulary_url)
 
-    facets = {} # major categories of tags
-    debtags = {} # debtags
+    facets = {} # major categories of tags (facet->description)
+    debtags = {} # debtags (tag->description)
+    debtags_records = {} # tag->model.Debtag instance
 
     logging.info('Parsing debtags vocabulary')
     for vocable in Deb822.iter_paragraphs(vocabulary_file):
@@ -141,6 +143,10 @@ def parse_debtags_descriptions():
         else:
             logging.info("Updating tag: %s", tag)
 
+        # Store this model.Debtag instance for adding to the packages later
+        # (saves looking up the tags from the database again which is very slow)
+        debtags_records[tag]=db_tag
+
         db_tag.tag = tag
         db_tag.description = debtags[tag]
         # The facet is the left part of facet::tag
@@ -152,10 +158,10 @@ def parse_debtags_descriptions():
 
     db.commit()
 
-    return facets, debtags
+    return facets, debtags, debtags_records
 
 def main():
-    facets, debtags = parse_debtags_descriptions()
+    facets, debtags, debtags_records = parse_debtags_descriptions()
 
     dde_packages_url = config['debshots.dde_update_url']
 
@@ -211,8 +217,8 @@ def main():
             logging.info("Updating package: %s", pkg['package'])
 
         # Skip this entry if the package's database entry has the same version
-        #if db_binpkg.version==pkg['version']:
-        #    continue
+        if db_binpkg.version==pkg['version']:
+            continue
 
         db_binpkg.description = unicode(description[:80])
         db_binpkg.section = unicode(pkg['section'])
@@ -223,13 +229,13 @@ def main():
 
         # Handle debtags
         tags = pkg['tag']
-        #print tags
         logging.debug('Tags: %s', tags)
         # Removing all tags from the package
         db_binpkg.debtags = []
         for tag in tags:
             # Find the tag in the database
-            db_debtag = model.Debtag.q().filter_by(tag=tag.decode('utf8')).first()
+            #db_debtag = model.Debtag.q().filter_by(tag=tag.decode('utf8')).first()
+            db_debtag = debtags_records.get(tag.decode('utf8'))
             if not db_debtag:
                 logging.info('Package %s uses unknown debtag %s - ignoring', pkg['package'], tag)
                 continue
@@ -240,7 +246,6 @@ def main():
                 #tag, tag_description, facet, facet_description)
 
         logging.debug("Committing to database...")
-        #db.commit()
 
     logging.info("Committing to database")
     db.commit()
