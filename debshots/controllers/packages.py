@@ -42,7 +42,7 @@ class PackagesController(BaseController):
         # Only show packages with approved screenshots or the user's own screenshots
         # (JOINing reduces the packages to those which have corresponding screenshots)
         cookie_hash = my.client_cookie_hash()
-        packages = packages.join('screenshots')
+        packages = packages.distinct().join('screenshots')
         packages = packages.filter(
             (model.Screenshot.approved==True)
             |
