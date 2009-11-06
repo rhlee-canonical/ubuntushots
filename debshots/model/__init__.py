@@ -118,7 +118,6 @@ class Package(MyOrm):
     @property
     def my_or_approved_screenshots(self):
         """Return a list of the user's own or any approved screenshots"""
-        log.debug('-> my_or_approved')
         client_cookie_hash = my.client_cookie_hash()
         return [ss for ss in self.screenshots
                 if client_cookie_hash is not None
@@ -138,11 +137,14 @@ def packages_with_moderated_screenshots():
     )
 
 def packages_without_screenshots():
-    """Return packages that do not have screenshots yet"""
+    """Return packages that do not have (approved) screenshots yet"""
     packages = Package.q()
-    packages = packages.filter(~Package.id.in_(
-        sql.select([Screenshot.package_id])
-        ))
+    packages = packages.filter(
+        # Packages whose ID can't be found in any (approved) screenshot's package ID
+        (~Package.id.in_(
+            sql.select([Screenshot.package_id], whereclause=(Screenshot.approved==True))
+            ) )
+        )
     return packages
 
 #---------------
