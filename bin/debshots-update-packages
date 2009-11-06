@@ -27,7 +27,16 @@ import gzip
 
 #---------------------------
 
-conf = appconfig('config:' + sys.argv[-1])
+# Make the INI file specified as a command-line argument an absolute path
+if len(sys.argv)<2:
+    print "Please specify your INI file as an argument"
+    sys.exit(10)
+ini_file = os.path.abspath(sys.argv[-1])
+if not os.path.isfile(ini_file):
+    print "INI file '%s' not found" % (ini_file)
+    sys.exit(10)
+print ini_file
+conf = appconfig('config:' + ini_file)
 load_environment(conf.global_conf, conf.local_conf)
 
 log = logging.getLogger(__name__)
