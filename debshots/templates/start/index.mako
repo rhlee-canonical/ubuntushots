@@ -45,16 +45,6 @@
     program name or a search word.
 </p>
 
-<h1>Who uses screenshots from this site?</h1>
-<ul>
-    <li>
-        Michael Vogt has added support into <em>synaptic</em>.
-    </li>
-    <li>
-        <a href="http://appnr.com/">appnr.com</a>
-    </li>
-</ul>
-
 <h1>Using our screenshots</h1>
 <p>
     You can use the screenshots on your own website. These are the URLs that may be useful:
