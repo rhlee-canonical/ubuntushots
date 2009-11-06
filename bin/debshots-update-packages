@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Read Packages.gz package lists and debtags into the database"""
+"""Update package information from the UniversalDebianDatabase/dde.debian.net"""
 import logging
-# Mimics: zcat Sources.gz | grep-dctrl -FMaintainer,Uploaders foo@bar -ns package
 import os
 import urllib
 import sys
@@ -10,15 +9,11 @@ import re
 import bz2
 from paste.deploy import appconfig
 from pylons import config
-#from debian_bundle import debian_support, deb822
-#import subprocess
 from debshots.config.environment import load_environment
 from urllib2 import urlopen
 import cPickle as pickle
-#import json
 import tempfile
 import gzip
-#from sqlalchemy import engine_from_config
 
 #dde_packages_url = 'http://torf.workaround.org/ddetest'
 #dde_packages_url = 'http://dde.debian.net/dde/q/udd/packages/all?t=pickle'
@@ -35,7 +30,6 @@ ini_file = os.path.abspath(sys.argv[-1])
 if not os.path.isfile(ini_file):
     print "INI file '%s' not found" % (ini_file)
     sys.exit(10)
-print ini_file
 conf = appconfig('config:' + ini_file)
 load_environment(conf.global_conf, conf.local_conf)
 
@@ -46,8 +40,6 @@ logging.basicConfig(
     #level=logging.WARNING,
     format='%(asctime)s %(levelname)s %(message)s'
     )
-
-#logging.info("Initialising Pylons environment...")
 
 # Initialize database
 from debshots.model import meta
@@ -104,15 +96,66 @@ def unpickle(inputfd):
         except EOFError:
             break
 
+def parse_debtags_descriptions():
+    """Download and parse the current debtags vocabulary
+
+    Returns two hashes for facets and debtags.
+    Facets: facet->description
+    Debtag: debtag->description"""
+
+    from debian_bundle.deb822 import Deb822
+    # Download from e.g. http://svn.debian.org/viewsvn/debtags/vocabulary/trunk/debian-packages
+    vocabulary_url = config['debshots.debtags_vocabulary_url']
+    logging.info('Downloading debtags vocabulary from: %s', vocabulary_url)
+    vocabulary_file = urlopen(vocabulary_url)
+
+    facets = {} # major categories of tags
+    debtags = {} # debtags
+
+    logging.info('Parsing debtags vocabulary')
+    for vocable in Deb822.iter_paragraphs(vocabulary_file):
+        # e.g. {'Tag': 'network::routing', 'Description': 'Routing'}
+        # e.g. {'Facet': 'web', 'Status': 'draft', 'Description': 'World Wide Web', 'Nature': 'personality'}
+        vocdict = dict(vocable)
+        logging.debug('Paragraph: %s', vocdict)
+        if 'Facet' in vocdict:
+            facets[vocdict['Facet'].decode('utf8')] = vocdict['Description'].decode('utf8')
+            # e.g. 'mail' -> 'Electronic Mail'
+
+        if 'Tag' in vocdict:
+            debtags[vocdict['Tag'].decode('utf8')] = vocdict['Description'].decode('utf8')
+
+    # Save the debtags along with facets and descriptions into the database
+    for tag in debtags:
+        logging.debug('Storing tag into database: %s', tag)
+        #logging.debug('Tag: %s (%s) / Facet: %s (%s)',
+            #tag, debtags[tag], facet, facets[facet])
+        # Does the tag already exist in the database?
+        db_tag = model.Debtag.q().filter_by(tag=tag).first()
+
+        # If the tag is not yet found in the database then create a new entry
+        if not db_tag:
+            logging.info("New tag: %s", tag)
+            db_tag = model.Debtag()
+            db.add(db_tag)
+        else:
+            logging.info("Updating tag: %s", tag)
+
+        db_tag.tag = tag
+        db_tag.description = debtags[tag]
+        # The facet is the left part of facet::tag
+        # Note: some tags don't have a facet like 'net'
+        if '::' in tag:
+            facet = tag.split('::')[0]
+            db_tag.facet = facet
+            db_tag.facet_description = facets[facet]
+
+    db.commit()
+
+    return facets, debtags
 
 def main():
-    #p=model.Package()
-    #p.name='12345'
-    #p.description='test package'
-    #p.section='testsection'
-    #db.add(p)
-    #db.commit()
-    #return 0
+    facets, debtags = parse_debtags_descriptions()
 
     dde_packages_url = config['debshots.dde_update_url']
 
@@ -134,18 +177,10 @@ def main():
         downloadfile = gzip.open(tempname, 'rb')
     else:
         downloadfile = open(tempname, 'r')
-    # "Rewind" to the start of the file
     for pkg in unpickle(downloadfile):
-        #pkg = json.read(line)
-        # Skip Ubuntu packages
-        #if pkg['origin'] is not None: continue
-
         logging.debug("---------")
-        #print pkg
-        #break
-        #logging.debug(u"Package:       %s " % pkg['package'])
 
-        # Split up the maintainer field into real name and email address
+        # Split the maintainer field into real name and email address
         # if it follows the "Name <email>" format.
         match = re.search(r'^(.*?) <(.*?)>$', pkg['maintainer'])
         if match:
@@ -169,18 +204,15 @@ def main():
         # If the package is not yet found in the database then create a new entry
         if not db_binpkg:
             logging.info("New package: %s", pkg['package'])
-            #db_binpkg = model.Package(name=unicode(pkg['package']))
             db_binpkg = model.Package()
             db_binpkg.name=unicode(pkg['package'])
             db.add(db_binpkg)
-            #db.commit()
-            #return 1
         else:
             logging.info("Updating package: %s", pkg['package'])
 
         # Skip this entry if the package's database entry has the same version
-        if db_binpkg.version==pkg['version']:
-            continue
+        #if db_binpkg.version==pkg['version']:
+        #    continue
 
         db_binpkg.description = unicode(description[:80])
         db_binpkg.section = unicode(pkg['section'])
@@ -188,14 +220,35 @@ def main():
         db_binpkg.maintainer_email = maint_email[:100]
         db_binpkg.homepage = unicode(pkg['homepage'] or '')[:200]
         db_binpkg.version = unicode(pkg['version'][:50])
+
+        # Handle debtags
+        tags = pkg['tag']
+        #print tags
+        logging.debug('Tags: %s', tags)
+        # Removing all tags from the package
+        db_binpkg.debtags = []
+        for tag in tags:
+            # Find the tag in the database
+            db_debtag = model.Debtag.q().filter_by(tag=tag.decode('utf8')).first()
+            if not db_debtag:
+                logging.info('Package %s uses unknown debtag %s - ignoring', pkg['package'], tag)
+                continue
+            logging.debug('Adding tag %s (#%s) to package', tag, db_debtag.id)
+            db_binpkg.debtags.append(db_debtag)
+
+            #logging.debug('Tag: %s (%s) / Facet: %s (%s)',
+                #tag, tag_description, facet, facet_description)
+
         logging.debug("Committing to database...")
-        db.commit()
+        #db.commit()
 
     logging.info("Committing to database")
     db.commit()
 
     downloadfile.close()
     os.unlink(tempname)
+
+    return 0
 
 if __name__=='__main__': sys.exit(main())
 
@@ -396,13 +449,13 @@ def generator_paragraphs(filehandle):
             paragraph.append(line.rstrip())
 
 
-def main():
-    #parse_packages()
-    #parse_debtags()
-    #parse_debtags_descriptions()
-    #remove_tags_without_description()
-    remove_boring_packages()
-    db.commit()
+#def main():
+#    #parse_packages()
+#    #parse_debtags()
+#    #parse_debtags_descriptions()
+#    #remove_tags_without_description()
+#    remove_boring_packages()
+#    db.commit()
 
 if __name__ == '__main__':
     main()
