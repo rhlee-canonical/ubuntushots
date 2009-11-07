@@ -40,12 +40,13 @@
 
         </tr>
         ## Second line shows screenshots
-        % if package.my_or_approved_screenshots:
+        <% my_or_approved_screenshots = package.my_or_approved_screenshots %>
+        % if my_or_approved_screenshots:
         <tr>
             <td></td>
             <td colspan="4">
             <div class="screenshots">
-            % for screenshot in package.my_or_approved_screenshots:
+            % for screenshot in my_or_approved_screenshots:
                 <a class="image" href="${screenshot.large_image_url}"
                     title="Screenshot of package '${screenshot.package.name}'">
                     <img src="${screenshot.small_image_url}" alt="Screenshot" />
