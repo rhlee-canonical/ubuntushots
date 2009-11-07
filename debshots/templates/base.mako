@@ -47,8 +47,6 @@
         <a href="/packages">Browse screenshots</a>
         |
         <a href="/upload">Upload screenshots</a>
-        |
-        <a href="/guidelines">Screenshot guidelines</a>
     </div>
 
     <div id="maincontent">

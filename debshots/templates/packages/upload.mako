@@ -62,9 +62,47 @@ ${ h.tags.form(h.url_for('uploadfile'), method='post', multipart=True) }
 <input type="submit" value="Upload screenshot" />
 </form>
 
-<p>Remember: your uploaded screenshot will not be visible immediately. It will first
-be checked by the admin team. It is already visible to you though.</p>
-
 % if c.message:
 <p class="error-message">${ c.message }</p>
 % endif
+
+<h1>Guidelines for taking screenshots</h1>
+
+<ul>
+    <li>Screenshots are published under the terms of the packaged software itself.</li>
+    <li>Your screenshots must be in PNG format.</li>
+    <li>Due to legal reasons screenshots for non-free packages aren't accecpted.</li>
+    <li>Images larger than 800x600 pixels will automatically be reduced to that
+        size (retaining the aspect ratio of course).
+        So if you like to control the exact result of what you upload then
+        make sure your image size is no larger than that.</li>
+    <li>Your screenshot should contain a typical scene when working with it.
+        When snapshotting a browser load the debian.org home page. A screenshot
+        of a graphics program should have a drawing loaded. Of a game please make
+        a screenshot while you are playing and not of the start screen.
+    </li>
+    <li>
+        Nice tools for taking screenshots are ksnapshot (KDE), gimp, xwd or scrot.
+        See the <a href="http://wiki.debian.org/ScreenShots">Debian wiki</a> for more information
+        on how to make screenshots under Debian.
+    </li>
+    <li>You need not artificially switch off your window decorations.</li>
+    <li>
+        Please set your language to english so that everybody understands it.
+        If you don't use english by default please start your application
+        from a shell using after setting "export LANG=C".
+    </li>
+    <li>
+        Please only take a screenshot of the respective application and not
+        of your whole desktop (unless the screenshot is meant for a
+        window manager).
+    </li>
+    <li>
+        Interlaced PNG files cannot be processed currently.
+        Please use non-interlaced images.
+    </li>
+</ul>
+
+<p>Remember: your uploaded screenshot will not be visible immediately. It will first
+be checked by the admin team. It is already visible to you though.</p>
+

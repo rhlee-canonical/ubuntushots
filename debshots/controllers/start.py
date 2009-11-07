@@ -40,10 +40,6 @@ class StartController(BaseController):
         g.cache.set('debshots:front_page', rendered)
         return rendered
 
-    def guidelines(self):
-        """Show the screenshot guidelines"""
-        return render('/start/guidelines.mako')
-
     def login(self):
         """Show login form"""
         return render('/start/login.mako')
