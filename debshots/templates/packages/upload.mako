@@ -82,7 +82,7 @@ ${ h.tags.form(h.url_for('uploadfile'), method='post', multipart=True) }
         a screenshot while you are playing and not of the start screen.
     </li>
     <li>
-        Nice tools for taking screenshots are ksnapshot (KDE), gimp, xwd or scrot.
+        Nice tools for taking screenshots are shutter, ksnapshot (KDE), gimp, xwd or scrot.
         See the <a href="http://wiki.debian.org/ScreenShots">Debian wiki</a> for more information
         on how to make screenshots under Debian.
     </li>
