@@ -63,11 +63,8 @@ debshots/templates/packages/index.mako
 debshots/templates/packages/moderate-index.mako
 debshots/templates/packages/show.mako
 debshots/templates/packages/upload.mako
-debshots/templates/start/guidelines.mako
 debshots/templates/start/index.mako
 debshots/templates/start/login.mako
-debshots/templates/start/register.mako
-debshots/templates/start/registration_pending.mako
 debshots/tests/__init__.py
 debshots/tests/test_models.py
 debshots/tests/functional/__init__.py

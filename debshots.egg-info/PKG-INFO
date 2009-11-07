@@ -1,8 +1,8 @@
 Metadata-Version: 1.0
 Name: debshots
-Version: 0.4.5.9
+Version: 0.4.6
 Summary: Web application that manages screenshots of applications available in Debian
-Home-page: UNKNOWN
+Home-page: http://debshots.workaround.org/
 Author: Christoph Haas
 Author-email: email@christoph-haas.de
 License: UNKNOWN

@@ -7,11 +7,11 @@ except ImportError:
 
 setup(
     name='debshots',
-    version="0.4.5.9",
+    version="0.4.6",
     description='Web application that manages screenshots of applications available in Debian',
     author='Christoph Haas',
     author_email='email@christoph-haas.de',
-    #url='',
+    url='http://debshots.workaround.org/',
     install_requires=[
         "Pylons==0.9.7",
         "PIL>=1.1.6",
