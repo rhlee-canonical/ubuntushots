@@ -216,10 +216,6 @@ def main():
         else:
             logging.info("Updating package: %s", pkg['package'])
 
-        # Skip this entry if the package's database entry has the same version
-        if db_binpkg.version==pkg['version']:
-            continue
-
         db_binpkg.description = unicode(description[:80])
         db_binpkg.section = unicode(pkg['section'])
         db_binpkg.maintainer = maint_name[:100]
@@ -234,7 +230,6 @@ def main():
         db_binpkg.debtags = []
         for tag in tags:
             # Find the tag in the database
-            #db_debtag = model.Debtag.q().filter_by(tag=tag.decode('utf8')).first()
             db_debtag = debtags_records.get(tag.decode('utf8'))
             if not db_debtag:
                 logging.info('Package %s uses unknown debtag %s - ignoring', pkg['package'], tag)
@@ -245,8 +240,6 @@ def main():
             #logging.debug('Tag: %s (%s) / Facet: %s (%s)',
                 #tag, tag_description, facet, facet_description)
 
-        logging.debug("Committing to database...")
-
     logging.info("Committing to database")
     db.commit()
 
@@ -255,212 +248,4 @@ def main():
 
     return 0
 
-if __name__=='__main__': sys.exit(main())
-
-
-#######################
-#######################
-#######################
-#######################
-#######################
-#######################
-#######################
-
-tempfile = '/tmp/sources'
-debtags_url = 'http://svn.debian.org/viewsvn/*checkout*/debtags/tagdb/tags'
-debtags_descriptions_url = 'http://svn.debian.org/viewsvn/*checkout*/debtags/vocabulary/trunk/debian-packages'
-
-
-conf = appconfig('config:' + sys.argv[1])
-load_environment(conf.global_conf, conf.local_conf)
-
-# Initialize database
-from debshots import model
-db = model.meta.Session
-
-def parse_packages():
-    logging.info("Parsing packages file into the packages table")
-    # Remove old tempfile
-    if os.path.isfile(tempfile):
-        os.unlink(tempfile)
-
-    # Get Packages.gz (lists of binary packages)
-    #for arch in ('alpha', 'amd64', 'arm', 'armel', 'hppa', 'hurd-i386', 'i386',
-        #'ia64', 'm68k', 'mips', 'mipsel', 'powerpc', 's390', 'sparc'):
-    for arch in ('i386',): # only for testing
-        for component in ('main', 'contrib'):
-            url = "%s/dists/unstable/%s/binary-%s/Packages" % \
-                (config['debshots.debian_mirror'], component, arch)
-            logging.info("Fetching URL: %s" % url)
-            debian_support.downloadFile(url, tempfile)
-
-            logging.info("Parsing Packages.gz file into packages table")
-            for pkg in deb822.Dsc.iter_paragraphs(file(tempfile)):
-                logging.debug("---------")
-                logging.debug("Package:       %s " % pkg['package'])
-
-                match = re.match(r'(.+?) *\<(.+?)\>', pkg['maintainer'])
-                assert match, "Couldn't parse email address from maintainer entry (%s)" % pkg['maintainer']
-                maint_name, maint_email = match.groups()
-
-                logging.debug("Maintainer:    %s" % maint_name)
-                logging.debug("Email:         %s" % maint_email)
-
-                # Get first line of the description
-                description = pkg['description'].split('\n')[0]
-                logging.debug("Description:   %s" % description)
-
-                # Get the package entry from the database (if it exists yet)
-                db_binpkg = model.Package.q().filter_by(name=pkg['package'].decode('utf8')).first()
-
-                # If the package is not yet found in the database then create a new entry
-                if not db_binpkg:
-                    db_binpkg = model.Package(name=pkg['package'].decode('utf8'))
-                    db.save(db_binpkg)
-
-                # Skip this entry if the package's database entry has the same version
-                if db_binpkg.version==pkg['version']:
-                    continue
-
-                db_binpkg.description = description[:80].decode('utf8')
-                db_binpkg.section = pkg['Section'].decode('utf8')
-                db_binpkg.maintainer = maint_name[:100].decode('utf8')
-                db_binpkg.maintainer_email = maint_email[:100].decode('utf8')
-                db_binpkg.homepage = pkg.get('Homepage', '')[:200].decode('utf8')
-                db_binpkg.version = pkg['Version'][:50].decode('utf8')
-
-    logging.info("Committing to database")
-    db.commit()
-
-
-def parse_debtags():
-    logging.info('Parsing debtags into database')
-    # Get debtags file
-    logging.debug('Downloading debtags file')
-    debtags_file = urllib.urlopen(debtags_url)
-
-    for line in debtags_file:
-        if ': ' not in line:
-            continue
-        package_name, tagstring = line.rstrip().split(': ')
-        logging.debug('Found tags for package: %s', package_name)
-        tags = tagstring.split(', ')
-        # Get package from database
-        db_package = model.Package.q().filter_by(name=unicode(package_name))
-        db_package = db_package.options(model.orm.eagerload('debtags'))
-        db_package = db_package.first()
-        if not db_package:
-            logging.debug('Package not found in database. Skipping.')
-            continue
-        # Remove existing tags from package
-        db_package.debtags=[]
-        # Add tags to package
-        for tag in tags:
-            logging.debug('Tag: %s', tag)
-            # Get tag from database
-            db_tag = model.Debtag.q().filter_by(tag=unicode(tag)).first()
-            if not db_tag:
-                # Debtag not yet present in the database: create it
-                db_tag = model.Debtag(tag=unicode(tag))
-                logging.debug('Tag not found in database. Creating new one.')
-            db_package.debtags.append(db_tag)
-
-    #logging.info("Committing to database")
-    #model.Session.commit()
-
-
-def parse_debtags_descriptions():
-    logging.info("Parsing debtags' descriptions into database")
-    # Get debtags descriptions/packages file
-    logging.debug('Downloading debtags descriptions file')
-    descriptions_file = urllib.urlopen(debtags_descriptions_url)
-
-    # Store facets (there aren't that many) in a dictionary to add the information
-    # to each debtag.
-    facets = {}
-
-    for paragraph in generator_paragraphs(descriptions_file):
-        section = deb822.Deb822(paragraph)
-        if 'Tag' in section:    # section describing a tag
-            logging.debug("Tag: %s", section['Tag'])
-            # Load tag from database
-            db_tag = model.Debtag.q().filter_by(tag=unicode(section['Tag'])).first()
-            if not db_tag:
-                # If this tag does not exist in the database it means that no package has
-                # this tag assigned. It's safe to ignore it then.
-                continue
-            db_tag.description=unicode(section['Description']).split('\n')[0]
-            # Does this tag have a facet?
-            if '::' in section['Tag']:
-                facet_string = section['Tag'].split('::')[0]
-                db_tag.facet = unicode(facet_string)
-                db_tag.facet_description = unicode(facets[facet_string])
-
-        elif 'Facet' in section:    # section describing a facet
-            logging.debug("Facet: %s", section['Facet'])
-            facets[section['Facet']] = unicode(section['Description'].split('\n')[0])
-
-def remove_tags_without_description():
-    """Remove tags that are unsupported (without a description in the debtags file)
-
-    Sometimes packages use tags that are not in the list of official tags.
-    This function removes them from the database because they would show up
-    with a description of NULL otherwise."""
-    logging.info("Removing tags without descriptions (unofficial tags)")
-    for tag in model.Debtag.q():
-        if tag.description is None:
-            db.delete(tag)
-            logging.debug("Removing tag: %s", tag.tag)
-
-def remove_boring_packages():
-    """Remove packages with certain debtags that are not worthy of screenshots
-
-    The tags are defined in the INI file as debshots.ignore_tags"""
-    ignore_tags = conf['debshots.ignore_tags'].split()
-    for ignore_tag in ignore_tags:
-        db_debtag = model.Debtag.q().filter_by(tag=unicode(ignore_tag)).first()
-        if not db_debtag:
-            logging.warning('Tag "%s" not found in database. Did you spell it right in the ini file?')
-            continue
-
-        ignore_packages = model.Package.q().join('debtags').filter(model.Debtag.tag==unicode(ignore_tag))
-        for ignore_package in ignore_packages:
-            db.delete(ignore_package)
-            logging.debug('Deleting package: %s', ignore_package.name)
-
-        #model.Session.delete(db_debtag)
-        #logging.debug('Deleting tags (and assigned packages): %s', ignore_tag)
-        #model.Session.delete(db_debtag.packages)
-        # This query is too manual for my taste and not making use of SQLAlchemy.
-        # Besides I would have to deal with the foreign key constraings manually.
-        #model.Session.connection().execute(model.sql.text("""
-        #    delete from packages
-        #    where id in (
-        #        select packages_to_debtags.package_id from packages_to_debtags
-        #        join debtags on debtags.id=packages_to_debtags.debtag_id
-        #        where debtags.tag=:tagname
-        #    )
-        #    """), tagname=ignore_tag)
-
-
-def generator_paragraphs(filehandle):
-    """Returns paragraphs (lines seperated by empty lines) as a generator"""
-    paragraph = []
-    for line in filehandle:
-        if not line.strip():    # empty line
-            yield paragraph
-            paragraph = []
-        else:
-            paragraph.append(line.rstrip())
-
-
-#def main():
-#    #parse_packages()
-#    #parse_debtags()
-#    #parse_debtags_descriptions()
-#    #remove_tags_without_description()
-#    remove_boring_packages()
-#    db.commit()
-
-if __name__ == '__main__':
-    main()
+if __name__=='__main__':    sys.exit(main())
