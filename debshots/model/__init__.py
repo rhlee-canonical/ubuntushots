@@ -159,10 +159,10 @@ image_types = [
 debtags_table = sql.Table(
     'debtags', meta.metadata,
     sql.Column('id', sql.Integer, primary_key=True),
-    sql.Column('tag', sql.Unicode(50)),
+    sql.Column('tag', sql.Unicode(50), unique=True),
     sql.Column('description', sql.Unicode(1000)),
     sql.Column('facet', sql.Unicode(50)),
-    sql.Column('facet_description', sql.Unicode(100)),
+    sql.Column('facet_description', sql.Unicode(1000)),
     # Note: Actually facets to tags should be a one-to-many relationship.
     #       I am storing the facets right here in the tags table even if I
     #       know this means duplicate data. But the number of tags is roughly
