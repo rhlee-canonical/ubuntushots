@@ -5,7 +5,8 @@
 <%include file="/packages/include-js-lightbox.mako"/>
 
 % if c.packages:
-    <p>${ c.packages.pager('Page: $link_first $link_previous ~10~ $link_next $link_last') }</p>
+    <% pager = c.packages.pager('Page: $link_previous $link_next ~10~') %>
+    <p>${ pager}</p>
     <table>
         <tr>
             <th>Package</th>
@@ -58,7 +59,7 @@
         % endif
     % endfor
     </table>
-    <p>${ c.packages.pager('Page: $link_first $link_previous ~10~ $link_next $link_last') }</p>
+    <p>${ pager}</p>
 % else:
     <p>No packages with screenshots found.</p>
 % endif
