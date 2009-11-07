@@ -40,6 +40,10 @@ class StartController(BaseController):
         g.cache.set('debshots:front_page', rendered)
         return rendered
 
+    def guidelines(self):
+        """Deprecated link for guidelines page redirects to upload page"""
+        redirect_to('/upload')
+
     def login(self):
         """Show login form"""
         return render('/start/login.mako')
