@@ -18,13 +18,6 @@ try:
 except ImportError:
     from md5 import md5
 
-SCREENSHOT_HEADERS = [
-    ('Content-Type', 'image/png'),
-    # make images cacheable
-    ('Cache-Control', 'public, max-age=86400'),
-    ('Pragma', ''),
-]
-
 log = logging.getLogger(__name__)
 
 class ValidateExistingDebianPackage(formencode.Schema):
@@ -296,6 +289,12 @@ class PackagesController(BaseController):
             request.environ['pylons.status_code_redirect'] = True
             response.status_int = status_code
 
+        # Set headers
+        response.headers['Content-Type'] = 'image/png'
+        # make images cacheable
+        response.headers['Cache-Control'] = 'public, max-age=86400'
+        response.headers['Pragma'] = ''
+
         # If this applications runs behind an nginx with the xsendfile extension
         # enabled then we can just return an empty body and set the
         # X-Accel-Redirect header. nginx will then deliver the image directly
@@ -305,7 +304,6 @@ class PackagesController(BaseController):
             log.debug('Telling the frontend web server to deliver the image directly from: %s', image_path)
             return ''
 
-        response.headers['Content-Type'] = 'image/png'
         image_file = open(image_path,'rb')
         image_data = image_file.read()
         image_file.close()
