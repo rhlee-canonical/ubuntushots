@@ -16,7 +16,8 @@
         '/javascript/jquery.js',
         '/javascript/jquery.autocomplete.js', ## for data entry
         '/javascript/jquery.flyout.js', ## for image zooming
-        '/javascript/jquery.jgrowl.js', ## message popups
+        '/javascript/jquery.jgrowl.js', ## message popup balloons
+        '/javascript/jquery.tooltip.js', ## tooltip popups (for facets descriptions)
         ) }
     <link rel="alternate" href="/rss" title="RSS Feed" type="application/rss+xml" />
 
