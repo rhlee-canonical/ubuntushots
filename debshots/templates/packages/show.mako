@@ -5,6 +5,16 @@
 
 <%include file="/packages/include-js-lightbox.mako"/>
 
+## Add tooltip behavior to IMG with class 'tooltip'
+<script type="application/x-javascript">
+    $(document).ready(function() {
+        $('img.tooltip').tooltip({
+            showURL: false,
+            fade: 150
+        });
+    });
+</script>
+
 <div class="graybox">
 <h1>Package <em>'${ c.package.name }'</em></h1>
 <table><tr><td class="noborder">
@@ -46,8 +56,16 @@
     <ul>
     % for tag in c.package.debtags:
         <li>
-            ${ tag.facet_description }: ${ tag.description }
-            [<a href="${ h.url_for('packages', debtag=tag.tag) }">Similar packages</a>]
+            ${ tag.facet_description_short }:
+            ## Display a "?" with a Javascript-powered tooltip showing the long description
+            % if tag.facet_description_long:
+                <img src="/icons/help.png" class="tooltip" title="${tag.facet_description_long}" />
+            % endif
+            ${ tag.description_short }
+            % if tag.description_long:
+            <img src="/icons/help.png" class="tooltip" title="${tag.description_long}" />
+            % endif
+            ##[<a href="${ h.url_for('packages', debtag=tag.tag) }">Similar packages</a>]
         </li>
     % endfor
     </ul>
