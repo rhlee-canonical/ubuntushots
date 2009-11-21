@@ -5,9 +5,9 @@
 #
 [DEFAULT]
 debug = true
-email_to = you@yourdomain.com
+email_to = email@christoph-haas.de
 smtp_server = localhost
-error_email_from = paste@localhost
+error_email_from = debshots@screenshots.debian.net
 
 [server:main]
 use = egg:Paste#http
@@ -17,8 +17,6 @@ port = 5000
 [app:main]
 use = egg:debshots
 full_stack = true
-static_files = true
-
 cache_dir = %(here)s/data
 beaker.session.key = debshots
 beaker.session.secret = ${app_instance_secret}
@@ -30,28 +28,73 @@ app_instance_uuid = ${app_instance_uuid}
 #beaker.cache.data_dir = %(here)s/data/cache
 #beaker.session.data_dir = %(here)s/data/sessions
 
-# SQLAlchemy database URL
-sqlalchemy.url = sqlite:///production.db
-
 # WARNING: *THE LINE BELOW MUST BE UNCOMMENTED ON A PRODUCTION ENVIRONMENT*
 # Debug mode will enable the interactive debugging tool, allowing ANYONE to
 # execute malicious code after an exception is raised.
 set debug = false
 
+# Database URI
+sqlalchemy.url = postgres://debshots:shootme@torf:5432/debshots
+#sqlalchemy.url = sqlite:///%(here)s/debshots.db
+
+# WARNING: *THE LINE BELOW MUST BE UNCOMMENTED ON A PRODUCTION ENVIRONMENT*
+# Debug mode will enable the interactive debugging tool, allowing ANYONE to
+# execute malicious code after an exception is raised.
+#set debug = false
+
+# Where the screenshots will get created. Schema:
+# First char of the package + package name.
+# Thumbnail:  .../c/cream/xxx (xxx=database id)
+# Screenshot: .../c/cream/xxx (xxx=database id)
+debshots.screenshots_directory = %(here)s/data/screenshots
+
+# Sender address for automated emails
+debshots.email_sender = support@screenshots.debian.net
+
+# Additional salt to avoid reverse-engineering of MD5-hashed passwords
+debshots.md5salt = rqxc5HrD1TUl
+
+# Near Debian mirror to get Sources.gz files from (to create package cache)
+debshots.debian_mirror = http://ftp.de.debian.org/debian
+
+# Google analytics ID. If commented out the tracking script will not be included.
+#debshots.google_analytics_id = UA-1234567-1
+
+# memcached server (the front page gets cached to prevent slashdotting)
+debshots.memcache_server = 127.0.0.1:11211
+
+# For using Sendfile acceleration (http://wiki.nginx.org/NginxXSendfile)
+# If set the front side webserver will handle the actual delivery of the file
+#debshots.xsendfile = X-Accel-Redirect
 
 # Logging configuration
 [loggers]
-keys = root
+keys = root, debshots, sqlalchemy
 
 [handlers]
-keys = console
+keys = console, sqlalchemy
 
 [formatters]
-keys = generic
+keys = generic, sqlalchemy
+
 
 [logger_root]
 level = INFO
+#level = DEBUG
 handlers = console
+
+[logger_debshots]
+level = DEBUG
+handlers =
+qualname = debshots
+
+[logger_sqlalchemy]
+#level = DEBUG
+level = WARNING
+handlers = sqlalchemy
+qualname = sqlalchemy.engine
+propagate = 0
+
 
 [handler_console]
 class = StreamHandler
@@ -59,5 +102,16 @@ args = (sys.stderr,)
 level = NOTSET
 formatter = generic
 
+[handler_sqlalchemy]
+class = StreamHandler
+args = (sys.stderr,)
+level = DEBUG
+formatter = sqlalchemy
+
+
 [formatter_generic]
-format = %(asctime)s %(levelname)-5.5s [%(name)s] %(message)s
+format = %(asctime)s,%(msecs)03d %(levelname)-5.5s [%(name)s] %(message)s
+datefmt = %H:%M:%S
+
+[formatter_sqlalchemy]
+format =  ___SQL___ %(name)s: %(message)s
