@@ -169,7 +169,27 @@ debtags_table = sql.Table(
     #       1200 and querying for the facet saves an extra database query.
 )
 
-class Debtag(MyOrm): pass
+class Debtag(MyOrm):
+    @property
+    def facet_description_short(self):
+        """Return first line of this facet's description"""
+        return self.facet_description.splitlines()[0]
+
+    @property
+    def facet_description_long(self):
+        """Return all lines except the first line of this facet's description"""
+        return (' '.join(self.facet_description.splitlines()[1:])).strip()
+
+    @property
+    def description_short(self):
+        """Return first line of this tag's description"""
+        return self.description.splitlines()[0]
+
+    @property
+    def description_long(self):
+        """Return all lines except the first line of this tag's description"""
+        return (' '.join(self.description.splitlines()[1:])).strip()
+
 
 #---------------
 # Mapping table for packages to debtags (many-to-many)
