@@ -52,7 +52,10 @@
 
 ## Debtags
 % if c.package.debtags:
-    <h2>Tags</h2>
+    <h2>Tags
+	<img src="/icons/help.png" title="Debtags are an invention of Enrico Zini to
+	help classify Debian packages. See debtags.alioth.debian.org" class="tooltip" />
+    </h2>
     <ul>
     % for tag in c.package.debtags:
         <li>
