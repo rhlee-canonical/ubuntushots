@@ -128,6 +128,29 @@ class Package(MyOrm):
         """Return a list of freshly uploaded or marked for delete screenshots of this package"""
         return [ss for ss in self.screenshots if (not ss.approved or ss.markedfordelete)]
 
+    @property
+    def tags_grouped_by_facet(self):
+        """Return a data structure of debtags grouped by their facets.
+
+        Data structure example:
+        { 'supports-format': # facet
+            { 'description_short': 'Formats that the application supports', # short facet description (line 1)
+              'description_long': 'Formats that the application supports', # long facet description (line 2-)
+              'tags': [ Debtag(...), Debtag(...) ],
+            },
+        }"""
+        data = {}
+        for tag in self.debtags:
+            # Need to create dictionary for this facet?Facet already present in data structure?
+            if tag.facet not in data:
+                data[tag.facet]={}
+                data[tag.facet]['description_short']=tag.facet_description_short
+                data[tag.facet]['description_long']=tag.facet_description_long
+                data[tag.facet]['tags']=[]
+            data[tag.facet]['tags'].append(tag)
+
+        return data
+
 def packages_with_moderated_screenshots():
     """Return a list of packages with screenshots that need moderation"""
     return Package.q().distinct().join('screenshots').filter(

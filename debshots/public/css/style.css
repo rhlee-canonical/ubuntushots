@@ -228,6 +228,18 @@ a.image, a.image:hover {
     font-weight: bolder;
 }
 
+/* Highlighting debtags and its facets */
+.facet
+{
+    font-weight: bolder;
+}
+.debtag
+{
+    background-color: #d0d0d0;
+    margin-right: 0.5em;
+}
+
+
 /* Red box for HTTP errors (40x) */
 .error-border {
     border: 1em solid red;
@@ -411,7 +423,13 @@ div.jGrowl div.jGrowl-closer {
 	text-align: 			center;
 }
 
-/* jQuery tooltip plugi */
+/* Marking content that is displaying with a tooltip */
+/*.tooltip
+{
+    border-bottom: 1px dashed black;
+}*/
+
+/* jQuery tooltip plugin */
 #tooltip {
 	position: absolute;
 	z-index: 3000;

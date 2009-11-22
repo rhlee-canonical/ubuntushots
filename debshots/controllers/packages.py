@@ -13,6 +13,7 @@ from paste.deploy.converters import asbool
 from debshots.lib import my, validators
 import formencode
 from webhelpers.feedgenerator import Rss201rev2Feed
+
 try:
     from hashlib import md5
 except ImportError:
@@ -184,8 +185,6 @@ class PackagesController(BaseController):
         if not c.package:
             abort(404)
             # TODO: display a page that proposed to upload screenshots as none yet exist
-
-        c.title = 'Package ' + c.package.name
 
         return render('/packages/show.mako')
 

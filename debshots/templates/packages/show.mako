@@ -8,7 +8,7 @@
 ## Add tooltip behavior to IMG with class 'tooltip'
 <script type="application/x-javascript">
     $(document).ready(function() {
-        $('img.tooltip').tooltip({
+        $('.tooltip').tooltip({
             showURL: false,
             fade: 150
         });
@@ -57,19 +57,31 @@
 	help classify Debian packages. See debtags.alioth.debian.org" class="tooltip" />
     </h2>
     <ul>
-    % for tag in c.package.debtags:
+    % for facet, facet_data in c.package.tags_grouped_by_facet.iteritems():
         <li>
-            ${ tag.facet_description_short }
-            ## Display a "?" with a Javascript-powered tooltip showing the long description
-            % if tag.facet_description_long:
-                <img src="/icons/help.png" class="tooltip" title="${tag.facet_description_long}" />
+	    <span class="facet">
+            % if facet_data['description_long']:
+                <span class="tooltip" title="${ facet_data['description_long'] }">${ facet_data['description_short'] }</span>
+	    % else:
+		${ facet_data['description_short'] }
             % endif
+	    </span>
 	    &rarr;
-            ${ tag.description_short }
-            % if tag.description_long:
-            <img src="/icons/help.png" class="tooltip" title="${tag.description_long}" />
-            % endif
-            ##[<a href="${ h.url_for('packages', debtag=tag.tag) }">Similar packages</a>]
+	    ## Show all tags of this facet
+	    % for tag in facet_data['tags']:
+		<span class="debtag">
+		## If the tag has a long description then add it as a tooltip
+		% if tag.description_long:
+		    <a class="tooltip" title="${ tag.description_long }" href="${ h.url_for('packages', debtag=tag.tag) }">
+		    ${ tag.description_short }
+		    </a>
+		% else:
+		    <a href="${ h.url_for('packages', debtag=tag.tag) }">
+		    ${ tag.description_short }
+		    </a>
+		% endif
+		</span>
+	    % endfor
         </li>
     % endfor
     </ul>
