@@ -56,11 +56,12 @@
     <ul>
     % for tag in c.package.debtags:
         <li>
-            ${ tag.facet_description_short }:
+            ${ tag.facet_description_short }
             ## Display a "?" with a Javascript-powered tooltip showing the long description
             % if tag.facet_description_long:
                 <img src="/icons/help.png" class="tooltip" title="${tag.facet_description_long}" />
             % endif
+	    &rarr;
             ${ tag.description_short }
             % if tag.description_long:
             <img src="/icons/help.png" class="tooltip" title="${tag.description_long}" />
