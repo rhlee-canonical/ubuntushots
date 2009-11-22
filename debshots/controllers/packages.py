@@ -470,8 +470,14 @@ class PackagesController(BaseController):
                 feed.add_item(
                     title='Screenshot for %s (%s)' % (
                         screenshot.package.name, screenshot.package.description),
-                    link=h.url_for(screenshot.large_image_url, qualified=True),
-                    description=screenshot.package.name)
+                    link=h.url_for('package', package=screenshot.package.name, qualified=True),
+                    pubdate=screenshot.uploaddatetime,
+                    description=h.tags.image(
+                        url=h.url_for(screenshot.small_image_url, qualified=True),
+                        alt=('Screenshot for package %s' % screenshot.package.name)
+                    ),
+                    #description=screenshot.package.name
+                )
 
         response.content_type = 'application/rss+xml'
         return feed.writeString('utf-8')
