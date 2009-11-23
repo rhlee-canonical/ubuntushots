@@ -41,6 +41,8 @@ debshots/public/favicon.png
 debshots/public/pylons-logo.gif
 debshots/public/robots.txt
 debshots/public/css/style.css
+debshots/public/icons/help.png
+debshots/public/icons/tag_red.png
 debshots/public/images/404-screenshot.png
 debshots/public/images/404-thumbnail.png
 debshots/public/images/camera.png
@@ -52,6 +54,7 @@ debshots/public/javascript/jquery.autocomplete.js
 debshots/public/javascript/jquery.flyout.js
 debshots/public/javascript/jquery.jgrowl.js
 debshots/public/javascript/jquery.js
+debshots/public/javascript/jquery.tooltip.js
 debshots/templates/base.mako
 debshots/templates/error.mako
 debshots/templates/message.mako
