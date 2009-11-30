@@ -230,6 +230,7 @@ screenshots_table = sql.Table(
     sql.Column('id', sql.Integer, primary_key=True),
     sql.Column('package_id', sql.Integer, sql.ForeignKey('packages.id')),
     sql.Column('version', sql.Unicode(50)),
+    sql.Column('description', sql.Unicode(40)),
     sql.Column('uploaddatetime', sql.DateTime(), default=sql.func.now()),
     sql.Column('uploaderhash', sql.Unicode(72)),
     sql.Column('uploaderip', sql.Unicode(15)),

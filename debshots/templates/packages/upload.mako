@@ -53,6 +53,12 @@ ${ h.tags.form(h.url_for('uploadfile'), method='post', multipart=True) }
     </td>
 </tr>
 <tr>
+    <td>Screenshot description:</td>
+    <td>
+        <input type="text" name="description" id="description" size="40" maxlength="40" /> (optional)
+    </td>
+</tr>
+<tr>
     <td>Screenshot (PNG file):</td>
     <td>
         <input type="file" name="file" size="40"/>

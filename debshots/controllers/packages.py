@@ -24,7 +24,8 @@ log = logging.getLogger(__name__)
 class ValidateExistingDebianPackage(formencode.Schema):
     """formencode validation schema for uploading new screenshots"""
     packagename = validators.ValidatorDebianPackage(not_empty=True)
-    version = formencode.validators.String(max=50)
+    version = formencode.validators.UnicodeString(max=50)
+    description = formencode.validators.UnicodeString(max=40)
     file = formencode.validators.FieldStorageUploadConverter(not_empty=True)
     allow_extra_fields = True
 
@@ -168,7 +169,9 @@ class PackagesController(BaseController):
         error = _process_screenshot(
             filehandle=filename.file,
             package=package.name,
-            version=fields['version'])
+            version=fields['version'],
+            description=fields['description'],
+        )
         if error:
             c.message=error
             my.message(error)
@@ -484,7 +487,7 @@ class PackagesController(BaseController):
 #--------------------------
 
 
-def _process_screenshot(filehandle, package, version):
+def _process_screenshot(filehandle, package, version, description):
     """Process the uploaded PNG file
 
     - resize to no larger than 800x600
@@ -526,7 +529,9 @@ def _process_screenshot(filehandle, package, version):
         uploaderip=my.client_ip(),
         uploaderhash=my.client_cookie_hash(),
         version=version,
+        description=description,
     )
+
     # Screenshots uploaded by admins are automatically approved
     if 'username' in session:
         db_screenshot.approved = True

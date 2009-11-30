@@ -102,6 +102,10 @@
     <a class="image" href="${screenshot.large_image_url}"
         title="Screenshot of package '${screenshot.package.name}'">
         <img src="${screenshot.small_image_url}" alt="Screenshot" />
+	% if screenshot.description:
+	<br />
+	<i>${ screenshot.description }</i>
+	% endif
         % if screenshot.version:
         <br />
         Version: ${ screenshot.version }
@@ -160,6 +164,10 @@
         title="Screenshot of package '${screenshot.package.name}'">
         <img src="${screenshot.small_image_url}" alt="Screenshot" />
     </a>
+    % if screenshot.description:
+    <br />
+    <i>${ screenshot.description }</i>
+    % endif
     % if screenshot.version:
     <br />
     Version: ${ screenshot.version }
@@ -186,6 +194,10 @@
         title="Screenshot of package '${screenshot.package.name}'">
         <img src="${screenshot.small_image_url}" alt="Screenshot" />
     </a>
+    % if screenshot.description:
+    <br />
+    <i>${ screenshot.description }</i>
+    % endif
     % if screenshot.version:
     <br />
     Version: ${ screenshot.version }
