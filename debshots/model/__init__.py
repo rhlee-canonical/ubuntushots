@@ -24,10 +24,10 @@ class MyOrm(object):
         """Create Query object of an ORM class"""
         return meta.Session.query(self)
 
-    # from http://www.sqlalchemy.org/trac/wiki/UsageRecipes/GenericOrmBaseClass
+    # derived from http://www.sqlalchemy.org/trac/wiki/UsageRecipes/GenericOrmBaseClass
     def __init__(self, **kw):
         for key in kw:
-            if not key.startswith('_') and key in self.__dict__:
+            if not key.startswith('_'):
                 setattr(self, key, kw[key])
 
     def __repr__(self):
