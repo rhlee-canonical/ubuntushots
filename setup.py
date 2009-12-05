@@ -7,7 +7,7 @@ except ImportError:
 
 setup(
     name='debshots',
-    version="0.4.6.3",
+    version="0.4.6.4",
     description='Web application that manages screenshots of applications available in Debian',
     author='Christoph Haas',
     author_email='email@christoph-haas.de',
@@ -15,7 +15,7 @@ setup(
     install_requires=[
         "Pylons==0.9.7",
         "PIL>=1.1.6",
-        "SQLAlchemy==0.5.5",
+        "SQLAlchemy>=0.5.5",
         #"SQLAlchemy==0.4.6",
         "Webhelpers==0.6.4",
         "pastescript>=1.6",
