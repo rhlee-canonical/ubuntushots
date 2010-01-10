@@ -15,6 +15,9 @@ import cPickle as pickle
 import tempfile
 import gzip
 
+# TODO: Remember which packages were gone through so the packages that are no longer
+#       in Debian/Ubuntu can be removed optionally.
+
 #dde_packages_url = 'http://torf.workaround.org/ddetest'
 #dde_packages_url = 'http://dde.debian.net/dde/q/udd/packages/all?t=pickle'
 #dde_packages_url = 'http://dde.debian.net/dde/q/udd/packages/prio-debian-sid?t=pickle'

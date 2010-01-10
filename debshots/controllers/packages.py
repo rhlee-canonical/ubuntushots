@@ -301,7 +301,10 @@ class PackagesController(BaseController):
         # enabled then we can just return an empty body and set the
         # X-Accel-Redirect header. nginx will then deliver the image directly
         # which is faster.
-        if 'debshots.xsendfile' in config:
+        #
+        # Do not use the xsendfile extension if an error code should be sent.
+        # nginx would always use status code 200.
+        if 'debshots.xsendfile' in config and status_code is None:
             response.headers[config['debshots.xsendfile']] = image_path
             log.debug('Telling the frontend web server to deliver the image directly from: %s', image_path)
             return ''
