@@ -1,19 +1,16 @@
-This file is for you to describe the debshots application. Typically
-you would include information such as the information below:
+Installation:
 
-Installation and Setup
-======================
+apt-get install python-virtualenv
+virtualenv .
+. bin/activate
+apt-get install python-dev
+easy_install debshots...
+paster make-config debshots my.ini
+apt-get install memcached python-memcache
+aptitude install daemontools daemontools-run
+mkdir /etc/service/debshots
+Create a file /etc/service/debshots/run...
+chmod +x /etc/service/debshots
+svc -u /etc/service/debshots
+(logging?)
 
-Install ``debshots`` using easy_install::
-
-    easy_install debshots
-
-Make a config file as follows::
-
-    paster make-config debshots config.ini
-
-Tweak the config file as appropriate and then setup the application::
-
-    paster setup-app config.ini
-
-Then you are ready to go.
