@@ -17,7 +17,7 @@ setup(
         "PIL>=1.1.6",
         "SQLAlchemy>=0.5.5",
         #"SQLAlchemy==0.4.6",
-        "Webhelpers==0.6.4",
+        "Webhelpers==1.0b4",
         "pastescript>=1.6",
         "paste>=1.6",
         #"psycopg2>=2.0.6",  # can also be deployed with sqlite - then psycopg2 is unneeded
