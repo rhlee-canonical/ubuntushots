@@ -141,7 +141,7 @@ the system.
 
    Make this file executable.
 
-   > chmod +x /etc/service/debshots
+   > chmod +x /etc/service/debshots/run
 
    Try /etc/service/debshots/run to see if the process would be starting.
    If all works well then start it through daemontools:
