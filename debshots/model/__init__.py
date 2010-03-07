@@ -327,14 +327,14 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
             backref=orm.backref('package', uselist=False),
             cascade='all, delete-orphan',
             single_parent=True,
-            lazy=False,
+            #lazy=False,
             ),
         'debtags':orm.relation(
             Debtag,
             backref=orm.backref('packages'),
             #cascade='all, delete-orphan',
             secondary=packages_to_debtags_table,
-            lazy=False,
+            #lazy=False,
             ),
         })
 
