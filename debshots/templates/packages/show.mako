@@ -45,7 +45,7 @@
         </li>
     ## Upload link:
     <li>${ h.tags.link_to('Upload a new screenshot',
-            h.url_for('upload', package=c.package.name)) }</li>
+            h.url('upload', package=c.package.name)) }</li>
 </ul>
 
 </td><td class="noborder">
@@ -72,11 +72,11 @@
 		<span class="debtag">
 		## If the tag has a long description then add it as a tooltip
 		% if tag.description_long:
-		    <a class="tooltip" title="${ tag.description_long }" href="${ h.url_for('packages', debtag=tag.tag) }">
+		    <a class="tooltip" title="${ tag.description_long }" href="${ h.url('packages', debtag=tag.tag) }">
 		    ${ tag.description_short }
 		    </a>
 		% else:
-		    <a href="${ h.url_for('packages', debtag=tag.tag) }">
+		    <a href="${ h.url('packages', debtag=tag.tag) }">
 		    ${ tag.description_short }
 		    </a>
 		% endif
@@ -121,7 +121,7 @@
         % if 'username' in session:
             ${ h.tags.link_to(
                 'Remove this screenshot',
-                h.url_for('delete_screenshot', screenshot=screenshot.id),
+                h.url('delete_screenshot', screenshot=screenshot.id),
                 onclick=h.tags.literal('return confirm(\'Really delete this screenshot?\')')) }
         ## Visitors can mark this package for deletion:
         % else:
@@ -133,7 +133,7 @@
                 ) }
             ## Hidden field to enter the reason for markedfordelete
             <div id="markfordelete-form-${screenshot.id}" style="display: none">
-                ${ h.tags.form(h.url_for('delete_screenshot', screenshot=screenshot.id))}
+                ${ h.tags.form(h.url('delete_screenshot', screenshot=screenshot.id))}
                 Why should it get removed?
                 <br />
                 ${ h.tags.text('reason', size=20, maxlength=100) }
@@ -177,7 +177,7 @@
     ## TODO: Fancy icons :)
     ${ h.tags.link_to(
         'Delete your screenshot',
-        h.url_for('delete_screenshot', screenshot=screenshot.id),
+        h.url('delete_screenshot', screenshot=screenshot.id),
         onclick=h.tags.literal('return confirm(\'Really delete this screenshot?\')')) }
     </div>
 % endfor
@@ -207,11 +207,11 @@
     ## TODO: Fancy icons :)
     ${ h.tags.link_to(
         'Approve screenshot',
-        h.url_for('approve_screenshot', screenshot=screenshot.id, goto=h.url_for())) }
+        h.url('approve_screenshot', screenshot=screenshot.id, goto=h.url())) }
     <br />
     ${ h.tags.link_to(
         'Delete screenshot',
-        h.url_for('delete_screenshot', screenshot=screenshot.id, goto=h.url_for()),
+        h.url('delete_screenshot', screenshot=screenshot.id, goto=h.url()),
         onclick=h.tags.literal('return confirm(\'Really delete this screenshot?\')')) }
     </div>
 % endfor

@@ -37,7 +37,7 @@
 
 <p>Please enter the name of the package you wish to upload a screenshot for:</p>
 
-${ h.tags.form(h.url_for('uploadfile'), method='post', multipart=True) }
+${ h.tags.form(h.url('uploadfile'), method='post', multipart=True) }
 <table>
 <tr>
     <td>Package name:</td>

@@ -9,7 +9,7 @@
 
 <div class="graybox">
 <h1>Browsing screenshots</h1>
-${ h.tags.form(h.url_for())}
+${ h.tags.form(h.url.current())}
 <p>
     <a href="/packages">Packages with screenshots</a>
     |

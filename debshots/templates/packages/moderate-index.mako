@@ -24,11 +24,11 @@ ${ c.packages.pager('Package $page of $page_count - $link_previous ~3~ $link_nex
         ## TODO: Fancy icons :)
         ${ h.tags.link_to(
             'Approve screenshot',
-            h.url_for('approve_screenshot', screenshot=screenshot.id, goto=h.url_for())) }
+            h.url('approve_screenshot', screenshot=screenshot.id, goto=h.url())) }
         <br />
         ${ h.tags.link_to(
             'Delete screenshot',
-            h.url_for('delete_screenshot', screenshot=screenshot.id, goto=h.url_for()),
+            h.url('delete_screenshot', screenshot=screenshot.id, goto=h.url()),
             onclick="return confirm('Really delete the screenshot?');") }
     ## Marked for delete? (keep or delete)
     % elif screenshot.markedfordelete:
@@ -36,11 +36,11 @@ ${ c.packages.pager('Package $page of $page_count - $link_previous ~3~ $link_nex
         <br />
         ${ h.tags.link_to(
             'Keep the screenshot',
-            h.url_for('keep_screenshot', screenshot=screenshot.id, goto=h.url_for())) }
+            h.url('keep_screenshot', screenshot=screenshot.id, goto=h.url())) }
         <br />
         ${ h.tags.link_to(
             'Delete screenshot',
-            h.url_for('delete_screenshot', screenshot=screenshot.id, goto=h.url_for()),
+            h.url('delete_screenshot', screenshot=screenshot.id, goto=h.url()),
             onclick="return confirm('Really delete the screenshot?');") }
     % endif
     </div>

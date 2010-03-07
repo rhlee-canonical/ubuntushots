@@ -104,15 +104,15 @@ class PackagesController(BaseController):
             [
                 {
                     'name': s.package.name,
-                    'url': h.url_for('package', package=s.package.name, qualified=True),
+                    'url': h.url('package', package=s.package.name, qualified=True),
                     'description': s.package.description,
                     'maintainer': s.package.maintainer,
                     'maintainer_email': s.package.maintainer_email,
                     'section': s.package.section,
                     'homepage': s.package.homepage,
                     'version': s.version,
-                    'small_image_url': h.url_for(s.small_image_url, qualified=True),
-                    'large_image_url': h.url_for(s.large_image_url, qualified=True),
+                    'small_image_url': h.url(s.small_image_url, qualified=True),
+                    'large_image_url': h.url(s.large_image_url, qualified=True),
                 }
                 for s in screenshots
             ]
@@ -134,7 +134,7 @@ class PackagesController(BaseController):
             )
 
         c.packages = h.paginate.Page(packages,
-            items_per_page=10,
+            items_per_page=20,
             page=request.params.get('page',0),
             search=search)
         return render('/packages/index.mako')
@@ -374,7 +374,7 @@ class PackagesController(BaseController):
         my.redirect_back()
 
         # Otherwise redirect to the package overview
-        redirect_to(h.url_for('package', package=package.name))
+        redirect_to(h.url('package', package=package.name))
 
     def approve_screenshot(self, screenshot):
         """Approve a screenshot. Sets it to status 'approved'."""
@@ -385,7 +385,7 @@ class PackagesController(BaseController):
         if this_screenshot.approved:
             my.message("Screenshot for package <em>%s</em> already approved." % this_screenshot.package.name)
             my.redirect_back()
-            redirect_to(h.url_for('package', package=package.name))
+            redirect_to(h.url('package', package=package.name))
 
         package = this_screenshot.package
 
@@ -418,7 +418,7 @@ class PackagesController(BaseController):
         g.cache.delete('debshots:front_page') # could make it add the new render explicitly later
 
         my.redirect_back()
-        redirect_to(h.url_for('package', package=package.name))
+        redirect_to(h.url('package', package=package.name))
 
     def keep_screenshot(self, screenshot):
         """Remove a screenshot's "markedfordelete" tag.
@@ -440,7 +440,7 @@ class PackagesController(BaseController):
         my.message("Screenshot for package <em>%s</em> kept." % package.name)
 
         my.redirect_back()
-        redirect_to(h.url_for('moderate', package=package.name))
+        redirect_to(h.url('moderate', package=package.name))
 
     def ajax_autocomplete_packages(self):
         """Get a list of packages for the autocompleter"""
@@ -475,10 +475,10 @@ class PackagesController(BaseController):
                 feed.add_item(
                     title='Screenshot for %s (%s)' % (
                         screenshot.package.name, screenshot.package.description),
-                    link=h.url_for('package', package=screenshot.package.name, qualified=True),
+                    link=h.url('package', package=screenshot.package.name, qualified=True),
                     pubdate=screenshot.uploaddatetime,
                     description=h.tags.image(
-                        url=h.url_for(screenshot.small_image_url, qualified=True),
+                        url=h.url(screenshot.small_image_url, qualified=True),
                         alt=('Screenshot for package %s' % screenshot.package.name)
                     ),
                     #description=screenshot.package.name

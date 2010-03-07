@@ -9,5 +9,6 @@ from webhelpers import *
 from webhelpers.html import tags
 from webhelpers import paginate
 #from pylons.controllers.util import url_for
+from pylons import url
 from routes.util import url_for
 from debshots.lib import my

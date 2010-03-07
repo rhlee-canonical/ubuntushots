@@ -7,7 +7,8 @@ import os
 import md5
 from debshots.model import meta
 from debshots.lib import my
-from routes import url_for
+#from routes import url_for
+from pylons import url
 
 import logging
 log = logging.getLogger(__name__)
@@ -245,15 +246,15 @@ class Screenshot(MyOrm):
     def large_image_url(self):
         if self.approved:
             package_name = self.package.name
-            return url_for('image', package_inital=package_name[0], package=package_name, id=self.id, size='large')
-        return url_for('unapproved_image', id=self.id, size='large')
+            return url('image', package_inital=package_name[0], package=package_name, id=self.id, size='large')
+        return url('unapproved_image', id=self.id, size='large')
 
     @property
     def small_image_url(self):
         if self.approved:
             package_name = self.package.name
-            return url_for('image', package_inital=package_name[0], package=package_name, id=self.id, size='small')
-        return url_for('unapproved_image', id=self.id, size='small')
+            return url('image', package_inital=package_name[0], package=package_name, id=self.id, size='small')
+        return url('unapproved_image', id=self.id, size='small')
 
     @property
     def directory(self):

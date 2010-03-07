@@ -18,7 +18,7 @@
     % for package in c.packages:
         <tr>
             <td>
-                ${ h.tags.link_to(package.name, h.url_for('package', package=package.name)) }
+                ${ h.tags.link_to(package.name, h.url('package', package=package.name)) }
             </td>
             <td>
                 ${ package.description }
@@ -36,7 +36,7 @@
             </td>
             ## Show link to upload screenshots
             <td>
-                ${ h.tags.link_to('Upload a screenshot', h.url_for('upload', package=package.name)) }
+                ${ h.tags.link_to('Upload a screenshot', h.url('upload', package=package.name)) }
             </td>
 
         </tr>

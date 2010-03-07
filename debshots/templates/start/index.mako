@@ -24,7 +24,7 @@
     <br />
         ${ h.tags.link_to(
             screenshot.package.name,
-            h.url_for('package', package=screenshot.package.name)) }
+            h.url('package', package=screenshot.package.name)) }
     </div>
     % endfor
     </div>
