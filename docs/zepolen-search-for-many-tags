@@ -1,0 +1,30 @@
+(add this at top)
+ 
+import sqlalchemy as sa
+ 
+ 
+and this for packages.py
+ 
+ 
+        # Search for debtag
+        debtags_search = set(map(unicode, request.params.getall('debtag')))
+        if debtags_search:
+            db_debtags = set([debtag.tag for debtag in model.Debtag.q().filter(model.Debtag.tag.in_(debtags_search)).all()])
+ 
+            unknown_tags = debtags_search ^ db_debtags
+            if unknown_tags: # [TODO] don't fail - just remove unknown tags, and tell the user about it
+                abort(404, 'Sorry, no packages with this debtag could be found.')
+ 
+            if len(db_debtags) == 1: # one doesn't require grouping which is slower
+                packages = packages.join('debtags').filter(model.Debtag.tag==db_debtags[0])
+            else:
+                tag_filter_query = sa.select([model.packages_to_debtags_table.c.package_id], from_obj=[
+                    model.packages_to_debtags_table.join(model.debtags_table,
+                            model.debtags_table.c.id==model.packages_to_debtags_table.c.debtag_id
+                            )
+                    ]
+                ).where(model.debtags_table.c.tag.in_(db_debtags)
+                ).group_by(model.packages_to_debtags_table.c.package_id
+                ).having(sa.func.count(model.packages_to_debtags_table.c.package_id) == len(db_debtags)
+                )
+                packages = packages.filter(model.Package.id.in_(tag_filter_query))

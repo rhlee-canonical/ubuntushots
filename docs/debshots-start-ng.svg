@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:i="http://ns.adobe.com/AdobeIllustrator/10.0/"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1052.3622"
+   height="744.09448"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   version="1.0"
+   sodipodi:docname="debshots-start-ng.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#000000"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.119056"
+     inkscape:cx="375.88965"
+     inkscape:cy="352.48092"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     showguides="true"
+     gridtolerance="3"
+     inkscape:guide-bbox="true"
+     inkscape:showpageshadow="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1007"
+     inkscape:window-x="0"
+     inkscape:window-y="25">
+    <inkscape:grid
+       empopacity="0.08627451"
+       empcolor="#0000ff"
+       opacity="0.09411765"
+       color="#0000ff"
+       enabled="true"
+       visible="true"
+       id="grid2387"
+       type="xygrid" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4">
+    <linearGradient
+       id="linearGradient4791">
+      <stop
+         id="stop4793"
+         offset="0"
+         style="stop-color:#338000;stop-opacity:1;" />
+      <stop
+         id="stop4795"
+         offset="1"
+         style="stop-color:#338000;stop-opacity:0;" />
+    </linearGradient>
+    <marker
+       style="overflow:visible;"
+       id="Arrow1Lend"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path3687" />
+    </marker>
+    <inkscape:perspective
+       id="perspective47"
+       inkscape:persp3d-origin="526.18109 : 248.03149 : 1"
+       inkscape:vp_z="1052.3622 : 372.04724 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 372.04724 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       id="linearGradient3371">
+      <stop
+         id="stop3373"
+         offset="0"
+         style="stop-color:#c70036;stop-opacity:1;" />
+      <stop
+         id="stop3375"
+         offset="1"
+         style="stop-color:#d70751;stop-opacity:0;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3371"
+       id="linearGradient2638"
+       x1="425"
+       y1="53.726578"
+       x2="425"
+       y2="59.094482"
+       gradientUnits="userSpaceOnUse" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 372.04724 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1052.3622 : 372.04724 : 1"
+       inkscape:persp3d-origin="526.18109 : 248.03149 : 1"
+       id="perspective60" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective4625" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective4759" />
+    <inkscape:perspective
+       id="perspective2591"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Ebene 1">
+    <rect
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       id="rect3712"
+       width="955.31165"
+       height="273.74472"
+       x="50"
+       y="380.34976"
+       rx="0"
+       ry="0" />
+    <rect
+       ry="0"
+       y="-0.41574764"
+       x="0"
+       height="54.510231"
+       width="1054.4602"
+       id="rect5813"
+       style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;visibility:visible;display:inline;overflow:visible" />
+    <g
+       transform="matrix(0.341548,0,0,0.341548,14.179735,7.504154)"
+       id="Layer_1"
+       i:layer="yes"
+       i:dimmedPercent="50"
+       i:rgbTrio="#4F008000FFFF">
+      <g
+         id="g5759">
+        <path
+           style="fill:#d70751"
+           i:knockout="Off"
+           d="M 54.03125,53.25 C 46.554549,53.539723 52.560247,67.237989 57.59375,61.21875 C 59.817861,58.481264 58.158467,52.577956 54.03125,53.25 z"
+           id="path5761" />
+        <path
+           style="fill:#d70751"
+           i:knockout="Off"
+           d="M 60.9375,47.9375 C 54.222426,49.049608 59.126481,61.695669 64.53125,56.5 C 67.46757,53.660006 66.099305,46.327483 60.9375,47.9375 z"
+           id="path5763" />
+        <path
+           style="fill:#d70751"
+           i:knockout="Off"
+           d="M 64.3125,41.125 C 59.095244,41.987531 65.813788,50.635425 67.875,45.59375 C 68.278557,43.510627 66.846667,40.469365 64.3125,41.125 z"
+           id="path5765" />
+        <path
+           style="fill:#d70751"
+           i:knockout="Off"
+           d="M 46.53125,0.125 C 43.735727,1.3627513 50.140215,2.9816002 48.03125,0.53125 C 47.645548,0.15339954 47.053307,-0.047739656 46.53125,0.125 z"
+           id="path5767" />
+        <path
+           style="fill:#d70751"
+           i:knockout="Off"
+           d="M 46.84375,0.8125 C 43.938933,0.86835841 49.10637,3.6463084 47.875,1.15625 C 47.640557,0.88577381 47.20959,0.62726795 46.84375,0.8125 z"
+           id="path5769" />
+        <path
+           style="fill:#d70751"
+           i:knockout="Off"
+           d="M 41.65625,2.53125 C 34.324939,4.1336682 27.681453,7.7609656 21.0625,11.15625 C 12.664506,17.01582 7.3354289,26.346698 4.625,36.0625 C 1.7421537,49.037239 2.9816374,62.565642 5.7711329,75.438236 C 8.1875602,85.22448 15.505069,92.918806 23.643912,98.441967 C 28.815778,101.54871 34.215808,105.69947 40.53125,105.53125 C 43.961602,105.94027 39.706129,102.45624 39.366419,101.23856 C 34.331313,94.496407 27.484537,89.163253 23.529819,81.607726 C 17.983143,72.894993 14.520795,62.996247 12.5,52.90625 C 13.218688,38.988108 22.330661,26.174948 34.71875,20.0625 C 44.732785,16.538937 56.895873,18.70943 64.34375,26.5 C 70.069374,33.189061 71.549748,42.757457 69.25,51.125 C 65.909203,60.188798 52.958176,64.021711 45.46875,57.6875 C 40.069562,52.921693 40.539378,43.336029 47.042433,39.753355 C 50.430614,37.514718 56.061917,36.722847 57.0625,32 C 57.06095,27.992058 51.698677,27.630342 48.71875,27.78125 C 41.363379,28.171479 34.796837,34.335555 34.012793,41.679349 C 32.566966,48.736117 35.585896,55.613513 37.5625,62.25 C 39.148385,67.644058 45.239257,70.031885 50.434692,69.590909 C 56.569488,68.519489 63.058185,67.389297 68.34375,63.875 C 73.640571,58.854405 76.64114,51.885746 79.34375,45.21875 C 81.528033,38.802567 83.753451,31.84217 81.625,25.09375 C 79.187567,15.819641 71.505936,8.4457616 62.395957,5.7203403 C 55.707136,3.7163042 48.684207,2.0995205 41.65625,2.53125 z M 80.875,49.78125 L 80.78125,50.875 C 81.024492,50.775438 81.543474,49.134568 80.875,49.78125 z M 33.53125,59.75 C 34.051391,62.363534 34.949175,57.767862 33.53125,59.75 z"
+           id="path5771" />
+        <path
+           style="fill:#d70751"
+           i:knockout="Off"
+           d="M 31.40625,59.03125 C 29.480808,62.154324 33.438786,66.732427 36.78125,65 C 35.271059,62.94378 35.047987,58.125527 31.40625,59.03125 z"
+           id="path5773" />
+        <path
+           style="fill:#d70751"
+           i:knockout="Off"
+           d="M 33.125,55.40625 C 28.297792,56.862549 36.248728,63.638556 36.59375,58.4375 C 36.44414,56.794735 34.969698,54.839765 33.125,55.40625 z"
+           id="path5775" />
+        <path
+           style="fill:#d70751"
+           i:knockout="Off"
+           d="M 84.1875,49.5625 C 83.885417,51.145833 83.583333,52.729167 83.28125,54.3125 C 83.781565,52.542232 84.468013,50.777064 84.4375,48.90625 L 84.1875,49.5625 z"
+           id="path5777" />
+        <path
+           style="fill:#d70751"
+           i:knockout="Off"
+           d="M 47.46875,-1.125 C 43.067663,-0.58219698 50.712509,4.1251875 49.375,-0.125 C 49.15458,-0.91329337 48.25902,-1.464897 47.46875,-1.125 z"
+           id="path5779" />
+        <path
+           style="fill:#d70751"
+           i:knockout="Off"
+           d="M 2.625,22.40625 C -1.2258648,24.282884 6.9807545,27.78522 5.46875,23.71875 C 5.044289,22.639298 3.7312684,21.98097 2.625,22.40625 z"
+           id="path5781" />
+        <path
+           style="fill:#d70751"
+           i:knockout="Off"
+           d="M 0.09375,29.75 C -4.4239073,30.799128 2.9768824,36.838365 2.90625,32.125 C 2.8871078,30.783232 1.4660626,29.390932 0.09375,29.75 z"
+           id="path5783" />
+      </g>
+    </g>
+    <flowRoot
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Pakenham;font-style:italic;font-weight:normal;font-size:10;font-variant:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:100%;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr;text-anchor:start;opacity:1;color:black;fill-rule:nonzero;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;visibility:visible;display:inline;overflow:visible"
+       id="flowRoot3395"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3397"><rect
+           y="186.51317"
+           x="199.73062"
+           height="62.581314"
+           width="115.26938"
+           id="rect3399" /></flowRegion><flowPara
+         id="flowPara3401" /></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#338000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:FreeSans;-inkscape-font-specification:FreeSans Bold"
+       x="-114.46805"
+       y="354.09448"
+       id="text5121"
+       sodipodi:linespacing="130%"><tspan
+         id="tspan5125"
+         sodipodi:role="line"
+         x="-114.46805"
+         y="354.09448">Leads to details</tspan><tspan
+         sodipodi:role="line"
+         x="-114.46805"
+         y="368.39447"
+         id="tspan3799">page with this</tspan><tspan
+         sodipodi:role="line"
+         x="-114.46805"
+         y="382.69449"
+         id="tspan3801">facet preselected</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#828282;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Lend);stroke-opacity:1"
+       d="M -60,388.86092 C -23.00245,410.98176 60,411.14367 60,411.14367"
+       id="path5127"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:48.92851257px;font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:100%;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Pakenham"
+       x="51.65976"
+       y="42.52644"
+       id="text3272"
+       sodipodi:linespacing="100%"><tspan
+         sodipodi:role="line"
+         id="tspan3274"
+         x="51.65976"
+         y="42.52644"
+         style="font-size:55.72101974px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#eeeeee;fill-opacity:1;font-family:Pakenham;-inkscape-font-specification:Pakenham Bold">screenshots.debian.net</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       x="1089.3575"
+       y="664.09448"
+       id="text3487"
+       sodipodi:linespacing="100%"><tspan
+         sodipodi:role="line"
+         id="tspan3489"
+         x="1089.3575"
+         y="664.09448">Font: Pakenham</tspan><tspan
+         sodipodi:role="line"
+         x="1089.3575"
+         y="678.09448"
+         id="tspan3491">Color:</tspan><tspan
+         sodipodi:role="line"
+         x="1089.3575"
+         y="692.09448"
+         id="tspan3493">- Debian: #C70038</tspan></text>
+    <g
+       id="g3595"
+       transform="translate(-12.715233,178.81284)">
+      <flowRoot
+         transform="translate(321.45703,-56.13888)"
+         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+         id="flowRoot3495"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3497"><rect
+             style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+             y="275.24106"
+             x="79.616615"
+             height="66.979057"
+             width="299.06284"
+             id="rect3499" /></flowRegion><flowPara
+           style="font-weight:bold;-inkscape-font-specification:Bitstream Vera Sans Bold"
+           id="flowPara3501">Biology</flowPara><flowPara
+           style="font-size:14px"
+           id="flowPara3503">EMBOSS, Clustal/ALN, Fasta/Pearson, Nexus, Nucleic Acid, ...</flowPara></flowRoot>      <flowRoot
+         transform="translate(3.2502144,-56.02437)"
+         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+         id="flowRoot3515"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3517"><rect
+             style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+             y="275.24106"
+             x="79.616615"
+             height="66.979057"
+             width="299.06284"
+             id="rect3519" /></flowRegion><flowPara
+           style="font-weight:bold;-inkscape-font-specification:Bitstream Vera Sans Bold"
+           id="flowPara3521">Accessibility Support</flowPara><flowPara
+           style="font-size:14px"
+           id="flowPara3523">Input Systems, Text Recognition, Screen Magnification, Screen Reading, ...</flowPara></flowRoot>      <flowRoot
+         transform="translate(628.92887,118.06252)"
+         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+         id="flowRoot3525"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3527"><rect
+             style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+             y="275.24106"
+             x="79.616615"
+             height="66.979057"
+             width="299.06284"
+             id="rect3529" /></flowRegion><flowPara
+           style="font-weight:bold;-inkscape-font-specification:Bitstream Vera Sans Bold"
+           id="flowPara3531">System Administration</flowPara><flowPara
+           style="font-size:14px"
+           id="flowPara3533">Accounting, Automation and Scheduling, Backup and Restoration, ...</flowPara></flowRoot>      <flowRoot
+         transform="translate(634.52344,-56.13888)"
+         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+         id="flowRoot3535"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3537"><rect
+             style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+             y="275.24106"
+             x="79.616615"
+             height="66.979057"
+             width="299.06284"
+             id="rect3539" /></flowRegion><flowPara
+           style="font-weight:bold;-inkscape-font-specification:Bitstream Vera Sans Bold"
+           id="flowPara3541">Culture</flowPara><flowPara
+           style="font-size:14px"
+           id="flowPara3543">Afrikaans, Arabic, Basque, Bengali, Norwegian Bokmaal, Bosnian, ...</flowPara></flowRoot>      <flowRoot
+         transform="translate(317.46834,116.9083)"
+         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+         id="flowRoot3545"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3547"><rect
+             style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+             y="275.24106"
+             x="79.616615"
+             height="66.979057"
+             width="299.06284"
+             id="rect3549" /></flowRegion><flowPara
+           style="font-weight:bold;-inkscape-font-specification:Bitstream Vera Sans Bold"
+           id="flowPara3551">Software Development</flowPara><flowPara
+           style="font-size:14px"
+           id="flowPara3553">Bug Tracking, Build Tool, Code Generation, Compiler, Debian, Debugging, ...</flowPara></flowRoot>      <flowRoot
+         transform="translate(-0.4111297,32.347212)"
+         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+         id="flowRoot3555"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3557"><rect
+             style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+             y="275.24106"
+             x="79.616615"
+             height="66.979057"
+             width="299.06284"
+             id="rect3559" /></flowRegion><flowPara
+           style="font-weight:bold;-inkscape-font-specification:Bitstream Vera Sans Bold"
+           id="flowPara3561">Field</flowPara><flowPara
+           style="font-size:14px"
+           id="flowPara3563">Arts, Astronomy, Aviation, Biology, Bioinformatics, Molecular Biology, ...</flowPara></flowRoot>      <flowRoot
+         transform="translate(318.34252,34.636336)"
+         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+         id="flowRoot3565"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3567"><rect
+             style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+             y="275.24106"
+             x="79.616615"
+             height="66.979057"
+             width="299.06284"
+             id="rect3569" /></flowRegion><flowPara
+           style="font-weight:bold;-inkscape-font-specification:Bitstream Vera Sans Bold"
+           id="flowPara3571">Games and Amusement</flowPara><flowPara
+           style="font-size:14px"
+           id="flowPara3573">Adventure, Action and Arcade, Board, Chess, Card, Demo, ...</flowPara></flowRoot>      <flowRoot
+         transform="translate(630.73403,33.702299)"
+         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+         id="flowRoot3575"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3577"><rect
+             style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+             y="275.24106"
+             x="79.616615"
+             height="66.979057"
+             width="299.06284"
+             id="rect3579" /></flowRegion><flowPara
+           style="font-weight:bold;-inkscape-font-specification:Bitstream Vera Sans Bold"
+           id="flowPara3581">Hardware Enablement</flowPara><flowPara
+           style="font-size:14px"
+           id="flowPara3583">Digital Camera, Hardware Detection, Embedded, Emulation, ...</flowPara></flowRoot>      <flowRoot
+         transform="translate(0.265625,115.84642)"
+         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+         id="flowRoot3585"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3587"><rect
+             style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+             y="275.24106"
+             x="79.616615"
+             height="66.979057"
+             width="299.06284"
+             id="rect3589" /></flowRegion><flowPara
+           style="font-weight:bold;-inkscape-font-specification:Bitstream Vera Sans Bold"
+           id="flowPara3591">Made of</flowPara><flowPara
+           style="font-size:14px"
+           id="flowPara3593">Audio, Dictionary, Font, HTML/Hypertext Markup Language, Icons, ...</flowPara></flowRoot>    </g>
+    <rect
+       style="fill:#e6e6e6;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       id="rect3701"
+       width="1055.2361"
+       height="23.954556"
+       x="0"
+       y="720.13995"
+       rx="0"
+       ry="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;fill:#e6e6e6;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans Bold"
+       x="180"
+       y="736.1286"
+       id="text3703"
+       sodipodi:linespacing="130%"><tspan
+         sodipodi:role="line"
+         id="tspan3705"
+         x="180"
+         y="736.1286"
+         style="font-size:13px;font-weight:normal;fill:#000000;-inkscape-font-specification:Bitstream Vera Sans">Powered by Christoph Haas' debshots software. Want to use these screenshots on your web site?</tspan></text>
+    <rect
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       id="rect3714"
+       width="74.468048"
+       height="38.23885"
+       x="80"
+       y="354.09448"
+       rx="9.8297138"
+       ry="9.8297138" />
+    <text
+       xml:space="preserve"
+       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999522999999613%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#c70038;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       x="96.509918"
+       y="369.67175"
+       id="text3716"
+       sodipodi:linespacing="130%"><tspan
+         sodipodi:role="line"
+         id="tspan3718"
+         x="96.509918"
+         y="369.67175">By tag</tspan></text>
+    <rect
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       id="rect3720"
+       width="80"
+       height="20"
+       x="170"
+       y="354.09448"
+       rx="9.8297138"
+       ry="9.8297138" />
+    <text
+       xml:space="preserve"
+       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#c70038;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       x="186.50992"
+       y="369.67175"
+       id="text3722"
+       sodipodi:linespacing="130%"><tspan
+         sodipodi:role="line"
+         id="tspan3724"
+         x="186.50992"
+         y="369.67175">Newest</tspan></text>
+    <rect
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+       id="rect3726"
+       width="160"
+       height="20"
+       x="260"
+       y="354.09448"
+       rx="9.8297138"
+       ry="9.8297138" />
+    <text
+       xml:space="preserve"
+       style="font-size:13px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#c70038;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       x="276.50992"
+       y="369.67175"
+       id="text3728"
+       sodipodi:linespacing="130%"><tspan
+         sodipodi:role="line"
+         id="tspan3730"
+         x="276.50992"
+         y="369.67175">Missing screenshots</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:11px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:129.99999523%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#338000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:FreeSans;-inkscape-font-specification:FreeSans Bold"
+       x="-140"
+       y="459.16022"
+       id="text3803"
+       sodipodi:linespacing="130%"><tspan
+         id="tspan3805"
+         sodipodi:role="line"
+         x="-140"
+         y="459.16022">Leads to details</tspan><tspan
+         sodipodi:role="line"
+         x="-140"
+         y="473.46021"
+         id="tspan3807">page with this</tspan><tspan
+         sodipodi:role="line"
+         x="-140"
+         y="487.76022"
+         id="tspan3809">debtag preselected</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#828282;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Lend);stroke-opacity:1"
+       d="M -66.255272,446.79868 C -23.89606,430.49428 63.574442,429.76258 63.574442,429.76258"
+       id="path3811"
+       sodipodi:nodetypes="cc" />
+  </g>
+  <image
+     y="90.743317"
+     x="67.108215"
+     id="image2593"
+     height="219.05936"
+     width="272.89178"
+     sodipodi:absref="/home/chaas/projekte/debshots/docs/startpage/screenshots.png"
+     xlink:href="startpage/screenshots.png" />
+  <g
+     id="g3788"
+     transform="translate(-6.2552723,-5.0550156)">
+    <rect
+       ry="13.925812"
+       rx="13.925812"
+       y="229.85123"
+       x="461.78256"
+       height="49.298271"
+       width="438.21744"
+       id="rect2648"
+       style="fill:#eeeeee;fill-opacity:0.14950167;fill-rule:evenodd;stroke:#c70038;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible" />
+    <text
+       sodipodi:linespacing="100%"
+       id="text3426"
+       y="219.14951"
+       x="480"
+       style="font-size:66.253685px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:100%;writing-mode:lr-tb;text-anchor:start;fill:#c70038;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Pakenham;-inkscape-font-specification:Pakenham Bold"
+       xml:space="preserve"><tspan
+         style="font-size:16.56342125px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#757575;fill-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+         y="219.14951"
+         x="480"
+         id="tspan3428"
+         sodipodi:role="line">Search for a package/description/tag:</tspan></text>
+    <rect
+       ry="0"
+       rx="0"
+       y="239.14951"
+       x="480.46118"
+       height="30"
+       width="2.7152171"
+       id="rect3430"
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible" />
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-size:48.45008468999999707px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:129.99999522999999613%;writing-mode:lr-tb;text-anchor:start;opacity:1;fill:#666666;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans Bold"
+     x="435.71149"
+     y="115.23376"
+     id="text3683"
+     sodipodi:linespacing="130%"><tspan
+       sodipodi:role="line"
+       x="435.71149"
+       y="115.23376"
+       style="font-size:36.33756637999999839px;fill:#666666"
+       id="tspan3691">Explore what software</tspan><tspan
+       sodipodi:role="line"
+       x="435.71149"
+       y="162.4726"
+       style="font-size:36.33756637999999839px;fill:#666666"
+       id="tspan3695">packages are in Debian</tspan></text>
+</svg>
