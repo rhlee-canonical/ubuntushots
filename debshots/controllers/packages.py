@@ -84,7 +84,7 @@ class PackagesController(BaseController):
             [
                 {
                     'name': p.name,
-                    'url': h.url_for('package', package=p.name, qualified=True),
+                    'url': h.url('package', package=p.name, qualified=True),
                     'description': p.description,
                     'maintainer': p.maintainer,
                     'maintainer_email': p.maintainer_email,
