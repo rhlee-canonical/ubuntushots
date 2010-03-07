@@ -53,10 +53,6 @@ load_environment(conf.global_conf, conf.local_conf)
 
 db = model.meta.Session
 
-db_binpkg = model.Package.q().filter_by(name=unicode('2vcard')).first()
-sys.exit(0)
-
-
 EXAMPLE_ENTRY="""
 {'architecture': ['all'],
  'build_essential': None,
@@ -231,7 +227,6 @@ def main():
 
         # Get the package entry from the database (if it exists yet)
         db_binpkg = model.Package.q().filter_by(name=unicode(pkg['package'])).first()
-        sys.exit(0)
 
         # Packet unwanted according to facet blacklist?
         blacklist_match = set(facets).intersection(facets_blacklist)
