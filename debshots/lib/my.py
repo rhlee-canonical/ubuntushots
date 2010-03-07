@@ -41,7 +41,7 @@ def client_ip():
 def client_cookie_hash():
     """Return the cookie hash used for the cookie-based session"""
     cookie_hash = unicode(pylons.request.cookies.get(pylons.config['beaker.session.key']))
-    log.debug("Client cookie hash is: %s", cookie_hash)
+    #log.debug("Client cookie hash is: %s", cookie_hash)
     return cookie_hash
 
 def authorized_for_screenshot(screenshot):
