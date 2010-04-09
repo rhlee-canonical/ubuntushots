@@ -7,7 +7,7 @@ except ImportError:
 
 setup(
     name='debshots',
-    version="0.4.7",
+    version="0.4.8",
     description='Web application that manages screenshots of applications available in Debian',
     author='Christoph Haas',
     author_email='email@christoph-haas.de',
@@ -16,7 +16,6 @@ setup(
         "Pylons>=0.10rc1",
         "PIL>=1.1.6",
         "SQLAlchemy>=0.5.5",
-        #"SQLAlchemy==0.4.6",
         "Webhelpers",
         "pastescript>=1.6",
         "paste>=1.6",
@@ -27,8 +26,6 @@ setup(
     scripts=['bin/debshots-update-packages',
         'bin/debshots-create-admin',
         'bin/debshots-delete-admin',
-        'bin/debshots-set-version-for-unversioned-screenshots',
-        'bin/debshots-migrate-images',
         ],
     packages=find_packages(exclude=['ez_setup']),
     include_package_data=True,
