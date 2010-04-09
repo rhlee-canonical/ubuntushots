@@ -219,7 +219,7 @@ class PackagesController(BaseController):
         # To save database queries we use memcached to store information
         # on whether a certain package has screenshots or not.
         cache_key = 'package_image:%s:%s' % (size, md5(package.encode('utf8')).hexdigest())
-        file_path = g.cache.get(cache_key)
+        file_path = app_globals.cache.get(cache_key)
 
         if file_path is None:
             log.debug('Image information not found in memcached. Need to query database.')
@@ -240,7 +240,7 @@ class PackagesController(BaseController):
             # Store the information in memcached. It is valid for 5 minutes.
             log.debug('Saving memcached entry for screenshot. Key: %s. Path: %s.',
                       cache_key, file_path)
-            g.cache.set(cache_key, file_path, 300)
+            app_globals.cache.set(cache_key, file_path, 300)
         else:
             log.debug('Image information found in memcached: %s', file_path)
 
@@ -368,13 +368,13 @@ class PackagesController(BaseController):
         db.commit()
 
         # The approved screenshots have changes. Remove the cached start page.
-        g.cache.delete('debshots:front_page') # could make it add the new render explicitly later
+        app_globals.cache.delete('debshots:front_page') # could make it add the new render explicitly later
 
         # Try to redirect to the backlink (if provided)
         my.redirect_back()
 
         # Otherwise redirect to the package overview
-        redirect_to(h.url('package', package=package.name))
+        redirect(url('package', package=package.name))
 
     def approve_screenshot(self, screenshot):
         """Approve a screenshot. Sets it to status 'approved'."""
@@ -385,7 +385,7 @@ class PackagesController(BaseController):
         if this_screenshot.approved:
             my.message("Screenshot for package <em>%s</em> already approved." % this_screenshot.package.name)
             my.redirect_back()
-            redirect_to(h.url('package', package=package.name))
+            redirect(url('package', package=package.name))
 
         package = this_screenshot.package
 
@@ -415,10 +415,10 @@ class PackagesController(BaseController):
         my.message("Screenshot for package <em>%s</em> approved." % package.name)
 
         # The approved screenshots have changes. Remove the cached start page.
-        g.cache.delete('debshots:front_page') # could make it add the new render explicitly later
+        app_globals.cache.delete('debshots:front_page') # could make it add the new render explicitly later
 
         my.redirect_back()
-        redirect_to(h.url('package', package=package.name))
+        redirect(url('package', package=package.name))
 
     def keep_screenshot(self, screenshot):
         """Remove a screenshot's "markedfordelete" tag.
@@ -440,7 +440,7 @@ class PackagesController(BaseController):
         my.message("Screenshot for package <em>%s</em> kept." % package.name)
 
         my.redirect_back()
-        redirect_to(h.url('moderate', package=package.name))
+        redirect(url('moderate', package=package.name))
 
     def ajax_autocomplete_packages(self):
         """Get a list of packages for the autocompleter"""

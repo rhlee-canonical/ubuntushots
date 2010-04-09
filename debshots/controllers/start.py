@@ -26,7 +26,7 @@ class StartController(BaseController):
     def index(self):
         """Welcome page"""
 
-        cached =  g.cache.get('debshots:front_page')
+        cached =  app_globals.cache.get('debshots:front_page')
         if cached is not None:
             return cached
 
@@ -37,12 +37,12 @@ class StartController(BaseController):
             c.newest_screenshots = newest_screenshots[:8]
 
         rendered = render('/start/index.mako')
-        g.cache.set('debshots:front_page', rendered)
+        app_globals.cache.set('debshots:front_page', rendered)
         return rendered
 
     def guidelines(self):
         """Deprecated link for guidelines page redirects to upload page"""
-        redirect_to('/upload')
+        redirect('/upload')
 
     def login(self):
         """Show login form"""
@@ -71,11 +71,11 @@ class StartController(BaseController):
         # Set a cookie session variable to mark the maintainer as logged in
         session['username'] = admin.username
         session.save()
-        redirect_to('moderate')
+        redirect(url('moderate'))
 
     def logout(self):
         """Logout an admin"""
         if 'username' in session:
             del session['username']
             session.save()
-        redirect_to('/')
+        redirect('/')

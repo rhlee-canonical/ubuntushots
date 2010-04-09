@@ -3,7 +3,8 @@
 import pylons
 import logging
 import formencode
-from pylons.controllers.util import redirect_to
+from pylons.controllers.util import redirect
+from pylons import url
 
 log = logging.getLogger(__name__)
 
@@ -84,4 +85,4 @@ def redirect_back():
     params = pylons.request.params
     if 'goto' in params:
         log.debug("redirect_back -> %s", params)
-        redirect_to(str(params['goto']))
+        redirect(str(params['goto']))
