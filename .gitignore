@@ -3,8 +3,6 @@
 *.pyo
 *.kpf
 *.db
-lib/
-bin/
 data/
 docs/_build
 docs/*.png

@@ -81,5 +81,7 @@ def redirect_back():
     This is useful for linking back to a certain page after a certain action was done.
     For example after deleting a screenshot the user can be redirected to the proper
     package or index page. This function does nothing if 'goto' is not present."""
-    if 'goto' in pylons.request.params:
-        redirect_to(str(pylons.request.params['goto']))
+    params = pylons.request.params
+    if 'goto' in params:
+        log.debug("redirect_back -> %s", params)
+        redirect_to(str(params['goto']))

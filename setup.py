@@ -13,11 +13,11 @@ setup(
     author_email='email@christoph-haas.de',
     url='http://debshots.workaround.org/',
     install_requires=[
-        "Pylons==0.9.7",
+        "Pylons>=0.10rc1",
         "PIL>=1.1.6",
         "SQLAlchemy>=0.5.5",
         #"SQLAlchemy==0.4.6",
-        "Webhelpers==1.0b4",
+        "Webhelpers",
         "pastescript>=1.6",
         "paste>=1.6",
         #"psycopg2>=2.0.6",  # can also be deployed with sqlite - then psycopg2 is unneeded

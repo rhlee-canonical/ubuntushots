@@ -24,11 +24,11 @@ ${ c.packages.pager('Package $page of $page_count - $link_previous ~3~ $link_nex
         ## TODO: Fancy icons :)
         ${ h.tags.link_to(
             'Approve screenshot',
-            h.url('approve_screenshot', screenshot=screenshot.id, goto=h.url())) }
+            h.url('approve_screenshot', screenshot=screenshot.id, goto=h.url.current())) }
         <br />
         ${ h.tags.link_to(
             'Delete screenshot',
-            h.url('delete_screenshot', screenshot=screenshot.id, goto=h.url()),
+            h.url('delete_screenshot', screenshot=screenshot.id, goto=h.url.current()),
             onclick="return confirm('Really delete the screenshot?');") }
     ## Marked for delete? (keep or delete)
     % elif screenshot.markedfordelete:

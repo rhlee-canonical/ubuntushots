@@ -4,7 +4,7 @@ Provides the BaseController class for subclassing.
 """
 from pylons.controllers.util import abort, etag_cache, redirect_to
 from pylons.decorators import validate, jsonify
-from pylons import request, response, session, tmpl_context as c, config, g
+from pylons import request, response, session, tmpl_context as c, config
 from pylons.controllers import WSGIController
 from pylons.templating import render_mako as render
 
