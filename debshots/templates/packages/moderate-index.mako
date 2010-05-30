@@ -36,11 +36,11 @@ ${ c.packages.pager('Package $page of $page_count - $link_previous ~3~ $link_nex
         <br />
         ${ h.tags.link_to(
             'Keep the screenshot',
-            h.url('keep_screenshot', screenshot=screenshot.id, goto=h.url())) }
+            h.url('keep_screenshot', screenshot=screenshot.id, goto=h.url.current())) }
         <br />
         ${ h.tags.link_to(
             'Delete screenshot',
-            h.url('delete_screenshot', screenshot=screenshot.id, goto=h.url()),
+            h.url('delete_screenshot', screenshot=screenshot.id, goto=h.url.current()),
             onclick="return confirm('Really delete the screenshot?');") }
     % endif
     </div>
