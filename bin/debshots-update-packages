@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Update package information from the UniversalDebianDatabase/dde.debian.net"""
+
+# TODO: support debtags format: use::{downloading,proxying,storing}
+
 import logging
 import logging.config
 import os
@@ -11,20 +14,16 @@ import bz2
 from paste.deploy import appconfig
 from pylons import config
 from debshots.config.environment import load_environment
-from urllib2 import urlopen
-import cPickle as pickle
-import tempfile
-import gzip
+#from urllib2 import urlopen
+#import cPickle as pickle
+#import tempfile
+#import gzip
 from debshots.model import meta
 from debshots import model
-
-# TODO: Remember which packages were gone through so the packages that are no longer
-#       in Debian/Ubuntu can be removed optionally.
-
-#dde_packages_url = 'http://torf.workaround.org/ddetest'
-#dde_packages_url = 'http://dde.debian.net/dde/q/udd/packages/all?t=pickle'
-#dde_packages_url = 'http://dde.debian.net/dde/q/udd/packages/prio-debian-sid?t=pickle'
-#packages_url = 'http://debexpo.alioth.debian.org/cgi-bin/packages'
+#from debshots.lib import packageimport
+import debian.deb822
+from urllib2 import urlopen
+import subprocess
 
 #---------------------------
 
@@ -38,14 +37,7 @@ if not os.path.isfile(ini_file):
     sys.exit(10)
 
 logging.config.fileConfig(ini_file)
-log = logging.getLogger(__name__)
-#logging.basicConfig(
-    #level=logging.DEBUG,
-    #level=logging.INFO,
-    #level=logging.WARNING,
-    #format='%(asctime)s %(levelname)s %(message)s'
-    #)
-
+log = logging.getLogger('debshots')
 conf = appconfig('config:' + ini_file)
 load_environment(conf.global_conf, conf.local_conf)
 
@@ -53,54 +45,124 @@ load_environment(conf.global_conf, conf.local_conf)
 
 db = model.meta.Session
 
-EXAMPLE_ENTRY="""
-{'architecture': ['all'],
- 'build_essential': None,
- 'conflicts': '',
- 'depends': '',
- 'description': 'perl script to convert an addressbook to VCARD file format',
- 'drc': 'ubuntu intrepid universe',
- 'enhances': '',
- 'essential': None,
- 'homepage': None,
- 'installed_size': 108,
- 'long_description': ' 2vcard is a little perl script that you can use to convert the\n popular vcard file format. Currently 2vcard can only convert addressbooks\n and alias files from the following formats: abook,eudora,juno,ldif,mutt,\n mh and pine.\n .\n The VCARD format is used by gnomecard, for example, which is used by the\n balsa email client.',
- 'maintainer': 'Ubuntu MOTU Developers <ubuntu-motu@lists.ubuntu.com>',
- 'origin': 'Ubuntu',
- 'original_maintainer': 'Martin Albisetti <argentina@gmail.com>',
- 'package': '2vcard',
- 'popcon': {'insts': 4645,
-            'nofiles': 2,
-            'olde': 4503,
-            'recent': 93,
-            'vote': 47},
- 'pre_depends': '',
- 'priority': 'optional',
- 'provides': '',
- 'python_version': None,
- 'recommends': '',
- 'replaces': '',
- 'section': 'universe/utils',
- 'size': 14332,
- 'suggests': '',
- 'sv': '2vcard 0.5-3',
- 'tag': ['implemented-in::perl', 'role::program', 'use::converting'],
- 'task': None,
- 'version': '0.5-3'}
-"""
+def download_packages_and_parse(url):
+    """Download a Packages file and use debian.deb822.Deb822 to parse it"""
+    # Download and parse Packages files
+    log.info("Downloading package information from: %s" % url)
 
-def unpickle(inputfd):
-    unp = pickle.Unpickler(inputfd)
-    # This should make it more secure
-    unp.find_global = None
-    while True:
-        try:
-            yield unp.load()
-        except pickle.UnpicklingError, error:
-            logging.error("Unpickle error: %s", error)
-            raise
-        except EOFError:
-            break
+    log.info("Parsing Packages file")
+    packages = {}
+    for pkg in debian.deb822.Packages.iter_paragraphs(sequence=urlopen(url)):
+        log.debug("Package: %s", pkg['package'])
+        # Create a hash array consisting of:
+        # packagename -> hash with package information
+        #print pkg
+        packages[pkg['package']]=pkg
+    return packages
+
+def go_through_packages_database(packages):
+    """Read what packages are currently in the debshots database"""
+    packages = {}
+    for pkg in db.query(model.Package):
+        #print pkg
+        #print pkg.name
+        packages[pkg['name']]=pkg
+    return packages
+
+# Run an external command and return stdout and stderr
+# Needs Python 2.4!
+def run(command,input=''):
+    run = subprocess.Popen(command, shell=True,
+        stdin =subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        )
+
+    run.stdin.write(input)
+    run.stdin.close()
+    stdout = run.stdout.readlines()
+    stderr = run.stderr.readlines()
+    returncode = run.wait()
+
+    # Strip newlines at the end of each line
+    stdout = [line.rstrip('\n') for line in stdout]
+    stderr = [line.rstrip('\n') for line in stderr]
+
+    return returncode,stdout,stderr
+
+def update_package_information(pkg, new):
+    """Update a packages information
+
+    pkg: model.Package object referring to what we currently know about the package
+    new: package information from the repository"""
+    #log.debug("Before...")
+    #log.debug(pkg)
+    pkg.version = new['version']
+    pkg.section = new['section']
+    pkg.homepage = new.get('homepage') # optional
+    pkg.desription = new['description'].splitlines()[0]
+    pkg.long_desription = '\n'.join(new['description'].splitlines()[1:])
+
+    # Split the maintainer field into real name and email address
+    # if it follows the "Name <email>" format.
+    match = re.search(r'^(.*?) <(.*?)>$', new['maintainer'])
+    if match:
+        maint_name, maint_email = match.groups()
+        maint_name=unicode(maint_name)
+        maint_email=unicode(maint_email)
+    else:
+        # Just the email address. Happened in Ubuntu packages.
+        maint_name = maint_email = pkg['maintainer']
+
+    pkg.maintainer = maint_name
+    pkg.maintainer_email = maint_email
+
+    # Update debtags
+    log.debug('Updating debtags for this package')
+    pkg.debtags = []
+    if 'tag' in new:
+        # Create a list of tags this package should get assigned
+        tags = []
+        for tag in new['tag'].split(', '):
+            #tag = tag.strip()
+            # support "use::{downloading,proxying,storing}" format
+            if '{' in tag:
+                match = re.search(r'^(.*)::\{(.*)\}$', tag)
+                if not match:
+                    log.error("Could not parse debtags format from tag: %s", tag)
+                facet, subtags = match.groups()
+                for subtag in subtags.split(','):
+                    tags.append('%s::%s' % (facet, subtag))
+            else:
+                tags.append(tag)
+
+        # Now go through the list of tags anda ssign it to the package
+        for tag in tags:
+            #tag=strip(tag)
+            # Is this facet supposed to be ignored?
+            facet = (tag.split('::'))[0]
+            if facet in facets_ignorelist:
+                log.debug('Ignoring tag %s according to the facets ignore list (facet=%s)', tag, facet)
+                continue
+
+            # Is this debtag supposed to be ignored?
+            if tag in tags_ignorelist:
+                log.debug('Ignoring tag %s according to the tags ignore list', tag)
+                continue
+
+            # Find the tag in the database
+            db_debtag = debtags_records.get(tag)
+            if not db_debtag:
+                log.info('Package %s uses unknown debtag "%s" - ignoring', pkg.name, tag)
+                continue
+            log.debug('Adding tag %s (#%s) to package', tag, db_debtag.id)
+            pkg.debtags.append(db_debtag)
+
+            #log.debug('Tag: %s (%s) / Facet: %s (%s)',
+                #tag, tag_description, facet, facet_description)
+
+    #log.debug("After...")
+    #log.debug(pkg)
 
 def parse_debtags_descriptions():
     """Download and parse the current debtags vocabulary
@@ -110,44 +172,44 @@ def parse_debtags_descriptions():
     Debtag: debtag->description
     Debtag database recors: debtag->model.Debtag instance"""
 
-    from debian_bundle.deb822 import Deb822
     # Download from e.g. http://svn.debian.org/viewsvn/debtags/vocabulary/trunk/debian-packages
     vocabulary_url = config['debshots.debtags_vocabulary_url']
-    logging.info('Downloading debtags vocabulary from: %s', vocabulary_url)
+    log.info('Downloading debtags vocabulary from: %s', vocabulary_url)
     vocabulary_file = urlopen(vocabulary_url)
 
     facets = {} # major categories of tags (facet->description)
     debtags = {} # debtags (tag->description)
     debtags_records = {} # tag->model.Debtag instance
 
-    logging.info('Parsing debtags vocabulary')
-    for vocable in Deb822.iter_paragraphs(vocabulary_file):
+    log.info('Parsing debtags vocabulary')
+    for vocable in debian.deb822.Packages.iter_paragraphs(vocabulary_file):
         # e.g. {'Tag': 'network::routing', 'Description': 'Routing'}
         # e.g. {'Facet': 'web', 'Status': 'draft', 'Description': 'World Wide Web', 'Nature': 'personality'}
         vocdict = dict(vocable)
-        logging.debug('Paragraph: %s', vocdict)
+        #log.info("vocdict: %r", vocdict)
+        log.debug('Paragraph: %s', vocdict)
         if 'Facet' in vocdict:
-            facets[vocdict['Facet'].decode('utf8')] = vocdict['Description'].decode('utf8')
+            facets[vocdict['Facet']] = vocdict['Description']
             # e.g. 'mail' -> 'Electronic Mail'
 
         if 'Tag' in vocdict:
-            debtags[vocdict['Tag'].decode('utf8')] = vocdict['Description'].decode('utf8')
+            debtags[vocdict['Tag']] = vocdict['Description']
 
     # Save the debtags along with facets and descriptions into the database
     for tag in debtags:
-        logging.debug('Storing tag into database: %s', tag)
-        #logging.debug('Tag: %s (%s) / Facet: %s (%s)',
+        log.debug('Storing tag into database: %s', tag)
+        #log.debug('Tag: %s (%s) / Facet: %s (%s)',
             #tag, debtags[tag], facet, facets[facet])
         # Does the tag already exist in the database?
         db_tag = model.Debtag.q().filter_by(tag=tag).first()
 
         # If the tag is not yet found in the database then create a new entry
         if not db_tag:
-            logging.info("New tag: %s", tag)
+            log.info("New tag: %s", tag)
             db_tag = model.Debtag()
             db.add(db_tag)
         else:
-            logging.info("Updating tag: %s", tag)
+            log.info("Updating tag: %s", tag)
 
         # Store this model.Debtag instance for adding to the packages later
         # (saves looking up the tags from the database again which is very slow)
@@ -166,137 +228,60 @@ def parse_debtags_descriptions():
 
     return facets, debtags, debtags_records
 
-def main():
-    facets, debtags, debtags_records = parse_debtags_descriptions()
+#----------------------------------------------------
 
-    facets_blacklist = set(config['debshots.debtags_facets_blacklist'].split())
-    tags_blacklist = set(config['debshots.debtags_tags_blacklist'].split())
-    facets_ignorelist = set(config['debshots.debtags_facets_ignorelist'].split())
-    tags_ignorelist = set(config['debshots.debtags_tags_ignorelist'].split())
-    logging.debug('Facets blacklist: %s', '/'.join(facets_blacklist))
-    logging.debug('Tags blacklist: %s', '/'.join(tags_blacklist))
-    logging.debug('Facets ignorelist: %s', '/'.join(facets_ignorelist))
-    logging.debug('Tags ignorelist: %s', '/'.join(tags_ignorelist))
+facets_blacklist = set(config['debshots.debtags_facets_blacklist'].split())
+tags_blacklist = set(config['debshots.debtags_tags_blacklist'].split())
+facets_ignorelist = set(config['debshots.debtags_facets_ignorelist'].split())
+tags_ignorelist = set(config['debshots.debtags_tags_ignorelist'].split())
+log.debug('Facets blacklist: %s', '/'.join(facets_blacklist))
+log.debug('Tags blacklist: %s', '/'.join(tags_blacklist))
+log.debug('Facets ignorelist: %s', '/'.join(facets_ignorelist))
+log.debug('Tags ignorelist: %s', '/'.join(tags_ignorelist))
 
-    dde_packages_url = config['debshots.dde_update_url']
+facets, debtags, debtags_records = parse_debtags_descriptions()
+log.debug('facets: %r', facets)
+log.debug('debtags: %r', debtags)
+log.debug('debtags_records: %r', debtags_records)
 
-    # Download pickle'd file from dde to a temporary file to prevent
-    # HTTP timeouts while parsing the output
-    logging.info("Downloading package information from: %s" % dde_packages_url)
-    tempname = tempfile.mktemp()
-    downloadfile = open(tempname, 'w')
-    for line in urlopen(dde_packages_url):
-        downloadfile.write(line)
-    downloadfile.close()
+packages_urls = conf['debshots.packages_update_urls'].split()
+packages = {}
+for packages_url in packages_urls:
+    log.info("Download package information from: %s", packages_url)
+    packages_here = download_packages_and_parse(packages_url)
+    packages.update(packages_here)
 
-    #for pkg in unpickle(urlopen(dde_packages_url)):
-    # Parse package information from temporary file
-    logging.info("Parsing package information")
-    # gunzip the file if necessary
-    if config.get('debshots.dde_update_gzipped').lower() == 'true':
-        logging.info('Unzipping downloaded file')
-        downloadfile = gzip.open(tempname, 'rb')
+# Go through all known packages in our database
+log.info("Checking all known packages in our database")
+for pkg in db.query(model.Package):
+    log.debug("Package: %s", pkg.name)
+
+    # Package is known to us but not in the Packages file?
+    if pkg.name not in packages:
+        log.info("Package %s has apparently been removed from the repository. Funny." % pkg.name)
+        continue
+
+    # Is our version still up to date?
+    log.debug("Our version: %s", pkg.version)
+    their_version = packages[pkg.name]['version']
+    log.debug("Current version: %s", their_version)
+
+    if conf.get('debshots.update_all_packages')=='yes':
+        update_package_information(pkg, packages[pkg.name])
     else:
-        downloadfile = open(tempname, 'r')
-    for pkg in unpickle(downloadfile):
-        logging.debug("---------")
-        logging.info("Package: %s", pkg['package'])
+        if pkg.version != their_version:
+            # Use "dpkg --compare-versions" to find out if their version is newer
+            ret,out,err=run("dpkg --compare-versions %s gt %s" % (their_version, pkg.version) )
+            if ret==0:
+                log.debug("Current version is newer - updating our information")
+                update_package_information(pkg, packages[pkg.name])
+            else:
+                log.info("Our information is newer than the repository's. Strange.")
+        log.debug("Versions match. No need to update.")
 
-        logging.debug("Checking blacklist based on debtags/facets")
-        tags = pkg['tag']
-        facets = [(x.split('::'))[0] for x in tags]
-        logging.debug('Tags: %s', tags)
+db.commit()
 
-        # Split the maintainer field into real name and email address
-        # if it follows the "Name <email>" format.
-        match = re.search(r'^(.*?) <(.*?)>$', pkg['maintainer'])
-        if match:
-            maint_name, maint_email = match.groups()
-            maint_name=unicode(maint_name)
-            maint_email=unicode(maint_email)
-        else:
-            # Just the email address. Happened in Ubuntu packages.
-            maint_name = maint_email = pkg['maintainer']
+    #sys.exit(0)
 
-        logging.debug(u"Maintainer:    %s" % maint_name)
-        logging.debug(u"Email:         %s" % maint_email)
-
-        # Get first line of the description
-        description = pkg['description'].split('\n')[0]
-        logging.debug(u"Description:   %s" % description)
-
-        # Get the package entry from the database (if it exists yet)
-        db_binpkg = model.Package.q().filter_by(name=unicode(pkg['package'])).first()
-
-        # Packet unwanted according to facet blacklist?
-        blacklist_match = set(facets).intersection(facets_blacklist)
-        if blacklist_match:
-            logging.debug('Blacklisted due to facets: %s', blacklist_match)
-            if db_binpkg:
-                log.info('Deleting package from database (facets %s blacklisted)',
-                         ','.join(blacklist_match))
-                db.delete(db_binpkg)
-            continue
-
-        # Packet unwanted according to tag blacklist?
-        blacklist_match = set(tags).intersection(tags_blacklist)
-        if blacklist_match:
-            logging.debug('Blacklisted due to tags: %s', blacklist_match)
-            if db_binpkg:
-                log.info('Deleting package from database (tags %s blacklisted)',
-                         ','.join(blacklist_match))
-                db.delete(db_binpkg)
-            continue
-
-        # If the package is not yet found in the database then create a new entry
-        if not db_binpkg:
-            logging.info("New package: %s", pkg['package'])
-            db_binpkg = model.Package()
-            db_binpkg.name=unicode(pkg['package'])
-            db.add(db_binpkg)
-        else:
-            logging.info("Updating package: %s", pkg['package'])
-
-        db_binpkg.description = unicode(description[:80])
-        db_binpkg.section = unicode(pkg['section'])
-        db_binpkg.maintainer = maint_name[:100]
-        db_binpkg.maintainer_email = maint_email[:100]
-        db_binpkg.homepage = unicode(pkg['homepage'] or '')[:200]
-        db_binpkg.version = unicode(pkg['version'][:50])
-
-        # Handle debtags
-        # Removing all tags from the package
-        db_binpkg.debtags = []
-        for tag in tags:
-            # Is this facet supposed to be ignored?
-            facet = (tag.split('::'))[0]
-            if facet in facets_ignorelist:
-                logging.debug('Ignoring tag %s according to the facets ignore list (facet=%s)', tag, facet)
-                continue
-
-            # Is this debtag supposed to be ignored?
-            if tag in tags_ignorelist:
-                logging.debug('Ignoring tag %s according to the tags ignore list', tag)
-                continue
-
-            # Find the tag in the database
-            db_debtag = debtags_records.get(tag.decode('utf8'))
-            if not db_debtag:
-                logging.info('Package %s uses unknown debtag %s - ignoring', pkg['package'], tag)
-                continue
-            logging.debug('Adding tag %s (#%s) to package', tag, db_debtag.id)
-            db_binpkg.debtags.append(db_debtag)
-
-            #logging.debug('Tag: %s (%s) / Facet: %s (%s)',
-                #tag, tag_description, facet, facet_description)
-
-    logging.info("Committing to database")
-    db.commit()
-
-    downloadfile.close()
-    os.unlink(tempname)
-
-    return 0
-
-if __name__=='__main__':
-    sys.exit(main())
+#packages = packageimport.parse_packages_file('Packages')
+#packageimport.go_through_packages_database(packages)
