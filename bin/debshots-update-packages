@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Update package information from the UniversalDebianDatabase/dde.debian.net"""
 
-# TODO: support debtags format: use::{downloading,proxying,storing}
+# TODO: check blacklist
 
 import logging
 import logging.config
@@ -90,11 +90,31 @@ def run(command,input=''):
 
     return returncode,stdout,stderr
 
+def debtags_string_to_array(debtags_string):
+    """Converts a string of debtags to an array
+
+    Support the use::{foo,bar,baz} syntax"""
+    for tag in debtags_string.split(', '):
+        tags = []
+        # support "use::{downloading,proxying,storing}" format
+        if '{' in tag:
+            match = re.search(r'^(.*)::\{(.*)\}$', tag)
+            if not match:
+                log.error("Could not parse debtags format from tag: %s", tag)
+            facet, subtags = match.groups()
+            for subtag in subtags.split(','):
+                tags.append('%s::%s' % (facet, subtag))
+        else:
+            tags.append(tag)
+
+    return tags
+
 def update_package_information(pkg, new):
     """Update a packages information
 
     pkg: model.Package object referring to what we currently know about the package
     new: package information from the repository"""
+    log.debug("Updating package information of package %s", pkg.name)
     #log.debug("Before...")
     #log.debug(pkg)
     pkg.version = new['version']
@@ -122,21 +142,9 @@ def update_package_information(pkg, new):
     pkg.debtags = []
     if 'tag' in new:
         # Create a list of tags this package should get assigned
-        tags = []
-        for tag in new['tag'].split(', '):
-            #tag = tag.strip()
-            # support "use::{downloading,proxying,storing}" format
-            if '{' in tag:
-                match = re.search(r'^(.*)::\{(.*)\}$', tag)
-                if not match:
-                    log.error("Could not parse debtags format from tag: %s", tag)
-                facet, subtags = match.groups()
-                for subtag in subtags.split(','):
-                    tags.append('%s::%s' % (facet, subtag))
-            else:
-                tags.append(tag)
+        tags = debtags_string_to_array(new['tag'])
 
-        # Now go through the list of tags anda ssign it to the package
+        # Now go through the list of tags and assign it to the package
         for tag in tags:
             #tag=strip(tag)
             # Is this facet supposed to be ignored?
@@ -205,11 +213,11 @@ def parse_debtags_descriptions():
 
         # If the tag is not yet found in the database then create a new entry
         if not db_tag:
-            log.info("New tag: %s", tag)
+            log.debug("New tag: %s", tag)
             db_tag = model.Debtag()
             db.add(db_tag)
         else:
-            log.info("Updating tag: %s", tag)
+            log.debug("Updating tag: %s", tag)
 
         # Store this model.Debtag instance for adding to the packages later
         # (saves looking up the tags from the database again which is very slow)
@@ -239,6 +247,7 @@ log.debug('Tags blacklist: %s', '/'.join(tags_blacklist))
 log.debug('Facets ignorelist: %s', '/'.join(facets_ignorelist))
 log.debug('Tags ignorelist: %s', '/'.join(tags_ignorelist))
 
+log.info('Updating debtags')
 facets, debtags, debtags_records = parse_debtags_descriptions()
 log.debug('facets: %r', facets)
 log.debug('debtags: %r', debtags)
@@ -251,14 +260,21 @@ for packages_url in packages_urls:
     packages_here = download_packages_and_parse(packages_url)
     packages.update(packages_here)
 
+# Remember which package names the remote side knows
+remote_package_names = set(packages.keys())
+
+# Remember which packages from our database we checked
+our_package_names = []
+
 # Go through all known packages in our database
 log.info("Checking all known packages in our database")
 for pkg in db.query(model.Package):
     log.debug("Package: %s", pkg.name)
+    our_package_names.append(pkg.name)
 
     # Package is known to us but not in the Packages file?
     if pkg.name not in packages:
-        log.info("Package %s has apparently been removed from the repository. Funny." % pkg.name)
+        log.debug("Package %s has apparently been removed from the repository. Funny." % pkg.name)
         continue
 
     # Is our version still up to date?
@@ -266,6 +282,7 @@ for pkg in db.query(model.Package):
     their_version = packages[pkg.name]['version']
     log.debug("Current version: %s", their_version)
 
+    # Always update package information if a certain config parameter is set in the INI file
     if conf.get('debshots.update_all_packages')=='yes':
         update_package_information(pkg, packages[pkg.name])
     else:
@@ -279,9 +296,23 @@ for pkg in db.query(model.Package):
                 log.info("Our information is newer than the repository's. Strange.")
         log.debug("Versions match. No need to update.")
 
+# Make a set from the array of package names we checked
+# (for easier set operations)
+our_package_names = set(our_package_names)
+
+packages_we_miss = remote_package_names-our_package_names
+log.info("Packages in the remote repository that we do not have in our database yet: %s",
+         packages_we_miss)
+for missing_package in packages_we_miss:
+    new_pkg = model.Package()
+    new_pkg.name=missing_package
+    log.info("Adding yet unknown package: %s", missing_package)
+    update_package_information(new_pkg, packages[missing_package])
+    db.add(new_pkg)
+
+#log.info("Packages in our repository that are not known in the remote repository: %s",
+         #our_package_names-remote_package_names)
+
+log.info("Flushing database.")
 db.commit()
-
-    #sys.exit(0)
-
-#packages = packageimport.parse_packages_file('Packages')
-#packageimport.go_through_packages_database(packages)
+log.info("Done.")
