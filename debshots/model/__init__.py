@@ -70,13 +70,14 @@ class MyOrm(object):
 packages_table = sql.Table(
     'packages', meta.metadata,
     sql.Column('id', sql.Integer, primary_key=True),
-    sql.Column('name', sql.Unicode(100), unique=True),
-    sql.Column('description', sql.Unicode(80)),
-    sql.Column('section', sql.Unicode(50)),
-    sql.Column('maintainer', sql.Unicode(100)),
-    sql.Column('maintainer_email', sql.Unicode(100)),
+    sql.Column('name', sql.Unicode(100), unique=True, nullable=False),
+    sql.Column('description', sql.Unicode(80), nullable=False),
+    sql.Column('long_description', sql.Unicode(2000), nullable=False),
+    sql.Column('section', sql.Unicode(50), nullable=False),
+    sql.Column('maintainer', sql.Unicode(100), nullable=False),
+    sql.Column('maintainer_email', sql.Unicode(100), nullable=False),
     sql.Column('homepage', sql.Unicode(200)),
-    sql.Column('version', sql.Unicode(50)),
+    sql.Column('version', sql.Unicode(50), nullable=False),
 )
 
 class Package(MyOrm):
