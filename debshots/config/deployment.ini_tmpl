@@ -67,7 +67,45 @@ debshots.memcache_server = 127.0.0.1:11211
 # If set the front side webserver will handle the actual delivery of the file
 #debshots.xsendfile = X-Accel-Redirect
 
-# Logging configuration
+
+# *** debtags ***
+
+# URL from where to fetch the debtags vocabulary information
+debshots.debtags_vocabulary_url = http://svn.debian.org/viewsvn/debtags/vocabulary/trunk/debian-packages
+
+# Do not import packages that have one of these facets
+debshots.debtags_facets_blacklist =
+
+# Do not import packages that have one of these tags
+debshots.debtags_tags_blacklist = role::app-data devel::doc role::documentation role::source admin::kernel role::devel-lib role::debug-symbols devel::library special::auto-inst-parts role::shared-lib
+
+# Do not assign tags to packages with these facets
+debshots.debtags_facets_ignorelist = scope special culture
+
+# Do not assign these tags to packages
+debshots.debtags_tags_ignorelist = works-with::TODO
+
+
+# *** Updates from package repositories ***
+
+# Get package information for updates from these repositories
+debshots.packages_update_urls = http://ftp.de.debian.org/debian/dists/lenny/main/binary-i386/Packages.gz
+
+# If this is set to 'yes' then all package information is getting updated upon calling
+# debshots-update-packages even though the version number is the same.
+# Warning: this makes updating the package database really really slow!
+# It should only be used when your database has become corrupted.
+#debshots.update_all_packages = yes
+
+# If this is set to 'yes' then packages from our repository will actually
+# be removed if they are not listed in the remote repository or are blacklisted
+# by debtags. This can be dangerous and will remove packages and screenshots if
+# you blacklist facets or debtags too broadly.
+#debshots.remove_from_our_packages = yes
+
+
+# *** Logging configuration ***
+
 [loggers]
 keys = root, debshots, sqlalchemy
 
