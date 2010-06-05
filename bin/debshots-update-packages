@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 """Update package information from the UniversalDebianDatabase/dde.debian.net"""
 
-# TODO: check blacklist
-
 import logging
 import logging.config
 import os
@@ -94,8 +92,9 @@ def debtags_string_to_array(debtags_string):
     """Converts a string of debtags to an array
 
     Support the use::{foo,bar,baz} syntax"""
+    tags = []
     for tag in debtags_string.split(', '):
-        tags = []
+        #log.info("debtags_string_to_array: tag=%s", tag)
         # support "use::{downloading,proxying,storing}" format
         if '{' in tag:
             match = re.search(r'^(.*)::\{(.*)\}$', tag)
@@ -236,6 +235,30 @@ def parse_debtags_descriptions():
 
     return facets, debtags, debtags_records
 
+def is_debtag_blacklisted(tagstring):
+    """Check if a string of debtags is blacklisted
+    
+    Certain packages can be ignored by the updater depending on their
+    debtags. This function checks if the tags of a package match the
+    blacklist criteria."""
+    #log.info("tagstring: %s", tagstring)
+    tags = set(debtags_string_to_array(tagstring))
+    #log.info("tags: %r", tags)
+    # Check if any tag is in the tags_blacklist
+    blacklisted_tags = tags.intersection(tags_blacklist)
+    if blacklisted_tags:
+        log.info("Blacklisted by tag(s): %s", ','.join(blacklisted_tags))
+        return True
+    
+    # Check if any tag's facet is in the facets_blacklist
+    for tag in tags:
+        facet = tag.split('::')[0]
+        if facet in facets_blacklist:
+            log.info("Blacklisted by facet: %s", facet)
+            return True
+    
+    return False
+
 #----------------------------------------------------
 
 facets_blacklist = set(config['debshots.debtags_facets_blacklist'].split())
@@ -246,6 +269,9 @@ log.debug('Facets blacklist: %s', '/'.join(facets_blacklist))
 log.debug('Tags blacklist: %s', '/'.join(tags_blacklist))
 log.debug('Facets ignorelist: %s', '/'.join(facets_ignorelist))
 log.debug('Tags ignorelist: %s', '/'.join(tags_ignorelist))
+
+# Check if removing packages from our database is allowed
+remove_from_our_packages_is_allowed = (config.get('debshots.remove_from_our_packages','').lower()=='yes')
 
 log.info('Updating debtags')
 facets, debtags, debtags_records = parse_debtags_descriptions()
@@ -274,13 +300,26 @@ for pkg in db.query(model.Package):
 
     # Package is known to us but not in the Packages file?
     if pkg.name not in packages:
-        log.debug("Package %s has apparently been removed from the repository. Funny." % pkg.name)
+        log.info("Package %s has apparently been removed from the repository. Funny." % pkg.name)
+        # Removing packages instantly if they aren't found in the remove repository
+        # is potentially dangerous and should be done automatically!
+        #if remove_from_our_packages_is_allowed:
+            #log.info("Removing package %s from our database", pkg.name)
+            #db.delete(pkg)
         continue
 
     # Is our version still up to date?
     log.debug("Our version: %s", pkg.version)
     their_version = packages[pkg.name]['version']
     log.debug("Current version: %s", their_version)
+
+    # Check for debtags blacklisting
+    if is_debtag_blacklisted(packages[pkg.name].get('tag', '')):
+        log.info("Package '%s' in our database is debtags-blacklisted", pkg.name)
+        if remove_from_our_packages_is_allowed:
+            log.info("Removing package %s from our database", pkg.name)
+            db.delete(pkg)
+            continue
 
     # Always update package information if a certain config parameter is set in the INI file
     if conf.get('debshots.update_all_packages')=='yes':
@@ -299,11 +338,16 @@ for pkg in db.query(model.Package):
 # Make a set from the array of package names we checked
 # (for easier set operations)
 our_package_names = set(our_package_names)
+log.info("%d packages in our database checked and updated",
+         len(our_package_names))
 
 packages_we_miss = remote_package_names-our_package_names
 log.info("Packages in the remote repository that we do not have in our database yet: %s",
          packages_we_miss)
 for missing_package in packages_we_miss:
+    if is_debtag_blacklisted(packages[missing_package].get('tag', '')):
+        log.info("Not adding package '%s' because it's blacklisted.", missing_package)
+        continue
     new_pkg = model.Package()
     new_pkg.name=missing_package
     log.info("Adding yet unknown package: %s", missing_package)
