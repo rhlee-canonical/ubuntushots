@@ -14,10 +14,8 @@ from debshots.lib import my, validators
 import formencode
 from webhelpers.feedgenerator import Rss201rev2Feed
 
-try:
-    from hashlib import md5
-except ImportError:
-    from md5 import md5
+from hashlib import md5
+
 
 log = logging.getLogger(__name__)
 
@@ -143,6 +141,7 @@ class PackagesController(BaseController):
         """Show a list of not-yet-approved screenshots for the admin"""
         # Admins only
         if 'username' not in session:
+            log.info('Access to /moderate denied.')
             abort(403)
         packages = model.packages_with_moderated_screenshots()
         c.packages = h.paginate.Page(

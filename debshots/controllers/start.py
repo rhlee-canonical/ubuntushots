@@ -3,7 +3,7 @@ import logging
 import formencode
 import smtplib
 import random
-import md5
+from hashlib import md5
 
 from debshots.lib.base import *
 
@@ -58,7 +58,7 @@ class StartController(BaseController):
 
         admin = model.Admin.q().filter_by(
             username=fields['username'],
-            passwordhash=md5.new(
+            passwordhash=md5(
                 fields['password']+config['debshots.md5salt']).hexdigest()).first()
 
         if not admin:
@@ -66,7 +66,7 @@ class StartController(BaseController):
             c.error="Login failed"
             return render('/start/login.mako')
 
-        log.info("Admin logged in: %s", fields['username'])
+        log.info("Admin user '%s' logged in successfully", fields['username'])
 
         # Set a cookie session variable to mark the maintainer as logged in
         session['username'] = admin.username

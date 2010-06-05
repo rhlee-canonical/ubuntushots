@@ -4,7 +4,7 @@ import sqlalchemy as sql
 import sqlalchemy.orm as orm
 import pylons
 import os
-import md5
+from hashlib import md5
 from debshots.model import meta
 from debshots.lib import my
 #from routes import url_for
