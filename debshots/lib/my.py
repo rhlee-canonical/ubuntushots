@@ -84,5 +84,5 @@ def redirect_back():
     package or index page. This function does nothing if 'goto' is not present."""
     params = pylons.request.params
     if 'goto' in params:
-        log.debug("redirect_back -> %s", params)
+        log.debug("redirect_back -> %s", params.get('goto', '?'))
         redirect(str(params['goto']))
