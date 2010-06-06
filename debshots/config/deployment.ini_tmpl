@@ -89,7 +89,7 @@ debshots.debtags_tags_ignorelist = works-with::TODO
 # *** Updates from package repositories ***
 
 # Get package information for updates from these repositories
-debshots.packages_update_urls = http://ftp.de.debian.org/debian/dists/lenny/main/binary-i386/Packages.gz
+debshots.packages_update_urls = http://ftp.de.debian.org/debian/dists/sid/main/binary-i386/Packages.gz
 
 # If this is set to 'yes' then all package information is getting updated upon calling
 # debshots-update-packages even though the version number is the same.
@@ -99,9 +99,8 @@ debshots.packages_update_urls = http://ftp.de.debian.org/debian/dists/lenny/main
 
 # If this is set to 'yes' then packages from our repository will actually
 # be removed if they are not listed in the remote repository or are blacklisted
-# by debtags. This can be dangerous and will remove packages and screenshots if
-# you blacklist facets or debtags too broadly.
-#debshots.remove_from_our_packages = yes
+# by debtags. Packages with screenshots assigned will not be deleted though.
+debshots.remove_from_our_packages = yes
 
 
 # *** Logging configuration ***
