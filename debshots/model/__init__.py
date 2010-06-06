@@ -77,7 +77,8 @@ packages_table = sql.Table(
     sql.Column('maintainer', sql.Unicode(100), nullable=False),
     sql.Column('maintainer_email', sql.Unicode(100), nullable=False),
     sql.Column('homepage', sql.Unicode(200)),
-    sql.Column('version', sql.Unicode(50), nullable=False),
+    sql.Column('version', sql.Unicode(200), nullable=False),
+    sql.Column('origin', sql.Unicode(80)),
 )
 
 class Package(MyOrm):
@@ -329,14 +330,14 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
             backref=orm.backref('package', uselist=False),
             cascade='all, delete-orphan',
             single_parent=True,
-            #lazy=False,
+            lazy=False,
             ),
         'debtags':orm.relation(
             Debtag,
             backref=orm.backref('packages'),
             #cascade='all, delete-orphan',
             secondary=packages_to_debtags_table,
-            #lazy=False,
+            lazy=False,
             ),
         })
 
