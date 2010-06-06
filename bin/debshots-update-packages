@@ -12,13 +12,8 @@ import bz2
 from paste.deploy import appconfig
 from pylons import config
 from debshots.config.environment import load_environment
-#from urllib2 import urlopen
-#import cPickle as pickle
-#import tempfile
-#import gzip
 from debshots.model import meta
 from debshots import model
-#from debshots.lib import packageimport
 import debian.deb822
 from urllib2 import urlopen
 import subprocess
@@ -42,15 +37,21 @@ load_environment(conf.global_conf, conf.local_conf)
 # Initialize database
 
 db = model.meta.Session
+temp_file = '/tmp/packages.tmp'
 
 def download_packages_and_parse(url):
     """Download a Packages file and use debian.deb822.Deb822 to parse it"""
     # Download and parse Packages files
     log.info("Downloading package information from: %s" % url)
+    urllib.urlretrieve(url, temp_file)
 
     log.info("Parsing Packages file")
     packages = {}
-    for pkg in debian.deb822.Packages.iter_paragraphs(sequence=urlopen(url)):
+    if url.endswith('.bz2'):
+        data = bz2.decompress(open(temp_file, 'rb').read()).splitlines()
+    else:
+        data = open(temp_file, 'r')
+    for pkg in debian.deb822.Packages.iter_paragraphs(data):
         log.debug("Package: %s", pkg['package'])
         # Create a hash array consisting of:
         # packagename -> hash with package information
@@ -62,8 +63,6 @@ def go_through_packages_database(packages):
     """Read what packages are currently in the debshots database"""
     packages = {}
     for pkg in db.query(model.Package):
-        #print pkg
-        #print pkg.name
         packages[pkg['name']]=pkg
     return packages
 
@@ -114,8 +113,6 @@ def update_package_information(pkg, new):
     pkg: model.Package object referring to what we currently know about the package
     new: package information from the repository"""
     log.debug("Updating package information of package %s", pkg.name)
-    #log.debug("Before...")
-    #log.debug(pkg)
     pkg.version = new['version']
     pkg.section = new['section']
     pkg.homepage = new.get('homepage') # optional
@@ -131,7 +128,7 @@ def update_package_information(pkg, new):
         maint_email=unicode(maint_email)
     else:
         # Just the email address. Happened in Ubuntu packages.
-        maint_name = maint_email = pkg['maintainer']
+        maint_name = maint_email = new['maintainer']
 
     pkg.maintainer = maint_name
     pkg.maintainer_email = maint_email
@@ -275,15 +272,16 @@ remove_from_our_packages_is_allowed = (config.get('debshots.remove_from_our_pack
 
 log.info('Updating debtags')
 facets, debtags, debtags_records = parse_debtags_descriptions()
-log.debug('facets: %r', facets)
-log.debug('debtags: %r', debtags)
-log.debug('debtags_records: %r', debtags_records)
+#log.debug('facets: %r', facets)
+#log.debug('debtags: %r', debtags)
+#log.debug('debtags_records: %r', debtags_records)
 
 packages_urls = conf['debshots.packages_update_urls'].split()
 packages = {}
 for packages_url in packages_urls:
-    log.info("Download package information from: %s", packages_url)
+    #log.info("Download package information from: %s", packages_url)
     packages_here = download_packages_and_parse(packages_url)
+    log.info("Read information on %d packages", len(packages_here))
     packages.update(packages_here)
 
 # Remember which package names the remote side knows
@@ -302,10 +300,15 @@ for pkg in db.query(model.Package):
     if pkg.name not in packages:
         log.info("Package %s has apparently been removed from the repository. Funny." % pkg.name)
         # Removing packages instantly if they aren't found in the remove repository
-        # is potentially dangerous and should be done automatically!
-        #if remove_from_our_packages_is_allowed:
-            #log.info("Removing package %s from our database", pkg.name)
-            #db.delete(pkg)
+        # is potentially dangerous. Thus we are only removing packages that don't
+        # have screenshots assigned.
+        if remove_from_our_packages_is_allowed:
+            if pkg.screenshots:
+                log.info("Not removing package from our databases - it has screenshots."
+                         "Remove it manually if you like.")
+            else:
+                log.info("Removing package %s from our database. It had no screenshots assigned anyway.", pkg.name)
+                db.delete(pkg)
         continue
 
     # Is our version still up to date?
@@ -332,8 +335,9 @@ for pkg in db.query(model.Package):
                 log.debug("Current version is newer - updating our information")
                 update_package_information(pkg, packages[pkg.name])
             else:
-                log.info("Our information is newer than the repository's. Strange.")
-        log.debug("Versions match. No need to update.")
+                log.info("Our information on package '%s' is newer than the repository's. Strange.", pkg.name)
+        else:
+            log.debug("Versions match. No need to update.")
 
 # Make a set from the array of package names we checked
 # (for easier set operations)
