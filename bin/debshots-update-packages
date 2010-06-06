@@ -164,6 +164,8 @@ def update_package_information(pkg, new):
 
             #log.debug('Tag: %s (%s) / Facet: %s (%s)',
                 #tag, tag_description, facet, facet_description)
+    else:
+        log.debug('No tags listed for this package.')
 
     #log.debug("After...")
     #log.debug(pkg)
@@ -304,7 +306,7 @@ for pkg in db.query(model.Package):
         # have screenshots assigned.
         if remove_from_our_packages_is_allowed:
             if pkg.screenshots:
-                log.info("Not removing package from our databases - it has screenshots."
+                log.info("Not removing package from our databases - it has screenshots. "
                          "Remove it manually if you like.")
             else:
                 log.info("Removing package %s from our database. It had no screenshots assigned anyway.", pkg.name)
