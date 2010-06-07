@@ -12,7 +12,7 @@
             <th>Package</th>
             <th>Description</th>
             <th>Section</th>
-            <th>Homepage</th>
+##            <th>Homepage</th>
             <th>Contribute</th>
         </tr>
     % for package in c.packages:
@@ -26,14 +26,14 @@
             <td>
                 ${ package.section }
             </td>
-            <td>
-                % if package.homepage:
-                ${ h.tags.link_to(
-                    package.homepage,
-                    package.homepage
-                    ) }
-                % endif
-            </td>
+##            <td>
+##                % if package.homepage:
+##                ${ h.tags.link_to(
+##                    package.homepage,
+##                    package.homepage
+##                    ) }
+##                % endif
+##            </td>
             ## Show link to upload screenshots
             <td>
                 ${ h.tags.link_to('Upload a screenshot', h.url('upload', package=package.name)) }
