@@ -33,6 +33,9 @@ def make_map():
     # Start page
     map.connect('start', '/', controller='start', action='index')
 
+    # About page
+    map.connect('about', '/about', controller='start', action='about')
+
     # Packages view (list of packages with screenshots sorted by name)
     map.connect('packages', '/packages', controller='packages', action='index')
 
@@ -87,13 +90,6 @@ def make_map():
     map.connect('rss', '/rss', controller='packages', action='rss')
 
     # Generic controllers
-    #map.connect(':controller/:action/:id')
     map.connect('/:controller/:action')
-    #map.connect('*url', controller='template', action='view')
-
-    #map.connect('/{controller}/{action}')
-    #map.connect('/{controller}/{action}/{id}')
-
 
     return map
-

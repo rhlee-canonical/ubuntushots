@@ -4,6 +4,7 @@ import formencode
 import smtplib
 import random
 from hashlib import md5
+import pygooglechart
 
 from debshots.lib.base import *
 
@@ -79,3 +80,48 @@ class StartController(BaseController):
             del session['username']
             session.save()
         redirect('/')
+
+    def about(self):
+        """Show a web page with statistical and conceptual information."""
+        packages = db.query(model.Package)
+        packages = packages.distinct().join('screenshots')
+        packages = packages.filter(model.Screenshot.approved==True)
+        c.packages_with_screenshots_count = packages.count()
+        c.packages_count = db.query(model.Package).count()
+        c.screenshots_percentage = float(c.packages_with_screenshots_count) / float(c.packages_count) * 100
+        c.screenshots_count = db.query(model.Screenshot).count()
+        c.average_screenshots_per_package = float(c.screenshots_count) / float(c.packages_with_screenshots_count)
+
+        # Collect information how many screenshots have been uploaded each month
+        # and create a URL to the Google Chart API displaying it.
+        # (There are no automatic axis labels so the graph sucks and I probably need
+        # something like GNUPLOT to get proper graphs.)
+        month_labels = [] # e.g "11"
+        year_labels = [] # e.g. "2010"
+        month_uploads = []
+        total_uploads = 0 # counting the uploads so that we get absolute values
+        # Get a list of screenshots uploaded each month for the past 24 months
+        query = db.query(
+            model.sql.func.count().label('count'),
+            model.sql.extract('year',model.Screenshot.uploaddatetime).label('year'),
+            model.sql.extract('month',model.Screenshot.uploaddatetime).label('month')
+            ).group_by('year','month').order_by('year','month').limit(24).all()
+        for count, year, month in query:
+            total_uploads += count
+            month_uploads.append(total_uploads)
+            month_labels.append(int(month))
+            if month==1:
+                year_labels.append(int(year))
+            else:
+                year_labels.append('')
+
+        chart = pygooglechart.SimpleLineChart(600, 200)
+        chart.add_data(month_uploads)
+        chart.set_axis_labels(pygooglechart.Axis.BOTTOM, month_labels)
+        chart.set_axis_labels(pygooglechart.Axis.BOTTOM, year_labels)
+        chart.set_axis_labels(pygooglechart.Axis.LEFT, [min(month_uploads), max(month_uploads)])
+        c.chart_url = chart.get_url()
+
+        c.repositories = config['debshots.packages_update_urls'].split()
+
+        return render('/start/about.mako')
