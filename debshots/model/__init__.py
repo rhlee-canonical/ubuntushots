@@ -305,6 +305,14 @@ def newest_screenshots():
     newest_screenshots = newest_screenshots.options(orm.eagerload('package'))
     return newest_screenshots
 
+def packages_with_newest_screenshots():
+    """Return a query of Package objects that have the newest screenshots uploaded"""
+    packages = meta.Session.query(Package)\
+        .join(Screenshot)\
+        .filter(Screenshot.approved==True)\
+        .order_by(Screenshot.uploaddatetime.desc())
+    return packages
+
 #----------
 
 # Table of admin users
@@ -330,14 +338,15 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
             backref=orm.backref('package', uselist=False),
             cascade='all, delete-orphan',
             single_parent=True,
-            lazy=False,
+            order_by=[screenshots_table.c.uploaddatetime.desc()],
+            #lazy=False,
             ),
         'debtags':orm.relation(
             Debtag,
             backref=orm.backref('packages'),
             #cascade='all, delete-orphan',
             secondary=packages_to_debtags_table,
-            lazy=False,
+            #lazy=False,
             ),
         })
 

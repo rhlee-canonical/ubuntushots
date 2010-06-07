@@ -2,7 +2,7 @@
 <%inherit file="/base.mako"/>
 
 <%include file="/packages/include-index-header.mako"/>
-<%include file="/packages/include-js-lightbox.mako"/>
+<%include file="/packages/include-js-flyout.mako"/>
 
 % if c.packages:
     <% pager = c.packages.pager('Page: $link_previous $link_next ~10~') %>

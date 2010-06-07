@@ -3,7 +3,7 @@
 
 <%inherit file="/base.mako"/>
 
-<%include file="/packages/include-js-lightbox.mako"/>
+<%include file="/packages/include-js-flyout.mako"/>
 
 ## Add tooltip behavior to IMG with class 'tooltip'
 <script type="application/x-javascript">

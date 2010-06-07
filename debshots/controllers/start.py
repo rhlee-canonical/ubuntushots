@@ -37,6 +37,9 @@ class StartController(BaseController):
             # Return up to 8 screenshots
             c.newest_screenshots = newest_screenshots[:8]
 
+        # Show packages with newest screenshots
+        c.packages_with_newest_screenshots = model.packages_with_newest_screenshots()[:10]
+
         rendered = render('/start/index.mako')
         app_globals.cache.set('debshots:front_page', rendered)
         return rendered
