@@ -30,6 +30,9 @@
                 ) }
         </li>
     % endif
+    % if c.package.origin:
+	<li><b>Origin</b>: ${ c.package.origin }</li>
+    % endif
     <li><b>Package maintainer</b>: ${ c.package.maintainer }</li>
     % if c.package.unapproved_screenshots:
         <li>
