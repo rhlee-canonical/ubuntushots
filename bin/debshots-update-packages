@@ -116,7 +116,7 @@ def update_package_information(pkg, new):
     pkg.version = new['version']
     pkg.section = new['section']
     pkg.homepage = new.get('homepage') # optional
-    pkg.desription = new['description'].splitlines()[0]
+    pkg.description = new['description'].splitlines()[0]
     pkg.long_desription = '\n'.join(new['description'].splitlines()[1:])
 
     pkg.origin = new.get('origin', u'Debian')
@@ -238,7 +238,7 @@ def parse_debtags_descriptions():
 
 def is_debtag_blacklisted(tagstring):
     """Check if a string of debtags is blacklisted
-    
+
     Certain packages can be ignored by the updater depending on their
     debtags. This function checks if the tags of a package match the
     blacklist criteria."""
@@ -250,14 +250,14 @@ def is_debtag_blacklisted(tagstring):
     if blacklisted_tags:
         log.info("Blacklisted by tag(s): %s", ','.join(blacklisted_tags))
         return True
-    
+
     # Check if any tag's facet is in the facets_blacklist
     for tag in tags:
         facet = tag.split('::')[0]
         if facet in facets_blacklist:
             log.info("Blacklisted by facet: %s", facet)
             return True
-    
+
     return False
 
 #----------------------------------------------------
