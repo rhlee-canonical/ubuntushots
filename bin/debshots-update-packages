@@ -117,6 +117,8 @@ def update_package_information(pkg, new):
     pkg.section = new['section']
     pkg.homepage = new.get('homepage') # optional
     pkg.desription = new['description'].splitlines()[0]
+    if len(pkg.description)>80:
+        pkg.description = pkg.description[:77]+'...'
     pkg.long_desription = '\n'.join(new['description'].splitlines()[1:])
 
     pkg.origin = new.get('origin', u'Debian')
