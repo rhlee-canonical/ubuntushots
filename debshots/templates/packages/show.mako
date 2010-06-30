@@ -42,10 +42,8 @@
             </em>
         </li>
     % endif
-    <li><a href="http://packages.debian.org/${ c.package.name }">Package
-        page on packages.debian.org</a></li>
-    <li><a href="http://bugs.debian.org/${ c.package.name }">Bug reports for this package</a>
-        </li>
+    <li>${ h.package_page_link(c.package) }</li>
+    <li>${ h.bugs_page_link(c.package) }</li>
     ## Upload link:
     <li>${ h.tags.link_to('Upload a new screenshot',
             h.url('upload', package=c.package.name)) }</li>
