@@ -23,21 +23,20 @@
 ##% endif
 
 % if c.newest_screenshots:
-<h1>Latest uploads</h1>
+    <h1>Latest uploads</h1>
 
-<table class="screenshots" style="border-collapse: separate">
     % for pkg in c.packages_with_newest_screenshots:
     <% screenshot = pkg.screenshots[0] %>
-    <tr>
+    <div style="">
         ## Thumbnail
         <td class="noborder">
             <a class="image" href="${screenshot.large_image_url}"
             title="Screenshot of package '${screenshot.package.name}'">
             <img src="${ screenshot.small_image_url }" alt="Screenshot" />
             </a>
-        </td>
+    </div>
+    <div style="">
         ## Name (click->details page) + more info
-        <td class="noborder">
             <p class="namelink">
                 ${ h.tags.link_to(pkg.name, h.url('package', package=pkg.name)) }
             </p>
@@ -50,8 +49,6 @@
                 )
                 </i>
             </p>
-        </td>
-    </tr>
+    </div>
     % endfor
-</table>
 % endif
