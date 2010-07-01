@@ -98,7 +98,7 @@ li {
 h1 {
     font-size: 150%;
     margin: 0.5em 0 0.5em 0;
-    color: #c70036;
+    color: #757575;
     font-weight: bolder;
 }
 
@@ -231,6 +231,16 @@ a.image, a.image:hover {
     margin-top: 2em;
 }
 
+#teaser-search input {
+    background-color: #f0f0f0;
+    font-size: 150%;
+    border-color: #c70038;
+    border-width: 0.1em;
+    -moz-border-radius: .5em;
+    -webkit-border-radius: .5em;
+    border-radius: .5em;
+    padding: 0.2em 0.5em;
+}
 
 /* Paginate pager */
 
