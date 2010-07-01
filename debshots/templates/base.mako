@@ -39,32 +39,27 @@
   </head>
 
   <body>
-    <div id="header">
-        <img src="/images/logo.png" alt="screenshots.debian.net" />
-    </div>
+    <div id="page">
+      <div id="header">
+          <img src="/images/logo.png" alt="screenshots.debian.net" />
+      </div>
+      <!---->
+      <!--<div id="nav">-->
+      <!--    <a href="/">Home</a>-->
+      <!--    |-->
+      <!--    <a href="/packages">Browse screenshots</a>-->
+      <!--    |-->
+      <!--    <a href="/upload">Upload screenshots</a>-->
+      <!--</div>-->
 
-    <div id="nav">
-        <a href="/">Home</a>
-        |
-        <a href="/packages">Browse screenshots</a>
-        |
-        <a href="/upload">Upload screenshots</a>
+      <div id="maincontent">
+  ${ next.body() }
+      </div>
     </div>
-
-    <div id="maincontent">
-${ next.body() }
-    </div>
+    ## end of #page
 
     <div id="footer">
-        Powered by
-        <a href="mailto:haas@debian.org">Christoph Haas'</a>
-        <a href="http://debshots.workaround.org">debshots</a> software
-        using <a href="http://pylonshq.com">Pylons</a>,
-        <a href="http://www.sqlalchemy.org/">SQLAlchemy</a>,
-        <a href="http://jquery.com">jQuery</a>
-        and its <a href="http://nixboxdesigns.com/demos/jquery-image-flyout.php">flyout</a>,
-        <a href="http://bassistance.de/jquery-plugins/jquery-plugin-autocomplete/">autocomplete</a>
-        and <a href="http://stanlemon.net/projects/jgrowl.html">jGrowl</a> plugins.
+        ${ h.tags.link_to('About screenshots.debian.net', h.url('about')) }
         % if 'username' in session:
         You're logged in as <em>${session['username']}</em>.
         <a href="/logout">(Logout)</a>

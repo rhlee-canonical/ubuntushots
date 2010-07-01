@@ -23,6 +23,7 @@ $(document).ready(function() {
     % for pkg in c.packages_with_newest_screenshots:
         <% screenshot = pkg.screenshots[0] %>
         <div>
+            ## TODO: add link to package details page
             <table><tr>
                 <td class="noborder">
                     ${ h.tags.image(screenshot.small_image_url, alt='Screenshot of package %s' % pkg.name) }
@@ -55,4 +56,62 @@ $(document).ready(function() {
         ${ h.tags.text('searchterm') }
     </form>
     </div>
+</div>
+
+## Center: debtags
+<div id="tagtable">
+    <h1>Browse the packages by category:</h1>
+    <table>
+        <tr>
+            <td>
+                <em>Accessibility support</em><br>
+                Input Systems, Text Recognition, Screen Magnification,
+                Screen Helper, Some other category
+            </td>
+            <td>
+                <em>Accessibility support</em><br>
+                Input Systems, Text Recognition, Screen Magnification,
+                Screen Helper, Some other category
+            </td>
+            <td>
+                <em>Accessibility support</em><br>
+                Input Systems, Text Recognition, Screen Magnification,
+                Screen Helper, Some other category
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <em>Accessibility support</em><br>
+                Input Systems, Text Recognition, Screen Magnification,
+                Screen Helper, Some other category
+            </td>
+            <td>
+                <em>Accessibility support</em><br>
+                Input Systems, Text Recognition, Screen Magnification,
+                Screen Helper, Some other category
+            </td>
+            <td>
+                <em>Accessibility support</em><br>
+                Input Systems, Text Recognition, Screen Magnification,
+                Screen Helper, Some other category
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <em>Accessibility support</em><br>
+                Input Systems, Text Recognition, Screen Magnification,
+                Screen Helper, Some other category
+            </td>
+            <td>
+                <em>Accessibility support</em><br>
+                Input Systems, Text Recognition, Screen Magnification,
+                Screen Helper, Some other category
+            </td>
+            <td>
+                <em>Accessibility support</em><br>
+                Input Systems, Text Recognition, Screen Magnification,
+                Screen Helper, Some other category
+            </td>
+        </tr>
+    </table>
 </div>

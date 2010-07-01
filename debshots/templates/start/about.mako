@@ -120,9 +120,21 @@
 
 <h1>This web site's software</h1>
 
+<p>
 This site runs on <em>debshots</em> - a <a href="http://pylonshq.com/">Pylons</a>-based web
 application written by <a href="mailto:email@christoph-haas.de">Christoph Haas</a>.
+<em>debshots</em> also uses <a href="http://www.sqlalchemy.org/">SQLAlchemy</a> for
+accesing its <a href="http://www.postgresql.org/">PostgreSQL</a> database,
+the <a href="http://jquery.com">jQuery</a> Javascript library and its
+<a href="http://nixboxdesigns.com/demos/jquery-image-flyout.php">flyout</a>,
+<a href="http://bassistance.de/jquery-plugins/jquery-plugin-autocomplete/">autocomplete</a>,
+<a href="http://stanlemon.net/projects/jgrowl.html">jGrowl</a> and
+<a href="http://malsup.com/jquery/cycle/">cycle</a> plugins.
+</p>
+
+<p>
 If you are interested in looking at its source code then check out its development
 home page at <a href="http://debshots.workaround.org/">debshots.workaround.org</a>.
 The software is still actively developed and improved. The currently known issues and
 desired features are listed there. Feel free to submit a bug report there.
+</p>
