@@ -78,7 +78,7 @@ packages_table = sql.Table(
     sql.Column('maintainer_email', sql.Unicode(100), nullable=False),
     sql.Column('homepage', sql.Unicode(200)),
     sql.Column('version', sql.Unicode(200), nullable=False),
-    sql.Column('origin', sql.Unicode(80)),
+    sql.Column('origin', sql.Unicode(80), nullable=False, default='Debian'),
 )
 
 class Package(MyOrm):
