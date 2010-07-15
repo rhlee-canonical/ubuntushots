@@ -5,7 +5,7 @@
 $(document).ready(function() {
     $('#rotated').cycle({
 		fx: 'fade',
-                timeout: 7000
+                timeout: ${ c.gallery_switch_time }
 	});
 
     $('input#searchterm').focus();

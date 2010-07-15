@@ -43,6 +43,9 @@ class StartController(BaseController):
         # Count number of screenshots
         c.number_of_screenshots = db.query(model.Screenshot).count()
 
+        # Milliseconds to wait between slideshow of uploaded screenshots
+        c.gallery_switch_time = config.get('debshots.gallery_switch_time', 5000)
+
         rendered = render('/start/index.mako')
         app_globals.cache.set('debshots:front_page', rendered)
         return rendered

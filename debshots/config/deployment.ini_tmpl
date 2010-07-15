@@ -102,6 +102,11 @@ debshots.packages_update_urls = http://ftp.de.debian.org/debian/dists/sid/main/b
 # by debtags. Packages with screenshots assigned will not be deleted though.
 debshots.remove_from_our_packages = yes
 
+# *** visual settings ***
+
+# Milliseconds of time the slideshow of new uploads on the front page pauses
+# between each image.
+debshots.gallery_switch_time = 5000
 
 # *** Logging configuration ***
 
