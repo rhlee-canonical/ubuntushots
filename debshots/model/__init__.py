@@ -313,6 +313,14 @@ def packages_with_newest_screenshots():
         .order_by(Screenshot.uploaddatetime.desc())
     return packages
 
+def get_facets_and_tags()
+    """Get a dictionary of facets and tags from the database"""
+    facets = []
+    for facet in meta.Session.query( model.Debtag.facet ).distinct():
+        facets.append(facet[0])
+
+    return facets
+
 #----------
 
 # Table of admin users
