@@ -22,6 +22,7 @@ setup(
         #"psycopg2>=2.0.6",  # can also be deployed with sqlite - then psycopg2 is unneeded
         "formencode>=1",
         "python-memcached",
+        "pygooglechart",
         ],
     scripts=['bin/debshots-update-packages',
         'bin/debshots-create-admin',
