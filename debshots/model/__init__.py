@@ -8,7 +8,7 @@ from hashlib import md5
 from debshots.model import meta
 from debshots.lib import my
 #from routes import url_for
-from pylons import url
+from pylons import url,config
 
 import logging
 log = logging.getLogger(__name__)
@@ -313,13 +313,50 @@ def packages_with_newest_screenshots():
         .order_by(Screenshot.uploaddatetime.desc())
     return packages
 
-def get_facets_and_tags()
-    """Get a dictionary of facets and tags from the database"""
-    facets = []
-    for facet in meta.Session.query( model.Debtag.facet ).distinct():
-        facets.append(facet[0])
+def get_facets_and_tags():
+    """Get a dictionary of facets and tags from the database
 
-    return facets
+    Resulting data structure:
+    {
+        'X Window System':
+        {
+            facet: 'x11',
+            tags: ( Debtag1, Debtag2, Debtag3 )
+        }
+    }"""
+    # The INI file can contains information on blacklisted tags and facets
+    facets_blacklist = config['debshots.debtags_facets_blacklist'].split()
+    tags_blacklist = config['debshots.debtags_tags_blacklist'].split()
+    facets_ignorelist = config['debshots.debtags_facets_ignorelist'].split()
+    tags_ignorelist = config['debshots.debtags_tags_ignorelist'].split()
+    log.debug("Tags ignorelist: %s", tags_ignorelist)
+
+    categories = {}
+    # Collect the facets (categories)
+    for facet,facet_description in meta.Session.query( Debtag.facet, Debtag.facet_description ).distinct().filter(Debtag.facet != None):
+        if facet in facets_ignorelist or facet in facets_blacklist:
+            log.debug("Ignoring facet: %s", facet)
+            continue
+        category = facet_description.splitlines()[0]
+        log.debug("Category: %s (%s)", category, facet)
+
+        # Collect all debtags belonging to a facet
+        all_tags = meta.Session.query(Debtag) \
+                .filter(Debtag.tag.startswith(facet+u'::')) \
+                .filter(~(Debtag.tag.endswith(u'::TODO'))) \
+                .all()
+        # Filter out facets we are supposed to ignore according to the INI file
+        tags = []
+        for tag in all_tags:
+            if tag.tag in tags_ignorelist or tag.tag in tags_blacklist:
+                log.debug("Ignoring tag: %s", tag.tag)
+                continue
+            tags.append(tag)
+        categories[category]={}
+        categories[category]['facet']=facet
+        categories[category]['tags']=tags
+
+    return categories
 
 #----------
 

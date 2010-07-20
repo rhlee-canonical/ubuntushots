@@ -47,9 +47,7 @@ class StartController(BaseController):
         c.gallery_switch_time = config.get('debshots.gallery_switch_time', 5000)
 
         # Get facets and tags from the database
-        c.facets = model.get_facets_and_tags()
-
-        print c.facets
+        c.facets_and_tags = model.get_facets_and_tags()
 
         rendered = render('/start/index.mako')
         app_globals.cache.set('debshots:front_page', rendered)

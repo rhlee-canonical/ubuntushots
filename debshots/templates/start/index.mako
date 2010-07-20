@@ -59,59 +59,30 @@ $(document).ready(function() {
 </div>
 
 ## Center: debtags
+##<pre>
+##    % for facet in c.facets_and_tags:
+##        Facet: ${facet} (${c.facets_and_tags[facet]['facet']})
+##        % for tag in c.facets_and_tags[facet]['tags']:
+##            - ${ tag.description_short } (${tag.tag})
+##        % endfor
+##    % endfor
+</pre>
 <div id="tagtable">
     <h1>Browse the packages by category:</h1>
     <table>
         <tr>
+        % for facet_counter,facet in enumerate(c.facets_and_tags):
             <td>
-                <em>Accessibility support</em><br>
-                Input Systems, Text Recognition, Screen Magnification,
-                Screen Helper, Some other category
+                <em>${facet}</em><br />
+                % for tag in c.facets_and_tags[facet]['tags']:
+                ${ tag.description_short },
+                % endfor
             </td>
-            <td>
-                <em>Accessibility support</em><br>
-                Input Systems, Text Recognition, Screen Magnification,
-                Screen Helper, Some other category
-            </td>
-            <td>
-                <em>Accessibility support</em><br>
-                Input Systems, Text Recognition, Screen Magnification,
-                Screen Helper, Some other category
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <em>Accessibility support</em><br>
-                Input Systems, Text Recognition, Screen Magnification,
-                Screen Helper, Some other category
-            </td>
-            <td>
-                <em>Accessibility support</em><br>
-                Input Systems, Text Recognition, Screen Magnification,
-                Screen Helper, Some other category
-            </td>
-            <td>
-                <em>Accessibility support</em><br>
-                Input Systems, Text Recognition, Screen Magnification,
-                Screen Helper, Some other category
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <em>Accessibility support</em><br>
-                Input Systems, Text Recognition, Screen Magnification,
-                Screen Helper, Some other category
-            </td>
-            <td>
-                <em>Accessibility support</em><br>
-                Input Systems, Text Recognition, Screen Magnification,
-                Screen Helper, Some other category
-            </td>
-            <td>
-                <em>Accessibility support</em><br>
-                Input Systems, Text Recognition, Screen Magnification,
-                Screen Helper, Some other category
-            </td>
+            % if facet_counter % 4 == 3:
+                </tr>
+                <tr>
+            % endif
+        % endfor
         </tr>
     </table>
 </div>
