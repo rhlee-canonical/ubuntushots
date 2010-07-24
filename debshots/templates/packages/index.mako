@@ -6,60 +6,37 @@
 
 % if c.packages:
     <% pager = c.packages.pager('Page: $link_previous $link_next ~10~') %>
+    <ul class="quicksand">
     <p>${ pager}</p>
-    <table>
-        <tr>
-            <th>Package</th>
-            <th>Description</th>
-            <th>Section</th>
-##            <th>Homepage</th>
-            <th>Contribute</th>
-        </tr>
     % for package in c.packages:
-        <tr>
-            <td>
-                ${ h.tags.link_to(package.name, h.url('package', package=package.name)) }
-            </td>
-            <td>
-                ${ package.description }
-            </td>
-            <td>
-                ${ package.section }
-            </td>
-##            <td>
-##                % if package.homepage:
-##                ${ h.tags.link_to(
-##                    package.homepage,
-##                    package.homepage
-##                    ) }
-##                % endif
-##            </td>
-            ## Show link to upload screenshots
-            <td>
-                ${ h.tags.link_to('Upload a screenshot', h.url('upload', package=package.name)) }
-            </td>
-
-        </tr>
+    <li data-id="pkg-${ package.id }">
+        <!--<i>${ package.description }</i>-->
+        <!--${ package.section }-->
+        <!--## Show link to upload screenshots-->
+        <!--${ h.tags.link_to('Upload a screenshot', h.url('upload', package=package.name)) }-->
         ## Second line shows screenshots
         <% my_or_approved_screenshots = package.my_or_approved_screenshots %>
         % if my_or_approved_screenshots:
-        <tr>
-            <td></td>
-            <td colspan="4">
             <div class="screenshots">
-            % for screenshot in my_or_approved_screenshots:
+##            % for screenshot in my_or_approved_screenshots:
+                <% screenshot = my_or_approved_screenshots[0] %>
                 <a class="image" href="${screenshot.large_image_url}"
                     title="Screenshot of package '${screenshot.package.name}'">
                     <img src="${screenshot.small_image_url}" alt="Screenshot" />
                 </a>
-            % endfor
+##            % endfor
             </div>
-            </td>
-        </tr>
+            <div class="textcenter">
+                ${ h.tags.link_to(package.name, h.url('package', package=package.name)) }
+            </div>
+        % else:
+            ## Show dummy screenshot
+            ${ '/images/dummy-thumbnail.png', 'No screenshot' }
         % endif
+    </li>
     % endfor
-    </table>
     <p>${ pager}</p>
+    </ul>
 % else:
-    <p>No packages with screenshots found.</p>
+    <p>No packages found.</p>
 % endif

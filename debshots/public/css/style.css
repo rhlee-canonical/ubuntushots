@@ -321,7 +321,7 @@ a.image, a.image:hover {
 /* Screenshot thumbnails */
 .screenshot {
     border: 1px solid #c0c0c0;
-    float: left;
+    /*float: left;*/
     padding: 0.5em;
     margin-right: 1em;
     margin-bottom: 1em;
@@ -435,3 +435,29 @@ div.jGrowl div.jGrowl-closer {
 	opacity: 0.85;
 }
 #tooltip h3, #tooltip div { margin: 0; }
+
+
+/* Quicksand jQuery plugin based screenshot overview */
+ul.quicksand li {
+    display:block;
+    float:left;
+    margin: 10px;
+    width: 170px;
+    height: 150px;
+
+    border: 1px solid #a0a0a0;
+    padding: 0.5em 1em 0.5em 1em;
+    -moz-border-radius: .5em;
+    -webkit-border-radius: .5em;
+    border-radius: .5em;
+
+    text-align: center;
+}
+
+/*ul li {*/
+    /*list-style:square outside none;*/
+/*}*/
+
+.textcenter {
+    text-align: center;
+}
