@@ -55,7 +55,8 @@
 % if c.package.debtags:
     <h2>Tags
 	<img src="/icons/help.png" title="Debtags are an invention of Enrico Zini to
-	help classify Debian packages. See debtags.alioth.debian.org" class="tooltip" />
+	help classify Debian packages. See debtags.alioth.debian.org" class="tooltip"
+	alt="Tooltip" />
     </h2>
     <ul>
     % for facet, facet_data in c.package.tags_grouped_by_facet.iteritems():
@@ -135,11 +136,12 @@
             ## Hidden field to enter the reason for markedfordelete
             <div id="markfordelete-form-${screenshot.id}" style="display: none">
                 ${ h.tags.form(h.url('delete_screenshot', screenshot=screenshot.id))}
-                Why should it get removed?
+                <p>Why should it get removed?
                 <br />
                 ${ h.tags.text('reason', size=20, maxlength=100) }
                 <br />
                 ${ h.tags.submit('submit', 'Okay') }
+		</p>
                 </form>
             </div>
         % endif
