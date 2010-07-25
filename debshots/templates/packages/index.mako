@@ -2,14 +2,11 @@
 <%inherit file="/base.mako"/>
 
 <%include file="/packages/include-index-header.mako"/>
-<%include file="/packages/include-js-flyout.mako"/>
+<script type="application/x-javascript" src="/javascript/handlers.js"></script>
 
 <script type="application/x-javascript">
 $(document).ready(function() {
-    $('#screenshots').cycle({
-		fx: 'fade',
-                timeout: 3000
-	});
+    inithandlers();
 });
 </script>
 
@@ -17,7 +14,5 @@ $(document).ready(function() {
 <h1>AJAX AREA!</h1>
 
 <%include file="/packages/ajax-index.mako" />
-
-<!--<p style="clear: both"></p>-->
 
 </div>

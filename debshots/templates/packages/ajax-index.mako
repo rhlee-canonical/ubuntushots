@@ -1,9 +1,22 @@
 # -*- coding: utf-8 -*-
 <!-- List of packages from ajax-index.mako -->
+
 % if c.packages:
-    <% pager = c.packages.pager('Page: $link_previous $link_next ~10~') %>
-    <ul class="quicksand">
+    ## Run the Javascript/jQuery handlers defined in index.mako.
+    ## This is done deliberately within the AJAX-loadable area so that handlers
+    ## get properly initialised when an AJAX requests dynamically loaded new thumbnails.
+    <script type="application/x-javascript">
+        inithandlers();
+    </script>
+
+    <%
+        pager = c.packages.pager('Page: $link_previous ~10~ $link_next ',
+            symbol_previous=h.tags.literal("&larr;"),
+            symbol_next=h.tags.literal("&rarr;"),
+            onclick="$('#ajaxarea').load('$partial_url'); return false;")
+    %>
     <p>${ pager}</p>
+    <ul class="quicksand">
     % for package in c.packages:
     <li data-id="pkg-${ package.id }" style="position: relative">
         <!--<i>${ package.description }</i>-->
@@ -13,7 +26,7 @@
         ## Second line shows screenshots
         <% my_or_approved_screenshots = package.my_or_approved_screenshots %>
         % if my_or_approved_screenshots:
-            <div class="screenshots" id="screenshots">
+            <div class="screenshots">
             % for screenshot in my_or_approved_screenshots:
                 <a class="image" href="${screenshot.large_image_url}"
                     title="Screenshot of package '${screenshot.package.name}'">
@@ -30,8 +43,8 @@
         </div>
     </li>
     % endfor
-    <p>${ pager}</p>
     </ul>
+    <p>${ pager}</p>
 % else:
     <p>No packages found.</p>
 % endif
