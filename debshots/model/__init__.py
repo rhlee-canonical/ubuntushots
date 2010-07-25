@@ -322,7 +322,7 @@ def get_facets_and_tags():
         {
             facet: 'x11',
             tags: ( Debtag1, Debtag2, Debtag3 )
-        }
+        },  ...
     }"""
     # The INI file can contains information on blacklisted tags and facets
     facets_blacklist = config['debshots.debtags_facets_blacklist'].split()
