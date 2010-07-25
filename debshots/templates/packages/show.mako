@@ -3,16 +3,10 @@
 
 <%inherit file="/base.mako"/>
 
-<%include file="/packages/include-js-flyout.mako"/>
-
-## Add tooltip behavior to IMG with class 'tooltip'
 <script type="application/x-javascript">
-    $(document).ready(function() {
-        $('.tooltip').tooltip({
-            showURL: false,
-            fade: 150
-        });
-    });
+$(document).ready(function() {
+    inithandlers();
+});
 </script>
 
 <div class="graybox">

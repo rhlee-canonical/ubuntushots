@@ -37,4 +37,13 @@ function inithandlers() {
         outSpeed: 300,
         inSpeed: 300
     });
+
+
+    // Add tooltip behavior to IMG with class 'tooltip'
+        $(document).ready(function() {
+            $('.tooltip').tooltip({
+                showURL: false,
+                fade: 150
+            });
+        });
 };
