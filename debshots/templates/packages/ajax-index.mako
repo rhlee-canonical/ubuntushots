@@ -13,14 +13,13 @@
         ## Second line shows screenshots
         <% my_or_approved_screenshots = package.my_or_approved_screenshots %>
         % if my_or_approved_screenshots:
-            <div class="screenshots">
-##            % for screenshot in my_or_approved_screenshots:
-                <% screenshot = my_or_approved_screenshots[0] %>
+            <div class="screenshots" id="screenshots">
+            % for screenshot in my_or_approved_screenshots:
                 <a class="image" href="${screenshot.large_image_url}"
                     title="Screenshot of package '${screenshot.package.name}'">
                     <img src="${screenshot.small_image_url}" alt="Screenshot" />
                 </a>
-##            % endfor
+            % endfor
             </div>
         % else:
             ## Show dummy screenshot

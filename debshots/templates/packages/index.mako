@@ -4,6 +4,15 @@
 <%include file="/packages/include-index-header.mako"/>
 <%include file="/packages/include-js-flyout.mako"/>
 
+<script type="application/x-javascript">
+$(document).ready(function() {
+    $('#screenshots').cycle({
+		fx: 'fade',
+                timeout: 3000
+	});
+});
+</script>
+
 <div id="ajaxarea">
 <h1>AJAX AREA!</h1>
 
