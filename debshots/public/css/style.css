@@ -439,8 +439,10 @@ div.jGrowl div.jGrowl-closer {
 
 /* Quicksand jQuery plugin based screenshot overview */
 ul.quicksand li {
-    display:block;
-    float:left;
+    /*display:block;*/
+    /*float:left;*/
+    display: inline-block;
+    vertical-align: top;
     margin: 10px;
     width: 170px;
     height: 150px;
