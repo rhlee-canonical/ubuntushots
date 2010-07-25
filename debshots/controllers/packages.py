@@ -16,7 +16,6 @@ from webhelpers.feedgenerator import Rss201rev2Feed
 
 from hashlib import md5
 
-
 log = logging.getLogger(__name__)
 
 class ValidateExistingDebianPackage(formencode.Schema):
@@ -28,7 +27,32 @@ class ValidateExistingDebianPackage(formencode.Schema):
     allow_extra_fields = True
 
 class PackagesController(BaseController):
-    def index(self):
+
+    def index(self, ajax=False):
+        """Show a list of all available packages
+
+        Filtering takes place via AJAX calls"""
+        packages = model.Package.q()
+        search = request.params.get('search')
+        debtags_search = request.params.get('debtag')
+        packages = _filter(packages, search=search, debtags_search=debtags_search)
+
+        c.packages = h.paginate.Page(packages,
+            items_per_page=10,
+            page=request.params.get('page'),
+            search=search,
+            debtag=debtags_search,
+            )
+
+        return render('/packages/index.mako')
+
+    def ajax_index(self):
+        """Returns the content of the packages list area for updates through AJAX calls"""
+        return render('/packages/index.mako')
+
+
+
+    def indexOLD(self):
         """Show a list of packages with screenshots"""
         packages = model.Package.q()
 
@@ -553,3 +577,34 @@ def _process_screenshot(filehandle, package, version, description):
         image.save(image_path)
 
     return None # Success
+
+def _filter(packages, with_screenshots_only=False, search=None, debtags_search=None):
+    """Filter a query of packages by given criteria"""
+    # Only show packages with approved screenshots or the user's own screenshots
+    # (JOINing reduces the packages to those which have corresponding screenshots)
+    cookie_hash = my.client_cookie_hash()
+    if with_screenshots_only:
+        packages = packages.distinct().join('screenshots')
+        packages = packages.filter(
+            (model.Screenshot.approved==True)
+            |
+            (cookie_hash is not None and model.Screenshot.uploaderhash==cookie_hash)
+            )
+    packages = packages.options(model.orm.eagerload('screenshots'))
+
+    # Search for word
+    if search:
+        packages = packages.filter(
+            (model.Package.name.like('%'+search+'%'))
+            |
+            (model.Package.description.ilike('%'+search+'%'))
+        )
+
+    # Search for debtag
+    if debtags_search:
+        db_debtag = model.Debtag.q().filter_by(tag=unicode(debtags_search)).first()
+        if not db_debtag:
+            abort(404, 'Sorry, no packages with this debtag could be found.')
+        packages = packages.join('debtags').filter(model.Debtag.tag==unicode(debtags_search))
+
+    return packages
