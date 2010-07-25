@@ -28,7 +28,7 @@ class ValidateExistingDebianPackage(formencode.Schema):
 
 class PackagesController(BaseController):
 
-    def index(self, ajax=False):
+    def index(self):
         """Show a list of all available packages
 
         Filtering takes place via AJAX calls"""
@@ -44,7 +44,12 @@ class PackagesController(BaseController):
             debtag=debtags_search,
             )
 
-        return render('/packages/index.mako')
+        if 'partial' in request.params:
+            ## Return only part of the page for AJAX updates
+            return render('/packages/ajax-index.mako')
+        else:
+            ## Return the full page
+            return render('/packages/index.mako')
 
     def ajax_index(self):
         """Returns the content of the packages list area for updates through AJAX calls"""
