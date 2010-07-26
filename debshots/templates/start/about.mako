@@ -32,7 +32,7 @@
     huge pool of packages visually. It is obviously much easier to just look at
     screenshots than install various packages just to try them out.
     And other users are not even aware they are using this site. This is because
-    tools like "Synaptic" or Ubuntu's "Software Center" is loading screenshots from here.
+    tools like "Synaptic" or Ubuntu's "Software Center" are loading screenshots from here.
 </p>
 
 <h1>How you can use the screenshots</h1>
