@@ -20,17 +20,6 @@ function inithandlers() {
             speed: 500
 	});
 
-    /*
-    ## Use the 'quicksand' jQuery plugin to smoothly change from one page of displayed
-    ## thumbnails to another. See also: http://razorjack.net/quicksand/demos/ajax.html
-    ##$('#load-webbies a.button').click(function(e) {
-    ##  $.get( $(this).attr('href'), function(data) {
-    ##      $('.webbies').quicksand( $(data).find('li'), { adjustHeight: 'dynamic' } );
-    ##  });
-    ##  e.preventDefault();
-    ##});
-    */
-
     // Flyout shows the large screenshots when clicking on the thumbnails
     $('.screenshots a.image').flyout({
         loadingSrc:'/images/spinner.gif',

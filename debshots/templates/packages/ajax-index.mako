@@ -6,17 +6,15 @@
 
         ## Define a function that gets called if the user clicks on a new page number.
         function pager_goto(url) {
-            ##$('#ajaxarea').load(url);
-            $('#quicksand-new').load(url+ "#quicksand li", function () {
-                $('#quicksand').quicksand('#quicksand-new li', function () {
-                    inithandlers();
-                    });
-            });
+            ## Dim the div.ajaxrea and load the new page
+            $('#ajaxarea').css('opacity', 0.5).load(url);
         };
 
-        ## Run the Javascript/jQuery handlers defined in index.mako. This is done deliberately
-        ## within the AJAX-loadable area so that handlers get properly initialised when an AJAX
-        ## requests dynamically loaded new thumbnails.
+        $(document).ready(function() {
+            ## Set div.ajaxarea back to full opaqueness
+            $('#ajaxarea').css('opacity', 1);
+            inithandlers();
+        });
     </script>
 
     <%
@@ -37,14 +35,8 @@
         <% my_or_approved_screenshots = package.my_or_approved_screenshots %>
         % if my_or_approved_screenshots:
             <div class="screenshots">
-            % for nr,screenshot in enumerate(my_or_approved_screenshots):
-                <%
-                    if nr>=1:
-                        hidden='display:none;'
-                    else:
-                        hidden=''
-                %>
-                <a class="image" href="${screenshot.large_image_url}" style="${hidden}"
+            % for screenshot in my_or_approved_screenshots:
+                <a class="image" href="${screenshot.large_image_url}"
                     title="Screenshot of package '${screenshot.package.name}'">
                     <img src="${screenshot.small_image_url}" alt="Screenshot" />
                 </a>
@@ -60,13 +52,6 @@
     </li>
     % endfor
     </ul>
-
-    ## Have a LI element ready for transitions from the current set of thumbnails/packages
-    ## to a new set (e.g. when changing filter criteria or switching to another page number)
-    <ul id="quicksand-new" style="display: none"></ul>
-    ##<pre id="quicksand-new"></pre>
-
-    ##<p>${ pager}</p>
 % else:
     <p>No packages found.</p>
 % endif
