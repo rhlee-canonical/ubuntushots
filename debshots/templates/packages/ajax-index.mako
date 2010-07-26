@@ -2,33 +2,49 @@
 <!-- List of packages from ajax-index.mako -->
 
 % if c.packages:
-    ## Run the Javascript/jQuery handlers defined in index.mako.
-    ## This is done deliberately within the AJAX-loadable area so that handlers
-    ## get properly initialised when an AJAX requests dynamically loaded new thumbnails.
     <script type="application/x-javascript">
-        inithandlers();
+
+        ## Define a function that gets called if the user clicks on a new page number.
+        function pager_goto(url) {
+            ##$('#ajaxarea').load(url);
+            $('#quicksand-new').load(url+ "#quicksand li", function () {
+                $('#quicksand').quicksand('#quicksand-new li', function () {
+                    inithandlers();
+                    });
+            });
+        };
+
+        ## Run the Javascript/jQuery handlers defined in index.mako. This is done deliberately
+        ## within the AJAX-loadable area so that handlers get properly initialised when an AJAX
+        ## requests dynamically loaded new thumbnails.
     </script>
 
     <%
         pager = c.packages.pager('Page: $link_previous ~10~ $link_next ',
             symbol_previous=h.tags.literal("&larr;"),
             symbol_next=h.tags.literal("&rarr;"),
-            onclick="$('#ajaxarea').load('$partial_url'); return false;")
+            onclick="pager_goto('$partial_url'); return false")
     %>
     <p>${ pager}</p>
-    <ul class="quicksand">
+    <ul class="quicksand" id="quicksand">
     % for package in c.packages:
     <li data-id="pkg-${ package.id }" style="position: relative">
-        <!--<i>${ package.description }</i>-->
-        <!--${ package.section }-->
-        <!--## Show link to upload screenshots-->
-        <!--${ h.tags.link_to('Upload a screenshot', h.url('upload', package=package.name)) }-->
+        ##<i>${ package.description }</i>
+        ##${ package.section }
+        ## Show link to upload screenshots
+        ##${ h.tags.link_to('Upload a screenshot', h.url('upload', package=package.name)) }
         ## Second line shows screenshots
         <% my_or_approved_screenshots = package.my_or_approved_screenshots %>
         % if my_or_approved_screenshots:
             <div class="screenshots">
-            % for screenshot in my_or_approved_screenshots:
-                <a class="image" href="${screenshot.large_image_url}"
+            % for nr,screenshot in enumerate(my_or_approved_screenshots):
+                <%
+                    if nr>=1:
+                        hidden='display:none;'
+                    else:
+                        hidden=''
+                %>
+                <a class="image" href="${screenshot.large_image_url}" style="${hidden}"
                     title="Screenshot of package '${screenshot.package.name}'">
                     <img src="${screenshot.small_image_url}" alt="Screenshot" />
                 </a>
@@ -44,7 +60,13 @@
     </li>
     % endfor
     </ul>
-    <p>${ pager}</p>
+
+    ## Have a LI element ready for transitions from the current set of thumbnails/packages
+    ## to a new set (e.g. when changing filter criteria or switching to another page number)
+    <ul id="quicksand-new" style="display: none"></ul>
+    ##<pre id="quicksand-new"></pre>
+
+    ##<p>${ pager}</p>
 % else:
     <p>No packages found.</p>
 % endif

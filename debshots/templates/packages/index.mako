@@ -10,9 +10,7 @@ $(document).ready(function() {
 });
 </script>
 
+## Include the contents of the first page of thumbnails/packages
 <div id="ajaxarea">
-<h1>AJAX AREA!</h1>
-
 <%include file="/packages/ajax-index.mako" />
-
 </div>
