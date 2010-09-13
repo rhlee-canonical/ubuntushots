@@ -16,6 +16,11 @@ from webhelpers.feedgenerator import Rss201rev2Feed
 
 from hashlib import md5
 
+# Include python-debian and python-apt modules to be able to compare package versions
+# according to the debian versioning algorithm.
+#from debian.debian_support import version_compare, NativeVersion
+import apt_pkg
+apt_pkg.init()
 
 log = logging.getLogger(__name__)
 
@@ -210,14 +215,62 @@ class PackagesController(BaseController):
 
         return self._image_by_path(file_path)
 
-    def _image_by_package(self, package, size):
+    def _pick_best_version(self, this_package, needle_version, size='large'):
+        """Using the result from a Package.q() query try to
+        find the best version available. This algorithm collects all image
+        versions of a package and determines the (second) newest version.
+        E.g. if there are version 1.0 and 2.0 and the user is looking for
+        a screenshot of version 1.5 then the 1.0 version is returned.
+        This way the user does not see a screenshot of version 2.0 because
+        2.0 might contain features that were not there in version 1.5.
+
+        :return: image_path for the found image
+        """
+        log.debug("_pick_best_version for version %s", needle_version)
+        versions_to_path = {}
+        for shot in this_package.screenshots:
+            #screenshot_version = NativeVersion(shot.version).upstream_version
+            log.debug("Image #%i has version %s", shot.id, shot.version)
+            screenshot_version = apt_pkg.upstream_version(shot.version)
+            versions_to_path[screenshot_version] = shot.image_path(size)
+
+        # now find the next smaller version, its better to show
+        # a lower one as it will not display features that the version
+        # he looks for does not have yet
+        log.debug("Array of versions: %r", versions_to_path.keys())
+        sorted_versions = sorted(versions_to_path.keys(),
+                                 cmp=apt_pkg.version_compare,
+                                 reverse=True)
+        log.debug("Sorted array of versions: %r", sorted_versions)
+
+        # Look for the package
+        for ver in sorted_versions:
+            log.debug("Comparing (wanted) %s to (this) %s", needle_version, ver)
+            if apt_pkg.version_compare(needle_version, ver) >= 0:
+                log.debug("Returning image for version %s ", ver)
+                return versions_to_path[ver]
+
+        # Could not find any useful screenshot. Returning the newest one.
+        image = this_package.screenshots[-1]
+        log.debug("No good match found. Only newer screenshots. Returning the oldest one: %s",
+                image.version)
+        return image.image_path(size)
+
+    def _image_by_package(self, package, size, version=None):
         """Return a thumbnail image or a dummy image for a certain package."""
 
-        log.debug("Image requested. Size=%s. Package=%s.", size, package)
+        log.debug("Image requested. Size=%s. Package=%s. Version=%s", size, package, version)
 
+        if version:
+            #version = NativeVersion(version).upstream_version
+            version = apt_pkg.upstream_version(version)
+            md5str = md5(package.encode('utf8')+
+                         version.encode('utf8')).hexdigest()
+        else:
+            md5str = md5(package.encode('utf8')).hexdigest()
         # To save database queries we use memcached to store information
         # on whether a certain package has screenshots or not.
-        cache_key = 'package_image:%s:%s' % (size, md5(package.encode('utf8')).hexdigest())
+        cache_key = 'package_image:%s:%s' % (size, md5str)
         file_path = app_globals.cache.get(cache_key)
 
         if file_path is None:
@@ -233,7 +286,12 @@ class PackagesController(BaseController):
             else:
                 # The package has screenshots. Store the path to the image
                 # in memcached so next time we have the information readily available.
-                file_path = this_package.screenshots[0].image_path(size)
+                #file_path = this_package.screenshots[0].image_path(size)
+                if not version:
+                    file_path = this_package.screenshots[0].image_path(size)
+                else:
+                    file_path = self._pick_best_version(this_package, version, size)
+
                 log.debug('Screenshot found at: %s', file_path)
 
             # Store the information in memcached. It is valid for 5 minutes.
@@ -335,9 +393,21 @@ class PackagesController(BaseController):
         """Return a thumbnail image of a certain package's screenshot"""
         return self._image_by_package(package=package, size='small')
 
+    def thumbnail_with_version(self, package, version):
+        """Return a thumbnail image of a certain package's screenshot
+           and try to find a version as close to the users version as
+           possible"""
+        return self._image_by_package(package=package, size='small', version=version)
+
     def screenshot(self, package):
         """Return a full-size image of a certain package's screenshot"""
         return self._image_by_package(package=package, size='large')
+
+    def screenshot_with_version(self, package, version):
+        """Return a full-size image of a certain package's screenshot
+           and try to find a version as close to the users version as
+           possible"""
+        return self._image_by_package(package=package, size='large', version=version)
 
     def delete_screenshot(self, screenshot):
         this_screenshot = model.Screenshot.q().get(screenshot)

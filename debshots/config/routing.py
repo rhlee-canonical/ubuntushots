@@ -67,10 +67,17 @@ def make_map():
     map.connect('thumbnail', '/thumbnail/:package', controller='packages', action='thumbnail')
     # URL used by the Ubuntu software center
     map.connect('thumbnail-404', '/thumbnail-404/:package', controller='packages', action='thumbnail')
+    # URL to get a thumbnail by version
+    map.connect('thumbnail-with-version', '/thumbnail-with-version/:package/:version',
+            controller='packages', action='thumbnail_with_version')
     # Same for the large image
     map.connect('screenshot', '/screenshot/:package', controller='packages', action='screenshot')
     # URL used by the Ubuntu software center
     map.connect('screenshot-404', '/screenshot-404/:package', controller='packages', action='screenshot')
+    # URL used by Ubuntu to to get a screenshot by the version
+    map.connect('screenshot-with-version', '/screenshot-with-version/:package/:version',
+            controller='packages', action='screenshot_with_version')
+
 
     # Action to delete a screenshot (admin-only) or request its removal (users)
     map.connect('delete_screenshot', '/delete_screenshot/:screenshot',
@@ -96,4 +103,3 @@ def make_map():
 
 
     return map
-
