@@ -16,13 +16,55 @@ from webhelpers.feedgenerator import Rss201rev2Feed
 
 from hashlib import md5
 
-# Include python-debian and python-apt modules to be able to compare package versions
-# according to the debian versioning algorithm.
-#from debian.debian_support import version_compare, NativeVersion
-import apt_pkg
-apt_pkg.init()
-
 log = logging.getLogger(__name__)
+
+# different version compare/upstream ver methods from the various modules
+def version_compare_libapt_new(a, b):
+    return apt_pkg.version_compare(a, b)
+def version_compare_libapt_old(a, b):
+    return apt_pkg.VersionCompare(a, b)
+def version_compare_python_debian(a, b):
+    return debian.version_compare(a, b)
+
+def upstream_version_libapt_new(a):
+    return apt_pkg.upstream_version(a)
+def upstream_version_libapt_old(a):
+    return apt_pkg.UpstreamVersion(a)
+def upstream_version_python_debian(a):
+    return debian.NativeVersion(a).upstream_version
+
+# try to figure out what version to use
+try:
+    log.debug("looking for python-apt")
+    import apt_pkg
+    if hasattr(apt_pkg, "version_compare"):
+        apt_pkg.init()
+        log.debug("found new python-apt")
+        version_compare = version_compare_libapt_new
+        upstream_version = upstream_version_libapt_new
+    else:
+        log.debug("found old python-apt")
+        apt_pkg.init()
+        version_compare = version_compare_libapt_old
+        upstream_version = upstream_version_libapt_old
+except Exception, e:
+    logging.debug("looking for python-debian")
+    try:
+        try:
+            import debian
+            logging.debug("found new python-debian")
+        except ImportError:
+            import debian_bundle as debian
+            loggng.debug("found old python-debian")
+        # explicitely tell python-debian to not use libapt
+        # even if it thinks its available to avoid confusion
+        # with old python-apt/new python-apt
+        debian._have_apt_pkg = False
+        version_compare = version_compare_python_debian
+        upstream_version = upstream_version_python_debian
+    except:
+        logging.error("no version compare algorithm found")
+
 
 class ValidateExistingDebianPackage(formencode.Schema):
     """formencode validation schema for uploading new screenshots"""
@@ -229,9 +271,8 @@ class PackagesController(BaseController):
         log.debug("_pick_best_version for version %s", needle_version)
         versions_to_path = {}
         for shot in this_package.screenshots:
-            #screenshot_version = NativeVersion(shot.version).upstream_version
             log.debug("Image #%i has version %s", shot.id, shot.version)
-            screenshot_version = apt_pkg.upstream_version(shot.version)
+            screenshot_version = upstream_version(shot.version or '0') # cope with version=None
             versions_to_path[screenshot_version] = shot.image_path(size)
 
         # now find the next smaller version, its better to show
@@ -239,22 +280,23 @@ class PackagesController(BaseController):
         # he looks for does not have yet
         log.debug("Array of versions: %r", versions_to_path.keys())
         sorted_versions = sorted(versions_to_path.keys(),
-                                 cmp=apt_pkg.version_compare,
+                                 cmp=version_compare,
                                  reverse=True)
         log.debug("Sorted array of versions: %r", sorted_versions)
 
         # Look for the package
         for ver in sorted_versions:
             log.debug("Comparing (wanted) %s to (this) %s", needle_version, ver)
-            if apt_pkg.version_compare(needle_version, ver) >= 0:
+            if version_compare(needle_version, ver) >= 0:
                 log.debug("Returning image for version %s ", ver)
                 return versions_to_path[ver]
 
         # Could not find any useful screenshot. Returning the newest one.
-        image = this_package.screenshots[-1]
-        log.debug("No good match found. Only newer screenshots. Returning the oldest one: %s",
-                image.version)
-        return image.image_path(size)
+        oldest_version = sorted_versions[-1]
+        image_path = versions_to_path[oldest_version]
+        log.debug("No good match found. Only newer screenshots. Taking oldest version: %s",
+                oldest_version)
+        return image_path
 
     def _image_by_package(self, package, size, version=None):
         """Return a thumbnail image or a dummy image for a certain package."""
@@ -262,8 +304,7 @@ class PackagesController(BaseController):
         log.debug("Image requested. Size=%s. Package=%s. Version=%s", size, package, version)
 
         if version:
-            #version = NativeVersion(version).upstream_version
-            version = apt_pkg.upstream_version(version)
+            version = upstream_version(version)
             md5str = md5(package.encode('utf8')+
                          version.encode('utf8')).hexdigest()
         else:
