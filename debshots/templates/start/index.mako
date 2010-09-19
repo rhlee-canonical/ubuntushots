@@ -23,20 +23,22 @@ $(document).ready(function() {
     % for pkg in c.packages_with_newest_screenshots:
         <% screenshot = pkg.screenshots[0] %>
         <div>
-            ## TODO: add link to package details page
-            <table><tr>
-                <td class="noborder">
-                    ${ h.tags.image(screenshot.small_image_url, alt='Screenshot of package %s' % pkg.name) }
-                </td>
-                <td class="noborder">
-                    <div>
-                        <b>${ pkg.name }</b>
-                    </div>
-                    <p>
-                        ${ pkg.description }
-                    </p>
-                </td>
-            </tr></table>
+            ## Link to package's page
+            <a href="${ h.url('package', package=pkg.name) }">
+                <table><tr>
+                    <td class="noborder">
+                        ${ h.tags.image(screenshot.small_image_url, alt='Screenshot of package %s' % pkg.name) }
+                    </td>
+                    <td class="noborder">
+                        <div>
+                            <b>${ pkg.name }</b>
+                        </div>
+                        <p>
+                            ${ pkg.description }
+                        </p>
+                    </td>
+                </tr></table>
+            </a>
         </div>
     % endfor
     </div>
