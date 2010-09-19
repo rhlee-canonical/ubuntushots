@@ -129,7 +129,9 @@
     href="http://nixboxdesigns.com/demos/jquery-image-flyout.php">flyout</a>, <a
     href="http://bassistance.de/jquery-plugins/jquery-plugin-autocomplete/">autocomplete</a>,
     <a href="http://stanlemon.net/projects/jgrowl.html">jGrowl</a> and <a
-    href="http://malsup.com/jquery/cycle/">cycle</a> plugins.
+    href="http://malsup.com/jquery/cycle/">cycle</a> plugins. Further code has been
+    contributed by Michael Vogt - programmer of Synaptic and Ubuntu's
+    <em>Software Center</em>.
 </p>
 
 <p>
