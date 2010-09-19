@@ -6,3 +6,4 @@ pastescript>=1.7.3
 paste>=1.7.3
 formencode>=1
 python-memcached
+pygooglechart
