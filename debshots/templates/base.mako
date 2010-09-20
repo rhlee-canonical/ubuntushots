@@ -19,6 +19,7 @@
         '/javascript/jquery.jgrowl.js', ## message popup balloons
         '/javascript/jquery.tooltip.js', ## tooltip popups (for facets descriptions)
         '/javascript/jquery.cycle.js', ## new uploads slideshow on the front page
+        '/javascript/jquery.easyAccordion.js', ## debtags accordian effect on front page
         '/javascript/handlers.js', ## new uploads slideshow on the front page
         ) }
     <link rel="alternate" href="/rss" title="RSS Feed" type="application/rss+xml" />

@@ -8,6 +8,19 @@ $(document).ready(function() {
                 timeout: ${ c.gallery_switch_time }
 	});
 
+    $('.facet').hover(function() {
+        $(this).find('div.tags').show();
+    }, function() {
+        $(this).find('div.tags').hide();
+    });
+
+    $('#accordion-1').easyAccordion({
+        slideNum: false
+                    //autoStart: true
+                    //slideInterval: 3000
+    });
+
+
     $('input#searchterm').focus();
 });
 </script>
@@ -68,23 +81,46 @@ $(document).ready(function() {
 ##            - ${ tag.description_short } (${tag.tag})
 ##        % endfor
 ##    % endfor
-</pre>
-<div id="tagtable">
-    <h1>Browse the packages by category:</h1>
-    <table>
-        <tr>
-        % for facet_counter,facet in enumerate(c.facets_and_tags):
-            <td>
-                <em>${facet}</em><br />
-                % for tag in c.facets_and_tags[facet]['tags']:
-                ${ tag.description_short },
-                % endfor
-            </td>
-            % if facet_counter % 4 == 3:
-                </tr>
-                <tr>
-            % endif
-        % endfor
-        </tr>
-    </table>
-</div>
+##</pre>
+##<div id="tagtable">
+##    <h1>Browse the packages by category:</h1>
+##    <table>
+##        <tr>
+##        % for facet_counter,facet in enumerate(c.facets_and_tags):
+##            <td width="25%" class="facet">
+##                <em>${facet}</em><br />
+##                <div style="display: none" class="tags">
+##                    % for tag in c.facets_and_tags[facet]['tags']:
+##                        ${ tag.description_short },
+##                    % endfor
+##                </div>
+##            </td>
+##            ## New table row every four cells
+##            % if facet_counter % 4 == 3:
+##                </tr>
+##                <tr>
+##            % endif
+##        % endfor
+##        </tr>
+##    </table>
+##</div>
+##
+        <div id="accordion-1">
+
+            <dl>
+                <dt>First slide</dt>
+                <dd><h2>This is the first slide</h2><p><img src="images/monsters/img1.png" alt="Alt text to go here" />Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, enim.<br /><a href="#" class="more">Read more</a></p></dd>
+                <dt>Second slide</dt>
+                <dd><h2>Here is the second slide</h2><p><img src="images/monsters/img2.png" alt="Alt text to go here" />Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, enim.<br /><a href="#" class="more">Read more</a></p></dd>
+
+                <dt>One more slide</dt>
+                <dd><h2>One more slide to go here</h2><p><img src="images/monsters/img3.png" alt="Alt text to go here" />Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, enim.<br /><a href="#" class="more">Read more</a></p></dd>
+                <dt>Another slide</dt>
+                <dd><h2>Another slide to go here</h2><p><img src="images/monsters/img4.png" alt="Alt text to go here" />Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, enim.<br /><a href="#" class="more">Read more</a></p></dd>
+                <dt>Wow one more</dt>
+
+                <dd><h2>Unbilievable one more slide here</h2><p><img src="images/monsters/img5.png" alt="Alt text to go here" />Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, enim.<br /><a href="#" class="more">Read more</a></p></dd>
+                <dt>Last one</dt>
+                <dd><h2>This is definitely the last one</h2><p><img src="images/monsters/img6.png" alt="Alt text to go here" />Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, enim.<br /><a href="#" class="more">Read more</a></p></dd>
+            </dl>
+        </div>
