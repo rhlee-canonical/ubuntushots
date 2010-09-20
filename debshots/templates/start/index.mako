@@ -82,30 +82,25 @@ $(document).ready(function() {
 ##        % endfor
 ##    % endfor
 ##</pre>
-##<div id="tagtable">
-##    <h1>Browse the packages by category:</h1>
-##    <table>
-##        <tr>
-##        % for facet_counter,facet in enumerate(c.facets_and_tags):
-##            <td width="25%" class="facet">
-##                <em>${facet}</em><br />
-##                <div style="display: none" class="tags">
-##                    % for tag in c.facets_and_tags[facet]['tags']:
-##                        ${ tag.description_short },
-##                    % endfor
-##                </div>
-##            </td>
-##            ## New table row every four cells
-##            % if facet_counter % 4 == 3:
-##                </tr>
-##                <tr>
-##            % endif
-##        % endfor
-##        </tr>
-##    </table>
-##</div>
-##
-        <div id="accordion-1">
+<div id="tagtable">
+    <h1>Browse the packages by category:</h1>
+    <div id="accordion-1">
+    <dl>
+        % for facet_counter,facet in enumerate(c.facets_and_tags):
+                <dt>${facet}</dt>
+                <dd>
+                    % for tag in c.facets_and_tags[facet]['tags']:
+                        ${ tag.description_short },
+                    % endfor
+                </dd>
+        % endfor
+    </dl>
+    </div>
+</div>
+
+
+
+        <div id="accordion-2">
 
             <dl>
                 <dt>First slide</dt>
