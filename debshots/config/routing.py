@@ -96,6 +96,10 @@ def make_map():
 
     map.connect('rss', '/rss', controller='packages', action='rss')
 
+    # AJAX/AJAH helpers
+    map.connect('ajah-facet2tags', '/ajah/facet2tags', controller='packages',
+                action='ajah_facet2tags')
+
     # Generic controllers
     map.connect('/:controller/:action')
 

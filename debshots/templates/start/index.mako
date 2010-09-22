@@ -8,21 +8,33 @@ $(document).ready(function() {
                 timeout: ${ c.gallery_switch_time }
 	});
 
-    $('.facet').hover(function() {
-        $(this).find('div.tags').show();
+    ## Mouse-over effect on the left facets column
+    $('#tags-left div').hover(function() {
+        $(this).addClass('tag-highlighted');
     }, function() {
-        $(this).find('div.tags').hide();
+        $(this).removeClass('tag-highlighted');
     });
 
-    $('#accordion-1').easyAccordion({
-        slideNum: false
-                    //autoStart: true
-                    //slideInterval: 3000
-    });
+    ## Display facets of a tag in the middle column upon clicking on a tag
+    $('#tags-left div').click(function() {
+        ## Get the facet that was clicked
+        facet=$(this).html();
 
+        ## AJAH-load the appropriate tags into the center column
+        $('#tags-center').load('/ajah/facet2tags', { 'facet':facet }, middle_column_magic);
+    });
 
     $('input#searchterm').focus();
 });
+
+function middle_column_magic() {
+    ## Mouse-over effect on the center tags column
+    $('#tags-center div').hover(function() {
+        $(this).addClass('tag-highlighted');
+    }, function() {
+        $(this).removeClass('tag-highlighted');
+    });
+}
 </script>
 
 ## Activate Lightbox plugin for screenshots DIV
@@ -61,7 +73,7 @@ $(document).ready(function() {
 ## Top-right: Teaser and search box
 <div id="teaser-search" style="margin-left: 400px;">
     <div style="text-align: center">
-    <h1 style="font-size: 300%;">
+    <h1 style="font-size: 200%;">
         ${c.number_of_screenshots} screenshots online.<br>
         Like to add one, too?
     </h1>
@@ -82,40 +94,40 @@ $(document).ready(function() {
 ##        % endfor
 ##    % endfor
 ##</pre>
-<div id="tagtable">
-    <h1>Browse the packages by category:</h1>
-    <div id="accordion-1">
-    <dl>
-        % for facet_counter,facet in enumerate(c.facets_and_tags):
-                <dt>${facet}</dt>
-                <dd>
-                    % for tag in c.facets_and_tags[facet]['tags']:
-                        ${ tag.description_short },
-                    % endfor
-                </dd>
-        % endfor
-    </dl>
-    </div>
+
+##<div id="tagtable">
+##    <h1>Browse the packages by category:</h1>
+##    <div id="accordion-1">
+##    <dl>
+##        % for facet_counter,facet in enumerate(c.facets_and_tags):
+##                <dt>${facet}</dt>
+##                <dd>
+##                    % for tag in c.facets_and_tags[facet]['tags']:
+##                        ${ tag.description_short },
+##                    % endfor
+##                </dd>
+##        % endfor
+##    </dl>
+##    </div>
+##</div>
+
+<div id="tags-left" class="tags-box">
+    % for facet in sorted(c.facets_and_tags):
+        <div>${ facet }</div>
+    % endfor
 </div>
 
+<div id="tags-center" class="tags-box">
+    Select a category on the left
+##    <ul>
+##
+##        ${ c.facets_and_tags['Role']['tags'][0].description }
+##        <li>text</li>
+##    </ul>
+</div>
 
+<div id="tags-right" class="tags-box">
+    rechts
+</div>
 
-        <div id="accordion-2">
-
-            <dl>
-                <dt>First slide</dt>
-                <dd><h2>This is the first slide</h2><p><img src="images/monsters/img1.png" alt="Alt text to go here" />Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, enim.<br /><a href="#" class="more">Read more</a></p></dd>
-                <dt>Second slide</dt>
-                <dd><h2>Here is the second slide</h2><p><img src="images/monsters/img2.png" alt="Alt text to go here" />Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, enim.<br /><a href="#" class="more">Read more</a></p></dd>
-
-                <dt>One more slide</dt>
-                <dd><h2>One more slide to go here</h2><p><img src="images/monsters/img3.png" alt="Alt text to go here" />Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, enim.<br /><a href="#" class="more">Read more</a></p></dd>
-                <dt>Another slide</dt>
-                <dd><h2>Another slide to go here</h2><p><img src="images/monsters/img4.png" alt="Alt text to go here" />Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, enim.<br /><a href="#" class="more">Read more</a></p></dd>
-                <dt>Wow one more</dt>
-
-                <dd><h2>Unbilievable one more slide here</h2><p><img src="images/monsters/img5.png" alt="Alt text to go here" />Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, enim.<br /><a href="#" class="more">Read more</a></p></dd>
-                <dt>Last one</dt>
-                <dd><h2>This is definitely the last one</h2><p><img src="images/monsters/img6.png" alt="Alt text to go here" />Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, enim.<br /><a href="#" class="more">Read more</a></p></dd>
-            </dl>
-        </div>
+<br clear="all" />

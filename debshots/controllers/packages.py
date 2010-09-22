@@ -598,6 +598,15 @@ class PackagesController(BaseController):
         log.debug('ajax_get_version_for_package(%s) -> %s' % (query, package.version))
         return { 'version' : package.version }
 
+    def ajah_facet2tags(self):
+        """Return the facets for a certain debtag.
+
+        POST argument: tag"""
+        facet = request.params.get('facet')
+        facets_and_tags = model.get_facets_and_tags()
+        c.tags = facets_and_tags[facet]['tags']
+        return render('/packages/ajah-facet2tags.mako')
+
     def rss(self):
         """Return an RSS feed of the latest uploads"""
         feed = Rss201rev2Feed(
