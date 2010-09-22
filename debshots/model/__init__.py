@@ -8,7 +8,7 @@ from hashlib import md5
 from debshots.model import meta
 from debshots.lib import my
 #from routes import url_for
-from pylons import url,config
+from pylons import url,config,app_globals
 
 import logging
 log = logging.getLogger(__name__)
@@ -324,6 +324,12 @@ def get_facets_and_tags():
             tags: ( Debtag1, Debtag2, Debtag3 )
         },  ...
     }"""
+    # Use cache if possible
+    cached =  app_globals.cache.get('debshots:facets_and_tags')
+    if cached is not None:
+        log.debug("Delivering facets and tags from cache")
+        return cached
+
     # The INI file can contains information on blacklisted tags and facets
     facets_blacklist = config['debshots.debtags_facets_blacklist'].split()
     tags_blacklist = config['debshots.debtags_tags_blacklist'].split()
@@ -356,6 +362,8 @@ def get_facets_and_tags():
         categories[category]['facet']=facet
         categories[category]['tags']=tags
 
+    # Store hash array in cache
+    app_globals.cache.set('debshots:facets_and_tags', categories, time=300)
     return categories
 
 #----------
