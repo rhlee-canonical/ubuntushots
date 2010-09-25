@@ -8,20 +8,33 @@ $(document).ready(function() {
                 timeout: ${ c.gallery_switch_time }
 	});
 
-    ## Mouse-over effect on the left facets column
-    $('#tags-left div').hover(function() {
-        $(this).addClass('tag-highlighted');
-    }, function() {
-        $(this).removeClass('tag-highlighted');
-    });
-
     ## Display facets of a tag in the middle column upon clicking on a tag
-    $('#tags-left div').click(function() {
-        ## Get the facet that was clicked
-        facet=$(this).html();
+    //$('#tags-left div').click(function() {
+    //    ## Get the facet that was clicked
+    //    facet=$(this).html();
+    //
+    //    ## AJAH-load the appropriate tags into the center column
+    //    $('#tags-center').load('/ajah/facet2tags', { 'facet':facet }, middle_column_magic);
+    //});
 
-        ## AJAH-load the appropriate tags into the center column
-        $('#tags-center').load('/ajah/facet2tags', { 'facet':facet }, middle_column_magic);
+    ## Fill a Javascript with facets and debtags
+##    facets = new Array();
+##    tags = new Array();
+##    % for i,facet in enumerate(sorted(c.facets_and_tags)):
+##        facets[${i}]="${facet}";
+##        tags[${i}]=new Array;
+##        % for j,tag in enumerate(sorted(c.facets_and_tags[facet]['tags'])):
+##            tags[${i}][${j}]="${tag.description.splitlines()[0]}";
+##        % endfor
+##    % endfor
+
+    $('#debtags-facets span').click( function() {
+        var div_to_show = '#debtags-'+$(this).attr('id');
+        var content = $(div_to_show).html();
+        $('#tags-box').fadeOut('fast', function ()  {
+            $('#tags-box').html(content);
+            $('#tags-box').fadeIn('fast');
+        });
     });
 
     $('input#searchterm').focus();
@@ -75,7 +88,7 @@ function middle_column_magic() {
     <div style="text-align: center">
     <h1 style="font-size: 200%;">
         ${c.number_of_screenshots} screenshots online.<br>
-        Like to add one, too?
+        Like to ${ h.tags.link_to('add one', h.url('upload')) }, too?
     </h1>
 
     <h1>Search for a package/description:</h1>
@@ -111,23 +124,23 @@ function middle_column_magic() {
 ##    </div>
 ##</div>
 
-<div id="tags-left" class="tags-box">
-    % for facet in sorted(c.facets_and_tags):
-        <div>${ facet }</div>
+<div id="debtags-area">
+    <div id="debtags-facets" class="tags-box">
+        % for i,facet in enumerate(sorted(c.facets_and_tags)):
+            <span id="facet-${i}">${ facet }</span>
+        % endfor
+    </div>
+
+    <div id="tags-box" class="tags-box">
+    </div>
+
+    % for i,facet in enumerate(sorted(c.facets_and_tags)):
+    <div id="debtags-facet-${i}" style="display: none">
+        % for tag in c.facets_and_tags[facet]['tags']:
+            <span>${ tag.description.splitlines()[0] }</span>
+        % endfor
+    </div>
     % endfor
-</div>
-
-<div id="tags-center" class="tags-box">
-    Select a category on the left
-##    <ul>
-##
-##        ${ c.facets_and_tags['Role']['tags'][0].description }
-##        <li>text</li>
-##    </ul>
-</div>
-
-<div id="tags-right" class="tags-box">
-    rechts
 </div>
 
 <br clear="all" />
