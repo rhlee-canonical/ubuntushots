@@ -47,7 +47,7 @@ def make_map():
     map.connect('moderate', '/packages/moderate', controller='packages', action='moderate')
 
     # Show upload form
-    map.connect('upload', '/upload', controller='packages', action='upload', package=None)
+    map.connect('upload', '/upload', controller='packages', action='upload')
     # Deprecated link to the guidelines (now included in the upload page)
     map.connect('guidelines', '/guidelines', controller='start', action='guidelines')
     # Handle the actual upload
