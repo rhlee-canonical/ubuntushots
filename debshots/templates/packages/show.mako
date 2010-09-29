@@ -86,7 +86,7 @@ $(document).ready(function() {
 </div>
 
 ## Show approved screenshots
-<div class="screenshots">
+<div>
 <h1>Available screenshots</h1>
 <p><i>
     (These screenshots are licensed under the same terms as
