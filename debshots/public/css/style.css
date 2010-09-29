@@ -445,31 +445,36 @@ div.jGrowl div.jGrowl-closer {
 }
 
 #debtags-area {
-    padding-top: 2em;
-    font-size: 120%;
-    text-align: center;
+    /*border: 1px solid #000;*/
 }
 
-.tags-box span {
+#debtags-facets {
+    float: left;
+    width: 250px;
+    text-align: right;
+}
+
+#debtags-facets div {
+    background-color: #f0f0f0;
+    padding-right: 1em;
     cursor: pointer;
-    white-space: nowrap;
-    padding-left: 0.7em;
-    padding-right: 0.7em;
 }
 
-#debtags-facets span:hover {
+#debtags-facets div.selected {
+    background-color: #000;
+    color: #f0f0f0;
+    font-weight: bolder;
+}
+
+#debtags-facets div:hover {
     background-color: #aaa;
 }
 
-#tags-box {
-    border-top: 1px solid #000;
-    padding-top: 1em;
-    margin-top: 1em;
-}
-
-.tags-box div {
-    padding-top: 0.1em;
-    padding-bottom: 0.1em;
+#tags-box div {
+    padding: 0.2em 1em;
+    float: left;
+    cursor: pointer;
+    white-space: nowrap;
 }
 
 #admin-warning {

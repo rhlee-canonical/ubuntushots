@@ -8,45 +8,19 @@ $(document).ready(function() {
                 timeout: ${ c.gallery_switch_time }
 	});
 
-    ## Display facets of a tag in the middle column upon clicking on a tag
-    //$('#tags-left div').click(function() {
-    //    ## Get the facet that was clicked
-    //    facet=$(this).html();
-    //
-    //    ## AJAH-load the appropriate tags into the center column
-    //    $('#tags-center').load('/ajah/facet2tags', { 'facet':facet }, middle_column_magic);
-    //});
-
-    ## Fill a Javascript with facets and debtags
-##    facets = new Array();
-##    tags = new Array();
-##    % for i,facet in enumerate(sorted(c.facets_and_tags)):
-##        facets[${i}]="${facet}";
-##        tags[${i}]=new Array;
-##        % for j,tag in enumerate(sorted(c.facets_and_tags[facet]['tags'])):
-##            tags[${i}][${j}]="${tag.description.splitlines()[0]}";
-##        % endfor
-##    % endfor
-
-    $('#debtags-facets span').click( function() {
-        var div_to_show = '#debtags-'+$(this).attr('id');
-        var content = $(div_to_show).html();
-        $('#tags-box').fadeOut('fast', function ()  {
-            $('#tags-box').html(content);
-            $('#tags-box').fadeIn('fast');
-        });
-    });
-
     $('input#searchterm').focus();
 });
 
-function middle_column_magic() {
-    ## Mouse-over effect on the center tags column
-    $('#tags-center div').hover(function() {
-        $(this).addClass('tag-highlighted');
-    }, function() {
-        $(this).removeClass('tag-highlighted');
+## Function to show debtags for a certain facet
+function showtags(tagid) {
+    var content = $('#debtags-'+tagid).html();
+    $('#tags-box').fadeOut('fast', function () {
+        $('#tags-box').html(content);
+        $('#tags-box').fadeIn('fast');
     });
+    ## Mark the facet as selected
+    $('.frontpage-facet').removeClass('selected');
+    $('#facet-'+tagid).addClass('selected');
 }
 </script>
 
@@ -98,49 +72,26 @@ function middle_column_magic() {
     </div>
 </div>
 
-## Center: debtags
-##<pre>
-##    % for facet in c.facets_and_tags:
-##        Facet: ${facet} (${c.facets_and_tags[facet]['facet']})
-##        % for tag in c.facets_and_tags[facet]['tags']:
-##            - ${ tag.description_short } (${tag.tag})
-##        % endfor
-##    % endfor
-##</pre>
-
-##<div id="tagtable">
-##    <h1>Browse the packages by category:</h1>
-##    <div id="accordion-1">
-##    <dl>
-##        % for facet_counter,facet in enumerate(c.facets_and_tags):
-##                <dt>${facet}</dt>
-##                <dd>
-##                    % for tag in c.facets_and_tags[facet]['tags']:
-##                        ${ tag.description_short },
-##                    % endfor
-##                </dd>
-##        % endfor
-##    </dl>
-##    </div>
-##</div>
+<h1>Or browse by debtags:</h1>
 
 <div id="debtags-area">
-    <div id="debtags-facets" class="tags-box">
+    <div id="debtags-facets">
         % for i,facet in enumerate(sorted(c.facets_and_tags)):
-            <span id="facet-${i}">${ facet }</span>
+        <div id="facet-${i}" class="frontpage-facet" onclick="showtags(${i})">${ facet }</div>
         % endfor
     </div>
 
-    <div id="tags-box" class="tags-box">
+    <div id="tags-box">
     </div>
 
     % for i,facet in enumerate(sorted(c.facets_and_tags)):
-    <div id="debtags-facet-${i}" style="display: none">
-        % for tag in c.facets_and_tags[facet]['tags']:
-            <span>${ tag.description.splitlines()[0] }</span>
+    <div id="debtags-${i}" style="display: none">
+        % for tag in sorted(c.facets_and_tags[facet]['tags']):
+            <div>
+                <a href="${h.url('packages', debtag=tag.tag)}">${ tag.description.splitlines()[0] }</a>
+            </div>
         % endfor
     </div>
     % endfor
-</div>
-
 <br clear="all" />
+</div>
