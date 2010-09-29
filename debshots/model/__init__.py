@@ -360,7 +360,8 @@ def get_facets_and_tags():
             tags.append(tag)
         categories[category]={}
         categories[category]['facet']=facet
-        categories[category]['tags']=tags
+        categories[category]['tags']=sorted(tags, key=lambda x: x.description.splitlines()[0])
+
 
     # Store hash array in cache
     app_globals.cache.set('debshots:facets_and_tags', categories, time=300)
