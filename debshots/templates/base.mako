@@ -44,17 +44,17 @@
       <div id="header">
           <img src="/images/logo.png" alt="screenshots.debian.net" />
       </div>
-      <!---->
-      <!--<div id="nav">-->
-      <!--    <a href="/">Home</a>-->
-      <!--    |-->
-      <!--    <a href="/packages">Browse screenshots</a>-->
-      <!--    |-->
-      <!--    <a href="/upload">Upload screenshots</a>-->
-      <!--</div>-->
+
+      <div id="nav">
+          <a href="/">Home</a>
+          |
+          <a href="/packages">Browse screenshots</a>
+          |
+          <a href="/upload">Upload screenshots</a>
+      </div>
 
       <div id="maincontent">
-  ${ next.body() }
+      ${ next.body() }
       </div>
     </div>
     ## end of #page
