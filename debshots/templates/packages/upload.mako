@@ -65,7 +65,9 @@ ${ h.tags.form(h.url('uploadfile'), method='post', multipart=True) }
     </td>
 </tr>
 </table>
-<input type="submit" value="Upload screenshot" />
+<div id="submit">
+    <input type="submit" value="Upload screenshot" />
+</div>
 </form>
 
 % if c.message:
@@ -111,4 +113,3 @@ ${ h.tags.form(h.url('uploadfile'), method='post', multipart=True) }
 
 <p>Remember: your uploaded screenshot will not be visible immediately. It will first
 be checked by the admin team. It is already visible to you though.</p>
-
