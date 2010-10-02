@@ -43,7 +43,7 @@ body {
 
 td {
     border: 1px solid #d0d0d0;
-    padding: 0.2em 0.5em;
+    padding: 2px 2px;
     vertical-align: top;
 }
 
@@ -102,6 +102,10 @@ h1 {
     font-weight: bolder;
 }
 
+h1.huge {
+    font-size: 200%;
+}
+
 h2 {
     font-size: 120%;
     margin: 1em 0 0.4em 0;
@@ -119,7 +123,7 @@ h3 {
     /*margin-right: 5%;*/
     margin-top: 0.5em;
     padding-bottom: 10px;
-    width: 960px;
+    width: 980px;
     margin-left: 		auto;
     margin-right: 		auto;
 }
@@ -132,21 +136,28 @@ h3 {
 }
 
 #header {
-    background-color: #000000;
+    /*background-color: #000000;*/
+    background: repeat-x url(/images/logo-gray-gradient.png);
     color: #f0f0f0;
     padding: 0.7em 4em 0.2em 4em;
     /*margin-bottom: 1em;*/
     white-space: nowrap;
-    border-bottom: 1em solid #c70036;
+    /*border-bottom: 1em solid #c70036;*/
 }
 
 /* Navigation bar below the header */
 #nav {
-    background-color: #e6e6e6;
-    border-bottom: 1px solid #000;
-    padding: 0.3em 4em;
-    /*font-size: 120%;*/
-    /*font-weight: bolder;*/
+    /*background-color: #e6e6e6;*/
+    /*border-bottom: 1px solid #000;*/
+    padding: 0.1em 4em;
+    background-color: #c70036;
+    color: #ffffff;
+    font-weight: bolder;
+}
+
+#nav a {
+    color: #ffffff;
+    text-decoration: none;
 }
 
 #headernav {
@@ -442,6 +453,12 @@ div.jGrowl div.jGrowl-closer {
 
 .textcenter {
     text-align: center;
+}
+
+.imgcaption {
+    text-align: center;
+    margin-top: 3px;
+    margin-bottom: 10px;
 }
 
 #debtags-area {
