@@ -40,7 +40,7 @@ $(document).ready(function() {
     <li>${ h.bugs_page_link(c.package) }</li>
     ## Upload link:
     <li>${ h.tags.link_to('Upload a new screenshot',
-            h.url('upload', package=c.package.name)) }</li>
+            h.url('upload-pkg', package=c.package.name)) }</li>
 </ul>
 
 </td><td class="noborder">
