@@ -10,11 +10,9 @@ function inithandlers() {
     ##      to the top left position of the browser window. Probably because its reference
     ##      thumbnail image is currently not displayed or something.
     ##
-    ## Use 'cycle' plugin to rotate thumbnails if multiple exist for one package.
+    Use 'cycle' plugin to rotate thumbnails if multiple exist for one package.
     */
-    $("div.screenshots").filter( function () {
-        return $(this).find("img").length>1;
-    }).cycle({
+    $(".screenshots").cycle({
 	    fx: 'fade',
             timeout: 3000,
             speed: 500
