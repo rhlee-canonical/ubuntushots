@@ -173,6 +173,17 @@ def packages_without_screenshots():
         )
     return packages
 
+def packages_with_screenshots():
+    """Return packages having (approved) screenshots"""
+    packages = Package.q()
+    packages = packages.filter(
+        # Packages whose ID is found in any (approved) screenshot's package ID
+        (Package.id.in_(
+            sql.select([Screenshot.package_id], whereclause=(Screenshot.approved==True))
+            ) )
+        )
+    return packages
+
 #---------------
 
 image_types = [
