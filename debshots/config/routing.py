@@ -38,6 +38,8 @@ def make_map():
 
     # Packages view (list of packages with screenshots sorted by name)
     map.connect('packages', '/packages', controller='packages', action='index')
+    map.connect('packages-without-screenshots', '/packages/without_screenshots',
+        controller='packages', action='without_screenshots')
 
     # List of packages with screenshots
     map.connect('packageslist', '/json/packages', controller='packages', action='pkglist')
@@ -47,7 +49,7 @@ def make_map():
     map.connect('moderate', '/packages/moderate', controller='packages', action='moderate')
 
     # Show upload form
-    map.connect('upload', '/upload', controller='packages', action='upload')
+    map.connect('upload', '/upload', controller='packages', action='upload', package=None)
     # Deprecated link to the guidelines (now included in the upload page)
     map.connect('guidelines', '/guidelines', controller='start', action='guidelines')
     # Handle the actual upload
@@ -97,8 +99,8 @@ def make_map():
     map.connect('rss', '/rss', controller='packages', action='rss')
 
     # AJAX/AJAH helpers
-    map.connect('ajah-facet2tags', '/ajah/facet2tags', controller='packages',
-                action='ajah_facet2tags')
+    #map.connect('ajah-facet2tags', '/ajah/facet2tags', controller='packages',
+    #            action='ajah_facet2tags')
 
     # Generic controllers
     map.connect('/:controller/:action')

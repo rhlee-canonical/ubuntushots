@@ -82,28 +82,17 @@ class PackagesController(BaseController):
         Filtering takes place via AJAX calls"""
         packages = model.Package.q()
         search = request.params.get('search')
-        debtags_search = request.params.get('debtag')
-        packages = _filter(packages, search=search, debtags_search=debtags_search)
+        c.debtags_search = request.params.get('debtag')
+        packages = _filter(packages, search=search, debtags_search=c.debtags_search)
 
         c.packages = h.paginate.Page(packages,
-            items_per_page=10,
+            items_per_page=15,
             page=request.params.get('page'),
             search=search,
-            debtag=debtags_search,
+            debtag=c.debtags_search,
             )
 
-        if 'partial' in request.params:
-            ## Return only part of the page for AJAX updates
-            return render('/packages/ajax-index.mako')
-        else:
-            ## Return the full page
-            return render('/packages/index.mako')
-
-    def ajax_index(self):
-        """Returns the content of the packages list area for updates through AJAX calls"""
         return render('/packages/index.mako')
-
-
 
     def indexOLD(self):
         """Show a list of packages with screenshots"""
@@ -209,7 +198,29 @@ class PackagesController(BaseController):
             )
 
         c.packages = h.paginate.Page(packages,
-            items_per_page=20,
+            items_per_page=15,
+            page=request.params.get('page',0),
+            search=search)
+        return render('/packages/index.mako')
+
+    # TODO: redundant code alert!
+    def with_screenshots(self):
+        """Show a list of packages having screenshots"""
+        packages = model.packages_with_screenshots()
+
+        packages = packages.options(model.orm.eagerload('screenshots'))
+
+        # Filter for search word if provided
+        search = request.params.get('search')
+        if search:
+            packages = packages.filter(
+                (model.Package.name.like('%'+search+'%'))
+                |
+                (model.Package.description.ilike('%'+search+'%'))
+            )
+
+        c.packages = h.paginate.Page(packages,
+            items_per_page=15,
             page=request.params.get('page',0),
             search=search)
         return render('/packages/index.mako')
