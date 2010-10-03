@@ -60,15 +60,17 @@ function showtags(tagid) {
 ## Top-right: Teaser and search box
 <div id="teaser-search" style="margin-left: 400px;">
     <div style="text-align: center">
-    <h1 style="font-size: 200%;">
-        ${c.number_of_screenshots} screenshots online.<br>
-        Like to ${ h.tags.link_to('add one', h.url('upload')) }, too?
-    </h1>
+        <h1 class="huge">
+            ${c.number_of_screenshots} screenshots online.<br />
+            Like to ${ h.tags.link_to('add one', h.url('upload')) }, too?
+        </h1>
 
-    <h1>Search for a package/description:</h1>
-    ${ h.tags.form('search') }
-        ${ h.tags.text('searchterm') }
-    </form>
+        <h1>Search for a package/description:</h1>
+        ${ h.tags.form('search') }
+            <div>
+                ${ h.tags.text('searchterm') }
+            </div>
+        </form>
     </div>
 </div>
 
@@ -93,5 +95,5 @@ function showtags(tagid) {
         % endfor
     </div>
     % endfor
-<br clear="all" />
+<br style="clear: both" />
 </div>
