@@ -79,112 +79,30 @@ class PackagesController(BaseController):
     def index(self):
         """Show a list of all available packages"""
         packages = model.Package.q()
-        search = request.params.get('search')
-        search_debtag = request.params.get('debtag')
-        packages = _filter(packages, search=search, debtags_search=search_debtag)
-
-        c.packages = h.paginate.Page(packages,
-            items_per_page=15,
-            page=request.params.get('page'),
-            search=search,
-            debtag=search_debtag,
-            )
-
-        c.search_debtag_description = model.debtag2text(request.params.get('debtag'))
-
-        return render('/packages/index.mako')
-
+        return self._index(packages)
 
     def without_screenshots(self):
         """Show a list of packages without screenshots"""
         packages = model.packages_without_screenshots()
-        search = request.params.get('search')
-        search_debtag = request.params.get('debtag')
-        c.search_debtag_description = model.debtag2text(request.params.get('debtag'))
+        return self._index(packages)
 
-        #packages = packages.options(model.orm.eagerload('screenshots'))
-
-        ## Filter for search word if provided
-        #search = request.params.get('search')
-        #if search:
-        #    packages = packages.filter(
-        #        (model.Package.name.like('%'+search+'%'))
-        #        |
-        #        (model.Package.description.ilike('%'+search+'%'))
-        #    )
-        packages = _filter(packages, search=search, debtags_search=search_debtag)
-
-        c.packages = h.paginate.Page(packages,
-            items_per_page=15,
-            page=request.params.get('page',0),
-            search=search)
-        return render('/packages/index.mako')
-
-    # TODO: redundant code alert!
     def with_screenshots(self):
         """Show a list of packages having screenshots"""
         packages = model.packages_with_screenshots()
+        return self._index(packages)
+
+    def _index(self, packages):
+        """Show a list of packages using filter criteria"""
         search = request.params.get('search')
         search_debtag = request.params.get('debtag')
         c.search_debtag_description = model.debtag2text(request.params.get('debtag'))
 
-        #packages = packages.options(model.orm.eagerload('screenshots'))
-
-        # Filter for search word if provided
-        #search = request.params.get('search')
-        #if search:
-        #    packages = packages.filter(
-        #        (model.Package.name.like('%'+search+'%'))
-        #        |
-        #        (model.Package.description.ilike('%'+search+'%'))
-        #    )
         packages = _filter(packages, search=search, debtags_search=search_debtag)
 
         c.packages = h.paginate.Page(packages,
             items_per_page=15,
             page=request.params.get('page',0),
             search=search)
-        return render('/packages/index.mako')
-
-    def indexOLD(self):
-        """Show a list of packages with screenshots"""
-        packages = model.Package.q()
-
-        # Only show packages with approved screenshots or the user's own screenshots
-        # (JOINing reduces the packages to those which have corresponding screenshots)
-        cookie_hash = my.client_cookie_hash()
-        packages = packages.distinct().join('screenshots')
-        packages = packages.filter(
-            (model.Screenshot.approved==True)
-            |
-            (cookie_hash is not None and model.Screenshot.uploaderhash==cookie_hash)
-            )
-        packages = packages.options(model.orm.eagerload('screenshots'))
-
-        # Search for word
-        search = request.params.get('search')
-        if search:
-            packages = packages.filter(
-                (model.Package.name.like('%'+search+'%'))
-                |
-                (model.Package.description.ilike('%'+search+'%'))
-            )
-
-        # Search for debtag
-        debtags_search = request.params.get('debtag')
-        if debtags_search:
-            db_debtag = model.Debtag.q().filter_by(tag=unicode(debtags_search)).first()
-            if not db_debtag:
-                abort(404, 'Sorry, no packages with this debtag could be found.')
-            packages = packages.join('debtags').filter(model.Debtag.tag==unicode(debtags_search))
-
-        c.packages = h.paginate.Page(packages,
-            items_per_page=10,
-            page=request.params.get('page',0),
-            search=search,
-            debtag=debtags_search,
-            )
-
         return render('/packages/index.mako')
 
     @jsonify
