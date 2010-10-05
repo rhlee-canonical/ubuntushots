@@ -38,6 +38,8 @@ def make_map():
 
     # Packages view (list of packages with screenshots sorted by name)
     map.connect('packages', '/packages', controller='packages', action='index')
+    map.connect('packages-with-screenshots', '/packages/with_screenshots',
+        controller='packages', action='with_screenshots')
     map.connect('packages-without-screenshots', '/packages/without_screenshots',
         controller='packages', action='without_screenshots')
 
