@@ -29,7 +29,7 @@ function showtags(tagid) {
 
 ## Top-left: slideshow of new uploads
 % if c.newest_screenshots:
-<div id="new-uploads" style="float: left">
+<div id="new-uploads" class="cycle" style="float: left">
 <h1>Latest uploads...</h1>
  <div id="rotated" style="width: 350px; height: 130px">
     % for pkg in c.packages_with_newest_screenshots:
