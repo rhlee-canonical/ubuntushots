@@ -61,12 +61,13 @@
 
     <div id="footer">
         ${ h.tags.link_to('About screenshots.debian.net', h.url('about')) }
-        % if 'username' in session:
-        <p style="color: red">
-        You're logged in as <em>${session['username']}</em>.
-        <a href="/logout">(Logout)</a>
-        </p>
-        % endif
+        ## TODO: The start page gets cached so the "logged in" appears to the wrong people
+        ##% if 'username' in session:
+        ##<p style="color: red">
+        ##You're logged in as <em>${session['username']}</em>.
+        ##<a href="/logout">(Logout)</a>
+        ##</p>
+        ##% endif
     </div>
 
     ## Google analytics
