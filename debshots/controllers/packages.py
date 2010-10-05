@@ -77,21 +77,73 @@ class ValidateExistingDebianPackage(formencode.Schema):
 class PackagesController(BaseController):
 
     def index(self):
-        """Show a list of all available packages
-
-        Filtering takes place via AJAX calls"""
+        """Show a list of all available packages"""
         packages = model.Package.q()
         search = request.params.get('search')
-        c.debtags_search = request.params.get('debtag')
-        packages = _filter(packages, search=search, debtags_search=c.debtags_search)
+        search_debtag = request.params.get('debtag')
+        packages = _filter(packages, search=search, debtags_search=search_debtag)
 
         c.packages = h.paginate.Page(packages,
             items_per_page=15,
             page=request.params.get('page'),
             search=search,
-            debtag=c.debtags_search,
+            debtag=search_debtag,
             )
 
+        c.search_debtag_description = model.debtag2text(request.params.get('debtag'))
+
+        return render('/packages/index.mako')
+
+
+    def without_screenshots(self):
+        """Show a list of packages without screenshots"""
+        packages = model.packages_without_screenshots()
+        search = request.params.get('search')
+        search_debtag = request.params.get('debtag')
+        c.search_debtag_description = model.debtag2text(request.params.get('debtag'))
+
+        #packages = packages.options(model.orm.eagerload('screenshots'))
+
+        ## Filter for search word if provided
+        #search = request.params.get('search')
+        #if search:
+        #    packages = packages.filter(
+        #        (model.Package.name.like('%'+search+'%'))
+        #        |
+        #        (model.Package.description.ilike('%'+search+'%'))
+        #    )
+        packages = _filter(packages, search=search, debtags_search=search_debtag)
+
+        c.packages = h.paginate.Page(packages,
+            items_per_page=15,
+            page=request.params.get('page',0),
+            search=search)
+        return render('/packages/index.mako')
+
+    # TODO: redundant code alert!
+    def with_screenshots(self):
+        """Show a list of packages having screenshots"""
+        packages = model.packages_with_screenshots()
+        search = request.params.get('search')
+        search_debtag = request.params.get('debtag')
+        c.search_debtag_description = model.debtag2text(request.params.get('debtag'))
+
+        #packages = packages.options(model.orm.eagerload('screenshots'))
+
+        # Filter for search word if provided
+        #search = request.params.get('search')
+        #if search:
+        #    packages = packages.filter(
+        #        (model.Package.name.like('%'+search+'%'))
+        #        |
+        #        (model.Package.description.ilike('%'+search+'%'))
+        #    )
+        packages = _filter(packages, search=search, debtags_search=search_debtag)
+
+        c.packages = h.paginate.Page(packages,
+            items_per_page=15,
+            page=request.params.get('page',0),
+            search=search)
         return render('/packages/index.mako')
 
     def indexOLD(self):
@@ -181,49 +233,6 @@ class PackagesController(BaseController):
                 for s in screenshots
             ]
         }
-
-    def without_screenshots(self):
-        """Show a list of packages without screenshots"""
-        packages = model.packages_without_screenshots()
-
-        packages = packages.options(model.orm.eagerload('screenshots'))
-
-        # Filter for search word if provided
-        search = request.params.get('search')
-        if search:
-            packages = packages.filter(
-                (model.Package.name.like('%'+search+'%'))
-                |
-                (model.Package.description.ilike('%'+search+'%'))
-            )
-
-        c.packages = h.paginate.Page(packages,
-            items_per_page=15,
-            page=request.params.get('page',0),
-            search=search)
-        return render('/packages/index.mako')
-
-    # TODO: redundant code alert!
-    def with_screenshots(self):
-        """Show a list of packages having screenshots"""
-        packages = model.packages_with_screenshots()
-
-        packages = packages.options(model.orm.eagerload('screenshots'))
-
-        # Filter for search word if provided
-        search = request.params.get('search')
-        if search:
-            packages = packages.filter(
-                (model.Package.name.like('%'+search+'%'))
-                |
-                (model.Package.description.ilike('%'+search+'%'))
-            )
-
-        c.packages = h.paginate.Page(packages,
-            items_per_page=15,
-            page=request.params.get('page',0),
-            search=search)
-        return render('/packages/index.mako')
 
     def moderate(self):
         """Show a list of not-yet-approved screenshots for the admin"""
@@ -715,18 +724,11 @@ def _process_screenshot(filehandle, package, version, description):
 
     return None # Success
 
-def _filter(packages, with_screenshots_only=False, search=None, debtags_search=None):
+def _filter(packages, search=None, debtags_search=None):
     """Filter a query of packages by given criteria"""
     # Only show packages with approved screenshots or the user's own screenshots
     # (JOINing reduces the packages to those which have corresponding screenshots)
     cookie_hash = my.client_cookie_hash()
-    if with_screenshots_only:
-        packages = packages.distinct().join('screenshots')
-        packages = packages.filter(
-            (model.Screenshot.approved==True)
-            |
-            (cookie_hash is not None and model.Screenshot.uploaderhash==cookie_hash)
-            )
     packages = packages.options(model.orm.eagerload('screenshots'))
 
     # Search for word
