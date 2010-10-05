@@ -12,7 +12,7 @@ function inithandlers() {
     ##
     Use 'cycle' plugin to rotate thumbnails if multiple exist for one package.
     */
-    $(".screenshots").cycle({
+    $(".cycle").cycle({
 	    fx: 'fade',
             timeout: 3000,
             speed: 500
