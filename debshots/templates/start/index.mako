@@ -5,7 +5,7 @@
 $(document).ready(function() {
     $('#rotated').cycle({
 		fx: 'fade',
-                timeout: ${ c.gallery_switch_time }
+        timeout: ${ c.gallery_switch_time }
 	});
 
     $('input#searchterm').focus();
@@ -66,9 +66,9 @@ function showtags(tagid) {
         </h1>
 
         <h1>Search for a package/description:</h1>
-        ${ h.tags.form('search') }
+        ${ h.tags.form('packages') }
             <div>
-                ${ h.tags.text('searchterm') }
+                ${ h.tags.text('search') }
             </div>
         </form>
     </div>
