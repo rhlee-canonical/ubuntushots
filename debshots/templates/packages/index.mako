@@ -68,7 +68,7 @@ $(document).ready(function() {
                     ## Second line shows screenshots
                     <% my_or_approved_screenshots = package.my_or_approved_screenshots %>
                     % if my_or_approved_screenshots:
-                    <div class="screenshots" style="height: 120px">
+                    <div class="screenshots cycle" style="height: 120px">
                         % for screenshot in my_or_approved_screenshots:
                             <a class="image" href="${screenshot.large_image_url}"
                                 title="Screenshot of package '${screenshot.package.name}'">
