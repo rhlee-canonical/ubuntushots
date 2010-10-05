@@ -1,13 +1,54 @@
 # -*- coding: utf-8 -*-
 <%inherit file="/base.mako"/>
 
-<%include file="/packages/include-index-header.mako"/>
 
 <script type="application/x-javascript">
 $(document).ready(function() {
     inithandlers();
+
+    $('input[name=search]').focus();
 });
 </script>
+
+
+<div class="graybox">
+    <h1>Browsing screenshots</h1>
+    ${ h.tags.form(h.url.current())}
+        <p>
+            ${ h.tags.link_to('All packages',
+                h.url('packages',
+                    search=request.params.get('search',''),
+                    debtag=request.params.get('debtag','')))}
+            |
+            ${ h.tags.link_to('Packages with screenshots only',
+                h.url('packages-with-screenshots',
+                    search=request.params.get('search',''),
+                    debtag=request.params.get('debtag','')))}
+            |
+            ${ h.tags.link_to('Packages without screenshots only',
+                h.url('packages-without-screenshots',
+                    search=request.params.get('search',''),
+                    debtag=request.params.get('debtag','')))}
+
+            ## Admin options:
+            % if 'username' in session:
+            |
+            <a href="/packages/moderate">Moderation queue</a>
+            % endif
+        </p>
+        <p>
+            ## Search field
+            Search term: ${ h.tags.text(name='search', value=request.params.get('search')) }
+            % if c.search_debtag_description:
+            | With debtag: ${ c.search_debtag_description }
+            % endif
+        </p>
+        <div>
+            <input type="submit" value="Show" />
+        </div>
+    </form>
+</div>
+
 
 % if c.packages:
     <%
