@@ -201,7 +201,6 @@ class PackagesController(BaseController):
         c.package = model.Package.q().filter_by(name=package).first()
         if not c.package:
             abort(404)
-            # TODO: display a page that proposed to upload screenshots as none yet exist
 
         return render('/packages/show.mako')
 
