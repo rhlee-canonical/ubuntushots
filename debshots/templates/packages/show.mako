@@ -87,64 +87,66 @@ $(document).ready(function() {
 
 ## Show approved screenshots
 <div>
-<h1>Available screenshots</h1>
-<p><i>
-    (These screenshots are licensed under the same terms as
-    '${ c.package.name }' itself.)
-</i></p>
-% if c.package.approved_screenshots:
-% for screenshot in c.package.approved_screenshots:
-    <div class="screenshot">
-    <a class="image" href="${screenshot.large_image_url}"
-        title="Screenshot of package '${screenshot.package.name}'">
-        <img src="${screenshot.small_image_url}" alt="Screenshot" />
-	% if screenshot.description:
-	<br />
-	<i>${ screenshot.description }</i>
-	% endif
-        % if screenshot.version:
-        <br />
-        Version: ${ screenshot.version }
-        % endif
-    </a>
-    <br />
-    ## TODO: Fancy icons :)
-    ## Display a message if the screenshot is markedfordelete
-    % if screenshot.markedfordelete:
-        (Removal was requested.)
+    <h1>Available screenshots</h1>
+    <p><i>
+	(These screenshots are licensed under the same terms as
+	'${ c.package.name }' itself.)
+    </i></p>
+    % if c.package.approved_screenshots:
+	<div class="screenshots">
+	    % for screenshot in c.package.approved_screenshots:
+		<div class="screenshot">
+		<a class="image" href="${screenshot.large_image_url}"
+		    title="Screenshot of package '${screenshot.package.name}'">
+		    <img src="${screenshot.small_image_url}" alt="Screenshot" />
+		    % if screenshot.description:
+		    <br />
+		    <i>${ screenshot.description }</i>
+		    % endif
+		    % if screenshot.version:
+		    <br />
+		    Version: ${ screenshot.version }
+		    % endif
+		</a>
+		<br />
+		## TODO: Fancy icons :)
+		## Display a message if the screenshot is markedfordelete
+		% if screenshot.markedfordelete:
+		    (Removal was requested.)
+		% else:
+		    ## Admins can remove the screenshots directly:
+		    % if 'username' in session:
+			${ h.tags.link_to(
+			    'Remove this screenshot',
+			    h.url('delete_screenshot', screenshot=screenshot.id),
+			    onclick=h.tags.literal('return confirm(\'Really delete this screenshot?\')')) }
+		    ## Visitors can mark this package for deletion:
+		    % else:
+			${ h.tags.link_to(
+			    'Request removal',
+			    '#',
+			    id='markfordelete%s' % screenshot.id,
+			    onclick="$('#markfordelete-form-%s').show('slow')" % screenshot.id,
+			    ) }
+			## Hidden field to enter the reason for markedfordelete
+			<div id="markfordelete-form-${screenshot.id}" style="display: none">
+			    ${ h.tags.form(h.url('delete_screenshot', screenshot=screenshot.id))}
+			    <p>Why should it get removed?
+			    <br />
+			    ${ h.tags.text('reason', size=20, maxlength=100) }
+			    <br />
+			    ${ h.tags.submit('submit', 'Okay') }
+			    </p>
+			    </form>
+			</div>
+		    % endif
+		% endif
+		</div>
+	    % endfor
+	</div>
     % else:
-        ## Admins can remove the screenshots directly:
-        % if 'username' in session:
-            ${ h.tags.link_to(
-                'Remove this screenshot',
-                h.url('delete_screenshot', screenshot=screenshot.id),
-                onclick=h.tags.literal('return confirm(\'Really delete this screenshot?\')')) }
-        ## Visitors can mark this package for deletion:
-        % else:
-            ${ h.tags.link_to(
-                'Request removal',
-                '#',
-                id='markfordelete%s' % screenshot.id,
-                onclick="$('#markfordelete-form-%s').show('slow')" % screenshot.id,
-                ) }
-            ## Hidden field to enter the reason for markedfordelete
-            <div id="markfordelete-form-${screenshot.id}" style="display: none">
-                ${ h.tags.form(h.url('delete_screenshot', screenshot=screenshot.id))}
-                <p>Why should it get removed?
-                <br />
-                ${ h.tags.text('reason', size=20, maxlength=100) }
-                <br />
-                ${ h.tags.submit('submit', 'Okay') }
-		</p>
-                </form>
-            </div>
-        % endif
+        <p>There are no (approved) screenshots for this package yet.</p>
     % endif
-    </div>
-% endfor
-% else:
-<p>There are no (approved) screenshots for this package yet.</p>
-% endif
 </div>
 
 ## Show screenshots that are not yet approved but uploaded by the
