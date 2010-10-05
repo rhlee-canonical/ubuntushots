@@ -378,6 +378,17 @@ def get_facets_and_tags():
     app_globals.cache.set('debshots:facets_and_tags', categories, time=300)
     return categories
 
+def debtag2text(debtag_name):
+    """Returns a textual description for a debtag"""
+    search_debtag = Debtag.q().filter_by(tag=debtag_name).first()
+    if search_debtag:
+        tag = search_debtag.description_short
+        facet = search_debtag.facet_description_short
+        return u"%s / %s" % (facet, tag)
+    else:
+        return None
+
+
 #----------
 
 # Table of admin users
