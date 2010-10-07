@@ -5,6 +5,7 @@ import smtplib
 import random
 from hashlib import md5
 import pygooglechart
+from pylons.decorators.cache import beaker_cache
 
 from debshots.lib.base import *
 
@@ -24,13 +25,9 @@ class ValidateRegister(formencode.Schema):
 
 class StartController(BaseController):
 
+    @beaker_cache(type='memory', expire=120)
     def index(self):
         """Welcome page"""
-
-        cached =  app_globals.cache.get('debshots:front_page')
-        if cached is not None:
-            return cached
-
         # Show newest screenshot if available
         newest_screenshots = model.newest_screenshots()
         if newest_screenshots.count():
@@ -49,9 +46,7 @@ class StartController(BaseController):
         # Get facets and tags from the database
         c.facets_and_tags = model.get_facets_and_tags()
 
-        rendered = render('/start/index.mako')
-        app_globals.cache.set('debshots:front_page', rendered)
-        return rendered
+        return render('/start/index.mako')
 
     def guidelines(self):
         """Deprecated link for guidelines page redirects to upload page"""
