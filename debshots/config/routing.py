@@ -72,14 +72,14 @@ def make_map():
     # Direct link to a thumbnail image of a certain package
     # (shows a dummy 160x120 pixel large along with response code 404)
     map.connect('thumbnail', '/thumbnail/:package', controller='packages', action='thumbnail')
-    # URL used by the Ubuntu software center
+    # URL used by the Ubuntu software center (will become deprecatd)
     map.connect('thumbnail-404', '/thumbnail-404/:package', controller='packages', action='thumbnail')
     # URL to get a thumbnail by version
     map.connect('thumbnail-with-version', '/thumbnail-with-version/:package/:version',
             controller='packages', action='thumbnail_with_version')
     # Same for the large image
     map.connect('screenshot', '/screenshot/:package', controller='packages', action='screenshot')
-    # URL used by the Ubuntu software center
+    # URL used by the Ubuntu software center (will become deprecatd)
     map.connect('screenshot-404', '/screenshot-404/:package', controller='packages', action='screenshot')
     # URL used by Ubuntu to to get a screenshot by the version
     map.connect('screenshot-with-version', '/screenshot-with-version/:package/:version',
