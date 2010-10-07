@@ -212,6 +212,7 @@ a, a:visited {
 a.image, a.image:hover {
     border: none;
     /*background-color: #ffffff;*/
+    text-decoration: none;
 }
 
 
