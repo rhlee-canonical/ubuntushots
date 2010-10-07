@@ -35,22 +35,25 @@ function showtags(tagid) {
     % for pkg in c.packages_with_newest_screenshots:
         <% screenshot = pkg.screenshots[0] %>
         <div>
-            ## Link to package's page
-            <a href="${ h.url('package', package=pkg.name) }">
                 <table><tr>
                     <td class="noborder">
-                        ${ h.tags.image(screenshot.small_image_url, alt='Screenshot of package %s' % pkg.name) }
+                        <a href="${ h.url('package', package=pkg.name) }" class="image">
+                            ${ h.tags.image(screenshot.small_image_url,
+                                alt='Screenshot of package %s' % pkg.name) }
+                        </a>
                     </td>
                     <td class="noborder">
-                        <div>
-                            <b>${ pkg.name }</b>
-                        </div>
-                        <p>
-                            ${ pkg.description }
-                        </p>
+                        ## Link to package's page
+                        <a href="${ h.url('package', package=pkg.name) }">
+                            <div>
+                                <b>${ pkg.name }</b>
+                            </div>
+                            <p>
+                                ${ pkg.description }
+                            </p>
+                            </a>
                     </td>
                 </tr></table>
-            </a>
         </div>
     % endfor
     </div>
