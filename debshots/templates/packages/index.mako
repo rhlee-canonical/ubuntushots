@@ -86,7 +86,11 @@ $(document).ready(function() {
                     % endif
                     </div>
                     <div class="imgcaption">
-                        ${ h.tags.link_to(package.name, h.url('package', package=package.name)) }
+                        <a href="${h.url('package', package=package.name)}">
+                        ${ package.name }
+                        <br />
+                        (<span class="smaller">${ package.description }</span>)
+                        </a>
                     </div>
                     </td>
                 ## Five thumbnails per row - after that start a new table row

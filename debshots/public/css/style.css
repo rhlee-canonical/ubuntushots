@@ -204,7 +204,7 @@ pre {
 
 a, a:visited {
     color: #000000;
-    border-bottom: 1px dashed #808080;
+    border-bottom: 1px dashed #b0b0b0;
     text-decoration: none;
 }
 
@@ -459,6 +459,10 @@ div.jGrowl div.jGrowl-closer {
     text-align: center;
     margin-top: 3px;
     margin-bottom: 10px;
+}
+
+.imgcaption .smaller {
+    font-size: 80%;
 }
 
 #debtags-area {
