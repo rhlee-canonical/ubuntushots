@@ -56,15 +56,15 @@
         http://screenshots.debian.net/thumbnail/PACKAGENAME
         <br />
         (Returns a thumbnail (160x120 pixels or less) of a package's first found
-        screenshot. If no screenshot was found then a dummy image will be returned.
-        In no case an HTTP error 404 is returned.)
+        screenshot. If no screenshot was found then a dummy image will be returned
+        along with the HTTP code 404.)
     </li>
     <li>
         http://screenshots.debian.net/screenshot/PACKAGENAME
         <br />
         (Returns a screenshot (800x600 pixels or less) of a package.
-        If no screenshot was found then a dummy image will be returned.
-        In no case an HTTP error 404 is returned.)
+        If no screenshot was found then a dummy image will be returned
+        along with the HTTP code 404.)
     </li>
     <li>
         http://screenshots.debian.net/rss
@@ -82,7 +82,8 @@
 
 <p>
     Whether you are a developer or not - we appreciate if you upload screenshots.
-    See if your favorite package does not yet have a screenshot and upload one.
+    See if your favorite package does not yet have a screenshot and
+    ${h.tags.link_to('upload', h.url('upload'))} one.
 </p>
 
 <h1>Statistics</h1>
@@ -106,17 +107,9 @@
 
 <p>
     This site has been developed and is maintained by
-    <a href="mailto:email@christoph-haas.de">Christoph Haas</a>.
-    In order to be able to publish newly uploaded screenshots in time several
-    more people are moderating uploads:
+    <a href="mailto:email@christoph-haas.de">Christoph Haas</a>
+    with help of Paul Wise.
 </p>
-
-<ul>
-    <li>Dean Sutherland</li>
-    <li>Paul Wise</li>
-    <li>Martin Stigge</li>
-    <li>J. Richards</li>
-</ul>
 
 <h1>This web site's software</h1>
 
