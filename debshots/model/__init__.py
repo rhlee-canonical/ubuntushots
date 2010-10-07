@@ -409,7 +409,7 @@ class Admin(MyOrm):
 
 orm.mapper(Package, packages_table, order_by=packages_table.c.name,
     properties={
-        'screenshots':orm.relation(
+        'screenshots':orm.relationship(
             Screenshot,
             backref=orm.backref('package', uselist=False),
             cascade='all, delete-orphan',
@@ -417,7 +417,7 @@ orm.mapper(Package, packages_table, order_by=packages_table.c.name,
             order_by=[screenshots_table.c.uploaddatetime.desc()],
             #lazy=False,
             ),
-        'debtags':orm.relation(
+        'debtags':orm.relationship(
             Debtag,
             backref=orm.backref('packages'),
             #cascade='all, delete-orphan',
