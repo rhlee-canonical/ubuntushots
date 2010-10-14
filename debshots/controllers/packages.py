@@ -102,7 +102,7 @@ class PackagesController(BaseController):
         c.packages = h.paginate.Page(packages,
             items_per_page=15,
             page=request.params.get('page',0),
-            search=search)
+            search=search, debtag=search_debtag)
         return render('/packages/index.mako')
 
     @jsonify
