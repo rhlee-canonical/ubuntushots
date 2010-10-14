@@ -13,6 +13,7 @@ from paste.deploy.converters import asbool
 from debshots.lib import my, validators
 import formencode
 from webhelpers.feedgenerator import Rss201rev2Feed
+from pylons import cache
 
 from hashlib import md5
 
@@ -279,35 +280,24 @@ class PackagesController(BaseController):
         # To save database queries we use memcached to store information
         # on whether a certain package has screenshots or not.
         cache_key = 'package_image:%s:%s' % (size, md5str)
-        file_path = app_globals.cache.get(cache_key)
 
-        if file_path is None:
-            log.debug('Image information not found in memcached. Need to query database.')
+        log.debug('Image information not found in memcached. Need to query database.')
 
-            # No information found in memcached. Need to query the database.
-            this_package = model.Package.q().filter_by(name=package).first()
+        # No information found in memcached. Need to query the database.
+        this_package = model.Package.q().filter_by(name=package).first()
 
-            if not this_package or not this_package.screenshots:
-                # The package doesn't exist or has no screenshots.
-                file_path = 'DOES_NOT_EXIST' # needed because memcache libraries don't really differentiate False well
-                #log.debug('No screenshot available for package: %s', package)
-            else:
-                # The package has screenshots. Store the path to the image
-                # in memcached so next time we have the information readily available.
-                #file_path = this_package.screenshots[0].image_path(size)
-                if not version:
-                    file_path = this_package.screenshots[0].image_path(size)
-                else:
-                    file_path = self._pick_best_version(this_package, version, size)
-
-                log.debug('Screenshot found at: %s', file_path)
-
-            # Store the information in memcached. It is valid for 5 minutes.
-            log.debug('Saving memcached entry for screenshot. Key: %s. Path: %s.',
-                      cache_key, file_path)
-            app_globals.cache.set(cache_key, file_path, 300)
+        if not this_package or not this_package.screenshots:
+            # The package doesn't exist or has no screenshots.
+            file_path = 'DOES_NOT_EXIST' # needed because memcache libraries don't really differentiate False well
+            #log.debug('No screenshot available for package: %s', package)
         else:
-            log.debug('Image information found in memcached: %s', file_path)
+            # The package has screenshots.
+            if not version:
+                file_path = this_package.screenshots[0].image_path(size)
+            else:
+                file_path = self._pick_best_version(this_package, version, size)
+
+            log.debug('Screenshot found at: %s', file_path)
 
         if file_path == 'DOES_NOT_EXIST' or not os.path.exists(file_path):
             # Image does not exist. Return a dummy image with response code 404 (Not found)
@@ -444,8 +434,7 @@ class PackagesController(BaseController):
 
         db.commit()
 
-        # The approved screenshots have changes. Remove the cached start page.
-        app_globals.cache.delete('debshots:front_page') # could make it add the new render explicitly later
+        # TODO: The approved screenshots have changes. Remove the cached start page.
 
         # Try to redirect to the backlink (if provided)
         my.redirect_back()
@@ -492,7 +481,9 @@ class PackagesController(BaseController):
         my.message("Screenshot for package <em>%s</em> approved." % package.name)
 
         # The approved screenshots have changes. Remove the cached start page.
-        app_globals.cache.delete('debshots:front_page') # could make it add the new render explicitly later
+        # TODO: cache.remove_value()...
+        # (http://wiki.pylonshq.com/display/pylonsdocs/Caching+in+Templates+and+Controllers)
+        # (-> Other Cache Options)
 
         my.redirect_back()
         redirect(url('package', package=package.name))
