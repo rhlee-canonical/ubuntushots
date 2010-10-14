@@ -7,18 +7,18 @@ except ImportError:
 
 setup(
     name='debshots',
-    version="0.4.11",
+    version='0.4.13',
     description='Web application that manages screenshots of applications available in Debian',
     author='Christoph Haas',
     author_email='email@christoph-haas.de',
     url='http://debshots.workaround.org/',
     install_requires=[
-        "Pylons>=0.10rc1",
+        "Pylons==1.0",
         "PIL>=1.1.6",
-        "SQLAlchemy>=0.5.5",
+        "SQLAlchemy==0.6.4",
         "Webhelpers>=1.0",
-        "pastescript>=1.7.3",
-        "paste>=1.7.3",
+        #"pastescript==1.7.3",
+        #"paste==1.7.3",
         #"psycopg2>=2.0.6",  # can also be deployed with sqlite - then psycopg2 is unneeded
         "formencode>=1",
         "python-memcached",
