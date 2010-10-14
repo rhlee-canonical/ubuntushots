@@ -77,6 +77,8 @@ function showtags(tagid) {
     </div>
 </div>
 
+<div style="clear: both"></div>
+
 <h1>Or browse by debtags:</h1>
 
 <div id="debtags-area">
