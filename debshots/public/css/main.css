@@ -27,7 +27,7 @@
 {
 	list-style-type: none;
 	float: left;
-	padding: 0 0 0 2px;
+	padding: 0 0 0 1px;
 	height: 64px;
 	background: url("/images/topnav_divider.png") no-repeat;
 }
@@ -38,4 +38,9 @@
 	color: white;
 	text-shadow: 0 1px black;
 	display: block;
+}
+
+#header ul a:hover
+{
+	background: url("/images/topnav_active_bg.png");
 }
