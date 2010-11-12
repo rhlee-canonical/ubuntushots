@@ -1,0 +1,73 @@
+body
+{
+	font-family: "Ubuntu Beta",UbuntuBeta,Ubuntu,"Bitstream Vera Sans","DejaVu Sans",Tahoma,sans-serif;
+	background: #ecebe9;
+	font-size: 12px;
+	line-height: 16px;
+	background: url('images/bg_dots.png');
+	text-rendering: optimizeLegibility;
+	margin: 0;
+}
+
+
+.clearBoth
+{
+	clear: both;
+}
+
+.floatRight
+{
+	float: right;
+}
+
+
+/*---------- Headers ----------*/
+
+h1
+{
+	font-size: 36px;
+	line-height: 40px;
+	margin: 32px 24px;
+	font-weight: normal;
+	color: #333;
+}
+
+h2
+{
+	font-size: 24px;
+	line-height: 28px;
+	margin: 16px 0 8px 0;
+	font-weight: normal;
+	color: #333;
+}
+
+h3
+{
+	font-size: 16px;
+	line-height: 20px;
+	margin: 16px 0 8px 0;
+	font-weight: normal;
+	color: #333;
+}
+
+
+/*---------- General ----------*/
+
+p
+{
+	font-size: 12px;
+	line-height: 16px;
+	margin: 0 0 8px 0;
+}
+
+ul
+{
+	margin: 0 0 8px 0;
+	padding: 0;
+}
+
+a
+{
+	color: #772953;
+	text-decoration: none;
+}
