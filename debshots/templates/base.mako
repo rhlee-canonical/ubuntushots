@@ -42,15 +42,18 @@
   <body>
     <div id="page">
       <div id="header">
-          <img src="/images/logo.png" alt="screenshots.debian.net" />
-      </div>
-
-      <div id="nav">
-          <a href="/">Home</a>
-          |
-          <a href="/packages">Browse screenshots</a>
-          |
-          <a href="/upload">Upload screenshots</a>
+        <ul>
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href="/packages">Browse screenshots</a>
+          </li>
+          <li>
+            <a href="/upload">Upload screenshots</a>
+          </li>
+        </ul>
+        <img src="/images/logo.png" alt="screenshots.debian.net" />
       </div>
 
       <div id="maincontent">

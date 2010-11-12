@@ -10,3 +10,22 @@
 	background: url("/images/light_stripes.png") no-repeat #DD4814;
 	height: 64px;
 }
+
+#header img
+{
+	float: right;
+}
+
+#header ul
+{
+	margin: 0 0 0 16px;
+	font-size: 14px;
+	line-height: 16px;
+}
+
+#header ul li
+{
+	list-style-type: none;
+	float: left;
+	padding: 24px 8px;
+}
