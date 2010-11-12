@@ -4,7 +4,7 @@ body
 	background: #ecebe9;
 	font-size: 12px;
 	line-height: 16px;
-	background: url('images/bg_dots.png');
+	background: url('/images/bg_dots.png');
 	text-rendering: optimizeLegibility;
 	margin: 0;
 }
