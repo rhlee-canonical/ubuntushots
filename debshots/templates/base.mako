@@ -52,6 +52,8 @@
           <li>
             <a href="/upload">Upload screenshots</a>
           </li>
+          <li>
+          </li>
         </ul>
         <img src="/images/logo.png" alt="screenshots.debian.net" />
       </div>

@@ -27,5 +27,15 @@
 {
 	list-style-type: none;
 	float: left;
+	padding: 0 0 0 2px;
+	height: 64px;
+	background: url("/images/topnav_divider.png") no-repeat;
+}
+
+#header ul a
+{
 	padding: 24px 8px;
+	color: white;
+	text-shadow: 0 1px black;
+	display: block;
 }
